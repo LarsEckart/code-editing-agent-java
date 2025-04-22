@@ -1,22 +1,21 @@
 package com.larseckart;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 class Client {
 
   private final Context context;
+  private final String apiUrl;
   public HttpClient client;
   public ObjectMapper objectMapper;
-  private final String apiUrl;
 
   public Client(Context context) {
     this(context, null);
@@ -30,17 +29,19 @@ class Client {
       this.apiUrl = apiUrl;
     } else {
       String apiKey = System.getenv("GEMINI_API_KEY");
-      this.apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey;
+      this.apiUrl =
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="
+          + apiKey;
     }
   }
 
-  public void send(String userInput) {
+  public String send(String userInput) {
     context.append(userInput);
     try {
       String jsonPayload = buildJsonPayload();
       HttpRequest request = buildHttpRequest(apiUrl, jsonPayload);
       HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-      handleResponse(response.body());
+      return handleResponse(response.body());
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -71,20 +72,17 @@ class Client {
         .build();
   }
 
-  private void handleResponse(String responseBody) throws Exception {
+  private String handleResponse(String responseBody) throws Exception {
     JsonNode responseRootNode = objectMapper.readTree(responseBody);
     JsonNode candidatesNode = responseRootNode.path("candidates");
     if (candidatesNode.isArray() && !candidatesNode.isEmpty()) {
       JsonNode contentNode = candidatesNode.get(0).path("content").path("parts");
       if (contentNode.isArray() && !contentNode.isEmpty()) {
         String answer = contentNode.get(0).path("text").asText();
-        System.out.println("Answer: " + answer);
         context.append(answer);
-      } else {
-        System.out.println("No answer found in response.");
+        return answer;
       }
-    } else {
-      System.out.println("No candidates found in response.");
     }
+    return "Something went wrong. Please try again.";
   }
 }
