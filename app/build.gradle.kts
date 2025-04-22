@@ -11,6 +11,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation(libs.guava)
     implementation(libs.jackson.databind)
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
 }
 
 java {
