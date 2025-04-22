@@ -51,3 +51,7 @@ tasks.register<Jar>("fatJar") {
         configurations.runtimeClasspath.get().filter { it.name.endsWith(".jar") }.map { zipTree(it) }
     })
 }
+
+tasks.named("build") {
+    dependsOn("fatJar")
+}

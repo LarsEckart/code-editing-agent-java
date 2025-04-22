@@ -1,17 +1,20 @@
 package com.larseckart;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.logging.Logger;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 class Client {
 
+  private static final Logger logger = Logger.getLogger(Client.class.getName());
   private final Context context;
   private final String apiUrl;
   public HttpClient client;
@@ -74,6 +77,18 @@ class Client {
 
   private String handleResponse(String responseBody) throws Exception {
     JsonNode responseRootNode = objectMapper.readTree(responseBody);
+    // Check for error response first
+    JsonNode errorNode = responseRootNode.path("error");
+    if (!errorNode.isMissingNode()) {
+      String status = errorNode.path("status").asText("");
+      String message = errorNode.path("message").asText("");
+      if (!status.isEmpty() && !message.isEmpty()) {
+        String formatted = status + ": " + message;
+        logger.warning("API error: " + formatted);
+        return "Something went wrong. Please try again.";
+      }
+    }
+    // Then check for candidates
     JsonNode candidatesNode = responseRootNode.path("candidates");
     if (candidatesNode.isArray() && !candidatesNode.isEmpty()) {
       JsonNode contentNode = candidatesNode.get(0).path("content").path("parts");
@@ -83,6 +98,6 @@ class Client {
         return answer;
       }
     }
-    return "Something went wrong. Please try again.";
+    throw new RuntimeException("Unexpected response format: " + responseBody);
   }
 }
