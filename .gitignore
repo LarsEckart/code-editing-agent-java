@@ -3,3 +3,27 @@
 
 # Ignore Gradle build output directory
 build
+
+# Ignore build output directories
+**/bin/
+**/build/
+
+# Ignore IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+**/.classpath
+**/.project
+**/.settings/
+
+# Ignore OS specific files
+.DS_Store
+**/.DS_Store
+
+# Ignore log files
+*.log
+
+# Ignore environment files
+.env
