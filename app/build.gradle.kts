@@ -7,11 +7,10 @@ repositories {
 }
 
 dependencies {
+    implementation("com.anthropic:anthropic-java:2.0.0")
+
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    implementation("com.anthropic:anthropic-java:1.4.0")
-    implementation(libs.jackson.databind)
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
 }
 
 java {
