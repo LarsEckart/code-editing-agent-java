@@ -17,7 +17,7 @@ class Agent {
 
     boolean quit = false;
     boolean readUserInput = true;
-    
+
     while (!quit) {
       String userInput = "";
       if (readUserInput) {
@@ -28,16 +28,16 @@ class Agent {
           continue;
         }
       }
-      
+
       // Get response from Claude
       String response = client.send(userInput);
-      
+
       // Display response
       if (!response.isEmpty()) {
         System.out.print("\u001b[95mClaude\u001b[0m: ");
         System.out.println("\u001b[92m" + response + "\u001b[0m");
       }
-      
+
       readUserInput = true;
     }
   }
