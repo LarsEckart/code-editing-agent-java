@@ -1,8 +1,9 @@
 package com.larseckart;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ContextTest {
 
@@ -22,7 +23,7 @@ class ContextTest {
   @Test
   void testToString_singleUserMessage() {
     context.append("Hello");
-    
+
     String result = context.toString();
     assertEquals("user: Hello\n", result);
   }
@@ -31,7 +32,7 @@ class ContextTest {
   void testToString_userAndSystemMessages() {
     context.append("What is 2+2?");
     context.append("2+2 equals 4");
-    
+
     String result = context.toString();
     assertEquals("user: What is 2+2?\nsystem: 2+2 equals 4\n", result);
   }
@@ -43,14 +44,14 @@ class ContextTest {
     context.append("Second user message");
     context.append("Second system response");
     context.append("Third user message");
-    
+
     String result = context.toString();
     String expected = "user: First user message\n" +
-                     "system: First system response\n" +
-                     "user: Second user message\n" +
-                     "system: Second system response\n" +
-                     "user: Third user message\n";
-    
+                      "system: First system response\n" +
+                      "user: Second user message\n" +
+                      "system: Second system response\n" +
+                      "user: Third user message\n";
+
     assertEquals(expected, result);
   }
 
@@ -59,12 +60,12 @@ class ContextTest {
     context.append("");
     context.append("Non-empty response");
     context.append("");
-    
+
     String result = context.toString();
     String expected = "user: \n" +
-                     "system: Non-empty response\n" +
-                     "user: \n";
-    
+                      "system: Non-empty response\n" +
+                      "user: \n";
+
     assertEquals(expected, result);
   }
 
@@ -72,11 +73,11 @@ class ContextTest {
   void testToString_withSpecialCharacters() {
     context.append("Message with\nnewlines");
     context.append("Message with\ttabs and \"quotes\"");
-    
+
     String result = context.toString();
     String expected = "user: Message with\nnewlines\n" +
-                     "system: Message with\ttabs and \"quotes\"\n";
-    
+                      "system: Message with\ttabs and \"quotes\"\n";
+
     assertEquals(expected, result);
   }
 }
