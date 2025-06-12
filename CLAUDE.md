@@ -13,29 +13,37 @@ It's implemented in java though.
 - **Build**: `./gradlew build` (includes fatJar creation)
 - **Test**: `./gradlew test`
 - **Single test**: `./gradlew test --tests "ClassName"`
-- **Run**: `./gradlew run`
+- **Run CLI mode**: `./gradlew run` (default)
+- **Run Web mode**: `./gradlew run -Dapp.mode=web`
 - **Clean**: `./gradlew clean`
 
 ## Architecture Overview
 
-This is a Java-based conversational AI agent that communicates with the Anthropic Claude API and supports tool execution. The application follows a layered architecture:
+This is a Java-based conversational AI agent that communicates with the Anthropic Claude API. The application follows a hexagonal architecture with clear separation between business logic and I/O adapters.
 
 ### Core Components
 
-- **Agent** (`Agent.java`): Main conversation loop that handles user input, sends messages to Claude, and executes tool calls
-- **Client** (`Client.java`): HTTP client for Anthropic API communication, handles request/response serialization and tool call parsing
-- **Context** (`Context.java`): Simple conversation history storage
-- **App** (`App.java`): Entry point that wires up components and starts the agent
+- **ConversationService** (`core/services/ConversationService.java`): Business logic for API communication
+- **ChatService** (`core/services/ChatService.java`): Orchestrates conversation flow using ports
+- **ConversationContext** (`core/domain/ConversationContext.java`): Domain model for conversation history
+- **InputPort/OutputPort** (`core/ports/`): Interfaces for I/O abstraction
 
-### Tool System
+### Adapters
 
-- **ToolDefinition** (`tool/ToolDefinition.java`): Interface for defining tools with JSON schema and execution logic
-- **Built-in Tools** (`tools/`): File system tools (ReadFileTool, EditFileTool, ListFilesTool) that allow Claude to interact with local files
+- **CLI Adapters** (`adapters/cli/`): Console-based implementations using Scanner and System.out
+- **Web Adapters** (`adapters/web/`): Spring Boot REST API and HTML frontend
+- **App** (`App.java`): Entry point that selects CLI or web mode based on system property
+
+### Running Modes
+
+The application supports two modes:
+- **CLI Mode** (default): Interactive command-line interface
+- **Web Mode**: HTTP server with REST API and web interface at http://localhost:8080
 
 ### Key Dependencies
 
-- **Anthropic Java SDK**: `com.anthropic:anthropic-java:1.4.0`
-- **Jackson**: For JSON processing
+- **Anthropic Java SDK**: `com.anthropic:anthropic-java:2.0.0`
+- **Spring Boot**: `3.4.6` (for web mode)
 - **Java 21**: Required runtime version
 - **JUnit 5**: For testing
 

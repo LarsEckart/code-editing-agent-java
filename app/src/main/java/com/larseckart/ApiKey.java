@@ -1,6 +1,6 @@
 package com.larseckart;
 
-class ApiKey {
+public class ApiKey {
 
   private final String value;
 

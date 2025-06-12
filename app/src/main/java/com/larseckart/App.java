@@ -1,16 +1,17 @@
 package com.larseckart;
 
-import java.util.Scanner;
-import java.util.function.Supplier;
+import com.larseckart.adapters.cli.CliApplication;
+import com.larseckart.adapters.web.WebApplication;
 
 public class App {
 
   public static void main(String[] args) {
-    Scanner scanner = new Scanner(System.in);
-    Supplier<String> supplier = scanner::nextLine;
-
-    Client client = new Client(new Context(), ApiKey.fromEnvironment("code_editing_agent_api_key"));
-
-    new Agent(supplier, client).start();
+    String mode = System.getProperty("app.mode", "cli");
+    
+    if ("web".equalsIgnoreCase(mode)) {
+      WebApplication.main(args);
+    } else {
+      CliApplication.main(args);
+    }
   }
 }
