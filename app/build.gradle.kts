@@ -1,4 +1,6 @@
 plugins {
+    id("org.springframework.boot") version "3.5.0"
+    id("io.spring.dependency-management") version "1.1.7"
     application
 }
 
@@ -8,20 +10,28 @@ repositories {
 
 dependencies {
     implementation("com.anthropic:anthropic-java:2.0.0")
-
+    
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    
     testImplementation(libs.junit.jupiter)
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(24)
     }
 }
 
 application {
     mainClass = "com.larseckart.App"
     applicationDefaultJvmArgs = listOf("-Dfile.encoding=UTF-8")
+}
+
+tasks.named<JavaExec>("run") {
+    systemProperties = System.getProperties().toMap() as Map<String, Any>
 }
 
 // Set the Main-Class attribute in the jar manifest
