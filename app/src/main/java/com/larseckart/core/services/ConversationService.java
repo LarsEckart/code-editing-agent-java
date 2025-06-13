@@ -3,16 +3,13 @@ package com.larseckart.core.services;
 import com.anthropic.client.AnthropicClient;
 import com.anthropic.client.okhttp.AnthropicOkHttpClient;
 import com.anthropic.models.messages.ContentBlock;
-import com.anthropic.models.messages.Message;
 import com.anthropic.models.messages.MessageCreateParams;
 import com.anthropic.models.messages.Model;
 import com.larseckart.ApiKey;
 import com.larseckart.core.domain.ConversationContext;
-import java.util.logging.Logger;
+import com.larseckart.core.domain.ChatMessage;
 
 public class ConversationService {
-
-  private static final Logger logger = Logger.getLogger(ConversationService.class.getName());
 
   private final ConversationContext context;
   private final AnthropicClient client;
@@ -26,30 +23,31 @@ public class ConversationService {
   }
 
   public String sendMessage(String userInput) {
-    context.addUserMessage(userInput);
+    context.addUserMessage(ChatMessage.user(userInput));
     
     try {
       var paramsBuilder = MessageCreateParams.builder()
           .model(Model.CLAUDE_3_5_HAIKU_LATEST)
           .maxTokens(1024L)
-          .system("Be as brief as possible with your responses.");
+          .system("You're from Germany, even when you reply in English, let some German words slip in. You're a huge fan of Estonia, mention or make references to Estonia whenever you can.");
 
-      for (ConversationContext.Message message : context.getHistory()) {
-        if ("user".equals(message.getRole())) {
-          paramsBuilder.addUserMessage(message.getContent());
-        } else if ("assistant".equals(message.getRole())) {
-          paramsBuilder.addAssistantMessage(message.getContent());
+      for (ChatMessage message : context.getHistory()) {
+        switch (message.role()) {
+          case USER -> paramsBuilder.addUserMessage(message.content());
+          case ASSISTANT -> paramsBuilder.addAssistantMessage(message.content());
+          default -> {
+          }
         }
       }
 
-      Message response = client.messages().create(paramsBuilder.build());
+      var response = client.messages().create(paramsBuilder.build());
       return extractTextFromResponse(response);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  private String extractTextFromResponse(Message response) {
+  private String extractTextFromResponse(com.anthropic.models.messages.Message response) {
     StringBuilder textContent = new StringBuilder();
 
     for (ContentBlock block : response.content()) {
@@ -59,7 +57,7 @@ public class ConversationService {
     String text = textContent.toString();
 
     if (!text.isEmpty()) {
-      context.addAssistantMessage(text);
+      context.addAssistantMessage(ChatMessage.assistant(text));
     }
 
     return text;
