@@ -26,18 +26,23 @@ public class ConversationService {
   }
 
   public String sendMessage(String userInput) {
-    context.append(userInput);
+    context.addUserMessage(userInput);
+    
     try {
-      String conversationHistory = context.toString();
-
-      MessageCreateParams params = MessageCreateParams.builder()
+      var paramsBuilder = MessageCreateParams.builder()
           .model(Model.CLAUDE_3_5_HAIKU_LATEST)
           .maxTokens(1024L)
-          .system("Be as brief as possible with your responses.")
-          .addUserMessage(conversationHistory)
-          .build();
+          .system("Be as brief as possible with your responses.");
 
-      Message response = client.messages().create(params);
+      for (ConversationContext.Message message : context.getHistory()) {
+        if ("user".equals(message.getRole())) {
+          paramsBuilder.addUserMessage(message.getContent());
+        } else if ("assistant".equals(message.getRole())) {
+          paramsBuilder.addAssistantMessage(message.getContent());
+        }
+      }
+
+      Message response = client.messages().create(paramsBuilder.build());
       return extractTextFromResponse(response);
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -54,7 +59,7 @@ public class ConversationService {
     String text = textContent.toString();
 
     if (!text.isEmpty()) {
-      context.append(text);
+      context.addAssistantMessage(text);
     }
 
     return text;
