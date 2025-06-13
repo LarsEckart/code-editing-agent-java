@@ -27,3 +27,9 @@ build
 
 # Ignore environment files
 .env
+
+# Ignore development server PID file
+.dev-server.pid
+
+# Ignore Claude Code local settings
+.claude/settings.local.json

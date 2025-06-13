@@ -17,6 +17,22 @@ It's implemented in java though.
 - **Run Web mode**: `./gradlew run -Dapp.mode=web`
 - **Clean**: `./gradlew clean`
 
+## Development Server
+
+For development with hot reloading, use the provided development script:
+
+- **Start dev server**: `./dev-server.sh start` (starts web mode with hot reloading)
+- **Stop dev server**: `./dev-server.sh stop`
+- **Restart dev server**: `./dev-server.sh restart`
+- **Check status**: `./dev-server.sh status`
+- **View logs**: `./dev-server.sh logs`
+
+The development server includes:
+- **Automatic restart** when Java classes change
+- **Live reload** for static resources and templates
+- **Development configuration** with disabled caching
+- **Background process management** with PID tracking
+
 ## Architecture Overview
 
 This is a Java-based conversational AI agent that communicates with the Anthropic Claude API. The application follows a hexagonal architecture with clear separation between business logic and I/O adapters.
