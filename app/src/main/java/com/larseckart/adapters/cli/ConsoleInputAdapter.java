@@ -16,9 +16,4 @@ public class ConsoleInputAdapter implements InputPort {
     return scanner.nextLine();
   }
 
-  @Override
-  public String readLine(String prompt) {
-    System.out.print(prompt);
-    return scanner.nextLine();
-  }
 }

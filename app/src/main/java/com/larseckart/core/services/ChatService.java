@@ -16,30 +16,23 @@ public class ChatService {
   }
 
   public void startChat() {
-    outputPort.println("Chat with Claude (use 'ctrl-c' to quit)");
+    outputPort.showWelcomeMessage();
 
     boolean quit = false;
-    boolean readUserInput = true;
 
     while (!quit) {
-      String userInput = "";
-      if (readUserInput) {
-        outputPort.print("\u001b[94mYou\u001b[0m: ");
-        userInput = inputPort.readLine();
-        if (userInput.isEmpty()) {
-          quit = true;
-          continue;
-        }
+      outputPort.promptForUserInput();
+      String userInput = inputPort.readLine();
+      if (userInput.isEmpty()) {
+        quit = true;
+        continue;
       }
 
       String response = conversationService.sendMessage(userInput);
 
       if (!response.isEmpty()) {
-        outputPort.print("\u001b[95mClaude\u001b[0m: ");
-        outputPort.println("\u001b[92m" + response + "\u001b[0m");
+        outputPort.displayAssistantResponse(response);
       }
-
-      readUserInput = true;
     }
   }
 }
