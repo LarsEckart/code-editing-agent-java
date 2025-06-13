@@ -6,7 +6,7 @@ public class ConsoleOutputAdapter implements OutputPort {
 
   @Override
   public void showWelcomeMessage() {
-    System.out.println("Chat with Claude (use 'ctrl-c' to quit or press Enter on empty line)");
+    System.out.println("Chat with a LLM (use 'ctrl-c' to quit or press Enter on empty line)");
   }
 
   @Override
@@ -16,7 +16,7 @@ public class ConsoleOutputAdapter implements OutputPort {
 
   @Override
   public void displayAssistantResponse(String response) {
-    System.out.print("\u001b[95mClaude\u001b[0m: ");
+    System.out.print("\u001b[95mLarsGPT\u001b[0m: ");
     System.out.println("\u001b[92m" + response + "\u001b[0m");
   }
 
