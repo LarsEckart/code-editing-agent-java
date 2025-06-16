@@ -11,7 +11,7 @@ It's implemented in java though.
 ## Build Commands
 
 - **Build**: `./gradlew build` (includes fatJar creation)
-- **Test**: `./gradlew test`
+- **Test**: `./run_tests.sh` (runs tests with formatted output)
 - **Single test**: `./gradlew test --tests "ClassName"`
 - **Run CLI mode**: `./gradlew run` (default)
 - **Run Web mode**: `./gradlew run -Dapp.mode=web`
