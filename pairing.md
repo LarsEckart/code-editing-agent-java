@@ -75,3 +75,49 @@ The implementation follows the existing hexagonal architecture:
 - Tool execution happens synchronously during conversation flow
 - Tool results are sent back to Claude for contextualized final responses
 - Error handling wraps tool execution failures in RuntimeExceptions
+
+## Changes
+Here's what we implemented:
+
+Before - Simple Chat
+
+┌─────────┐        ┌───────────────────┐        ┌──────────┐
+│  User   │───────▶│ConversationService│───────▶│  Claude  │
+│         │        │                   │        │   API    │
+│         │◀───────│                   │◀───────│          │
+└─────────┘        └───────────────────┘        └──────────┘
+"Hi"               Just forwards                "Hello"
+
+After - Chat with Tools
+
+┌─────────┐        ┌───────────────────┐        ┌──────────┐
+│  User   │───────▶│ConversationService│───────▶│  Claude  │
+│         │        │   + ToolRegistry  │        │   API    │
+│         │◀───────│                   │◀───────│          │
+└─────────┘        └───────────────────┘        └──────────┘
+"Read            │                   │            "I'll read
+file.txt"        │                   │            file.txt"
+│                   │               │
+│    ┌──────────┐   │               │
+│───▶│   Tool   │◀──┘               │
+│    │(ReadFile)│ (executes tool)   │
+│◀───│          │                   │
+│    └──────────┘                   │
+│                                   │
+│    "file contents"                │
+└──────────────────────────────────▶│
+│
+◀───────────────────────────────────┘
+"Here's what's in file.txt..."
+
+What we did:
+
+1. Added Tool Support: ConversationService now accepts an optional ToolRegistry that holds available tools
+2. Tool Discovery: When sending messages to Claude, we include tool definitions so Claude knows what tools it can use
+3. Tool Execution Flow:
+   - User asks something that needs a tool
+   - Claude responds with a tool request
+   - We detect it, execute the tool, get results
+   - Send results back to Claude for a final human-friendly response
+
+The key change: Claude can now do things (like read files) instead of just talk about things.
