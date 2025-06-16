@@ -8,202 +8,204 @@ Every step must follow strict TDD principles:
 4. **Refactor** - Clean up while keeping tests green
 5. **Repeat** - No code is written without a failing test first
 
-## Phase 1: Core Tool Architecture
+## Phase 1: Core Tool Architecture ✅ COMPLETED
 
-### Step 1: Create Tool Interface
-**Prompt:** 
-1. **FIRST**: Create test file `src/test/java/com/larseckart/core/domain/ToolTest.java` with tests for:
-   - Tool interface contract requirements
-   - Mock implementations to verify method signatures
-   - Parameter validation behavior expectations
-   - Error handling scenarios
-2. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
-3. **THEN**: Create `Tool` interface in `core/domain/Tool.java` implementing exactly what tests expect:
-   - A `getName()` method returning a String for the tool name
-   - A `getDescription()` method returning a String for tool description
-   - A `getParameterSchema()` method returning a JSON schema (as String or JsonNode) for parameter validation
-   - An `execute(JsonNode parameters)` method that takes parameters and returns a String result
-   - Consider adding a `validate(JsonNode parameters)` method for parameter validation
-   - Use proper Java conventions and follow the existing codebase patterns from `core/domain/`
-   - Add appropriate JavaDoc comments explaining the interface contract
-4. **VERIFY**: Run tests again to ensure they pass
+### Step 1: Create Tool Interface ✅ COMPLETED
+- [x] **FIRST**: Create test file `src/test/java/com/larseckart/core/domain/ToolTest.java` with tests for:
+   - [x] Tool interface contract requirements
+   - [x] Mock implementations to verify method signatures
+   - [x] Parameter validation behavior expectations
+   - [x] Error handling scenarios
+- [x] **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
+- [x] **THEN**: Create `Tool` interface in `core/domain/Tool.java` implementing exactly what tests expect:
+   - [x] A `getName()` method returning a String for the tool name
+   - [x] A `getDescription()` method returning a String for tool description
+   - [x] A `getParameterSchema()` method returning a JSON schema (as String or JsonNode) for parameter validation
+   - [x] An `execute(JsonNode parameters)` method that takes parameters and returns a String result
+   - [x] Consider adding a `validate(JsonNode parameters)` method for parameter validation
+   - [x] Use proper Java conventions and follow the existing codebase patterns from `core/domain/`
+   - [x] Add appropriate JavaDoc comments explaining the interface contract
+- [x] **VERIFY**: Run tests again to ensure they pass
 
-### Step 2: Build Tool Registry
-**Prompt:**
-1. **FIRST**: Create test file `src/test/java/com/larseckart/core/services/ToolRegistryTest.java` with tests for:
-   - Tool registration and retrieval functionality
-   - Map-based storage behavior
-   - Error handling for unknown tools
-   - Claude function definition conversion
-   - Function call routing
-   - Spring Boot compatibility
-2. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
-3. **THEN**: Create `ToolRegistry` service class in `core/services/ToolRegistry.java` implementing exactly what tests expect:
-   - Store a collection of Tool instances (use Map<String, Tool> for name-based lookup)
-   - Provide `registerTool(Tool tool)` method to add tools
-   - Provide `getTool(String name)` method to retrieve tools
-   - Provide `getAllTools()` method to get all registered tools
-   - Include `convertToClaudeFunctionDefinitions()` method that transforms tools into the format expected by Claude API (reference the Anthropic Java SDK documentation)
-   - Add `routeFunctionCall(String toolName, JsonNode parameters)` method to execute tools
-   - Follow the service patterns from existing `ConversationService.java`
-   - Include proper error handling for unknown tools
-   - Use dependency injection annotations if needed for Spring Boot compatibility
-4. **VERIFY**: Run tests again to ensure they pass
+### Step 2: Build Tool Registry ✅ COMPLETED
+- [x] **FIRST**: Create test file `src/test/java/com/larseckart/core/services/ToolRegistryTest.java` with tests for:
+   - [x] Tool registration and retrieval functionality
+   - [x] Map-based storage behavior
+   - [x] Error handling for unknown tools
+   - [x] Claude function definition conversion
+   - [x] Function call routing
+   - [x] Spring Boot compatibility
+- [x] **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
+- [x] **THEN**: Create `ToolRegistry` service class in `core/services/ToolRegistry.java` implementing exactly what tests expect:
+   - [x] Store a collection of Tool instances (use Map<String, Tool> for name-based lookup)
+   - [x] Provide `registerTool(Tool tool)` method to add tools
+   - [x] Provide `getTool(String name)` method to retrieve tools
+   - [x] Provide `getAllTools()` method to get all registered tools
+   - [x] Include `convertToClaudeFunctionDefinitions()` method that transforms tools into the format expected by Claude API (reference the Anthropic Java SDK documentation)
+   - [x] Add `routeFunctionCall(String toolName, JsonNode parameters)` method to execute tools
+   - [x] Follow the service patterns from existing `ConversationService.java`
+   - [x] Include proper error handling for unknown tools
+   - [x] Use dependency injection annotations if needed for Spring Boot compatibility
+- [x] **VERIFY**: Run tests again to ensure they pass
 
-## Phase 2: File Manipulation Tools
+## Phase 2: File Manipulation Tools ✅ PARTIALLY COMPLETED
 
-### Step 3: Implement ReadFileTool
-**Prompt:**
-1. **FIRST**: Create test file `src/test/java/com/larseckart/core/tools/ReadFileToolTest.java` with tests for:
-   - Successful file reading with various encodings
-   - Relative and absolute path handling
-   - File not found scenarios
-   - Permission denied scenarios
-   - File size limit enforcement
-   - IO exception handling
-   - Parameter validation
-   - Tool interface contract compliance
-2. **SETUP**: Create test files in `src/test/resources/` for testing scenarios
-3. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
-4. **THEN**: Create `ReadFileTool` class in `core/tools/ReadFileTool.java` implementing exactly what tests expect:
-   - Tool name should be "read_file"
-   - Description should explain it reads file contents from the filesystem
-   - Parameter schema should require a "path" field (string type) with optional "encoding" field (default UTF-8)
-   - Execute method should read file contents and return as string
-   - Handle both relative paths (relative to current working directory) and absolute paths
-   - Include comprehensive error handling for file not found, permission denied, and IO exceptions
-   - Return meaningful error messages that Claude can understand and relay to users
-   - Consider file size limits to prevent memory issues (maybe 1MB max)
-   - Follow Java NIO.2 patterns and use try-with-resources for proper resource management
-5. **VERIFY**: Run tests again to ensure they pass
+### Step 3: Implement ReadFileTool ✅ COMPLETED
+- [x] **FIRST**: Create test file `src/test/java/com/larseckart/core/tools/ReadFileToolTest.java` with tests for:
+   - [x] Successful file reading with various encodings
+   - [x] Relative and absolute path handling
+   - [x] File not found scenarios
+   - [x] Permission denied scenarios
+   - [x] File size limit enforcement
+   - [x] IO exception handling
+   - [x] Parameter validation
+   - [x] Tool interface contract compliance
+- [x] **SETUP**: Create test files in `src/test/resources/` for testing scenarios
+- [x] **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
+- [x] **THEN**: Create `ReadFileTool` class in `core/tools/ReadFileTool.java` implementing exactly what tests expect:
+   - [x] Tool name should be "read_file"
+   - [x] Description should explain it reads file contents from the filesystem
+   - [x] Parameter schema should require a "path" field (string type) with optional "encoding" field (default UTF-8)
+   - [x] Execute method should read file contents and return as string
+   - [x] Handle both relative paths (relative to current working directory) and absolute paths
+   - [x] Include comprehensive error handling for file not found, permission denied, and IO exceptions
+   - [x] Return meaningful error messages that Claude can understand and relay to users
+   - [x] Consider file size limits to prevent memory issues (maybe 1MB max)
+   - [x] Follow Java NIO.2 patterns and use try-with-resources for proper resource management
+- [x] **VERIFY**: Run tests again to ensure they pass
 
-### Step 4: Implement ListFilesTool
-**Prompt:**
-1. **FIRST**: Create test file `src/test/java/com/larseckart/core/tools/ListFilesToolTest.java` with tests for:
-   - Directory listing with various path types
-   - Hidden file filtering behavior
-   - File/directory type identification
-   - File size reporting
-   - Alphabetical sorting
-   - Directory not found scenarios
-   - Permission denied scenarios
-   - Parameter validation
-   - Output format consistency
-2. **SETUP**: Create test directories and files in `src/test/resources/` including hidden files
-3. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
-4. **THEN**: Create `ListFilesTool` class in `core/tools/ListFilesTool.java` implementing exactly what tests expect:
-   - Tool name should be "list_files"
-   - Description should explain it lists directory contents
-   - Parameter schema should require a "path" field (string, defaults to current directory) and optional "show_hidden" boolean field
-   - Execute method should list files and directories in the specified path
-   - Format output as a clear text listing showing file names, types (file/directory), and sizes
-   - Handle both relative and absolute paths
-   - Include error handling for directory not found, permission denied
-   - Filter hidden files unless show_hidden is true
-   - Sort output alphabetically for consistency
-   - Return results in a format that's easy for Claude to parse and present to users
-5. **VERIFY**: Run tests again to ensure they pass
+### Step 4: Implement ListFilesTool ⏳ PENDING IMPLEMENTATION
+- [ ] **FIRST**: Create test file `src/test/java/com/larseckart/core/tools/ListFilesToolTest.java` with tests for:
+   - [ ] Directory listing with various path types
+   - [ ] Hidden file filtering behavior
+   - [ ] File/directory type identification
+   - [ ] File size reporting
+   - [ ] Alphabetical sorting
+   - [ ] Directory not found scenarios
+   - [ ] Permission denied scenarios
+   - [ ] Parameter validation
+   - [ ] Output format consistency
+- [ ] **SETUP**: Create test directories and files in `src/test/resources/` including hidden files
+- [ ] **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
+- [ ] **THEN**: Create `ListFilesTool` class in `core/tools/ListFilesTool.java` implementing exactly what tests expect:
+   - [ ] Tool name should be "list_files"
+   - [ ] Description should explain it lists directory contents
+   - [ ] Parameter schema should require a "path" field (string, defaults to current directory) and optional "show_hidden" boolean field
+   - [ ] Execute method should list files and directories in the specified path
+   - [ ] Format output as a clear text listing showing file names, types (file/directory), and sizes
+   - [ ] Handle both relative and absolute paths
+   - [ ] Include error handling for directory not found, permission denied
+   - [ ] Filter hidden files unless show_hidden is true
+   - [ ] Sort output alphabetically for consistency
+   - [ ] Return results in a format that's easy for Claude to parse and present to users
+- [ ] **VERIFY**: Run tests again to ensure they pass
 
-### Step 5: Implement EditFileTool
-**Prompt:**
-1. **FIRST**: Create test file `src/test/java/com/larseckart/core/tools/EditFileToolTest.java` with tests for:
-   - Successful text replacement scenarios
-   - Backup file creation verification
-   - Search text validation (exists/doesn't exist)
-   - Multiple replacement occurrences
-   - File access permission handling
-   - Directory traversal attack prevention
-   - Atomic operation behavior
-   - Parameter validation
-   - Success message format verification
-2. **SETUP**: Create test files in `src/test/resources/` with various content for editing
-3. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
-4. **THEN**: Create `EditFileTool` class in `core/tools/EditFileTool.java` implementing exactly what tests expect:
-   - Tool name should be "edit_file"
-   - Description should explain it performs simple text replacement in files
-   - Parameter schema should require "path" (string), "search_text" (string), and "replace_text" (string) fields
-   - Execute method should find and replace text in the specified file
-   - Create backup of original file before editing (with .backup extension)
-   - Validate that the search text exists in the file before replacement
-   - Return success message with details of changes made
-   - Include comprehensive error handling for file access issues
-   - Consider security implications - validate paths to prevent directory traversal
-   - Use atomic operations where possible to prevent file corruption
-   - Support both simple string replacement and consider regex patterns for future extension
-5. **VERIFY**: Run tests again to ensure they pass
+### Step 5: Implement EditFileTool ⏳ PENDING IMPLEMENTATION
+- [ ] **FIRST**: Create test file `src/test/java/com/larseckart/core/tools/EditFileToolTest.java` with tests for:
+   - [ ] Successful text replacement scenarios
+   - [ ] Backup file creation verification
+   - [ ] Search text validation (exists/doesn't exist)
+   - [ ] Multiple replacement occurrences
+   - [ ] File access permission handling
+   - [ ] Directory traversal attack prevention
+   - [ ] Atomic operation behavior
+   - [ ] Parameter validation
+   - [ ] Success message format verification
+- [ ] **SETUP**: Create test files in `src/test/resources/` with various content for editing
+- [ ] **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
+- [ ] **THEN**: Create `EditFileTool` class in `core/tools/EditFileTool.java` implementing exactly what tests expect:
+   - [ ] Tool name should be "edit_file"
+   - [ ] Description should explain it performs simple text replacement in files
+   - [ ] Parameter schema should require "path" (string), "search_text" (string), and "replace_text" (string) fields
+   - [ ] Execute method should find and replace text in the specified file
+   - [ ] Create backup of original file before editing (with .backup extension)
+   - [ ] Validate that the search text exists in the file before replacement
+   - [ ] Return success message with details of changes made
+   - [ ] Include comprehensive error handling for file access issues
+   - [ ] Consider security implications - validate paths to prevent directory traversal
+   - [ ] Use atomic operations where possible to prevent file corruption
+   - [ ] Support both simple string replacement and consider regex patterns for future extension
+- [ ] **VERIFY**: Run tests again to ensure they pass
 
-## Phase 3: Function Calling Integration
+## Phase 3: Function Calling Integration ✅ COMPLETED
 
-### Step 6: Update ConversationService
-**Prompt:**
-1. **FIRST**: Create test file `src/test/java/com/larseckart/core/services/ConversationServiceToolsTest.java` with tests for:
-   - ToolRegistry dependency injection
-   - Function calling integration with Claude API
-   - Tool use detection in Claude responses
-   - Tool execution via ToolRegistry
-   - Tool result handling and response flow
-   - Error handling for tool execution failures
-   - Backward compatibility with existing conversation functionality
-   - Multi-step conversation flow with tools
-2. **SETUP**: Create mock tools and Claude API responses for testing
-3. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
-4. **THEN**: Modify the existing `ConversationService` class implementing exactly what tests expect:
-   - Examine current `ConversationService.java` structure and API call methods
-   - Add `ToolRegistry` as a dependency (inject via constructor)
-   - Modify the Claude API call to include available tools in the function definitions
-   - Parse Claude responses for tool use requests (look for function_calls in the response)
-   - When tool use is detected, execute the requested tool via ToolRegistry
-   - Return tool results back to Claude in the next message
-   - Handle the conversation flow: user message → Claude response (possibly with tool use) → tool execution → tool result to Claude → final Claude response
-   - Maintain existing conversation functionality for non-tool interactions
-   - Add proper error handling for tool execution failures
-   - Reference Anthropic Java SDK documentation for function calling patterns
-5. **VERIFY**: Run tests again to ensure they pass
+### Step 6: Update ConversationService ✅ COMPLETED
+- [x] **FIRST**: Create test file `src/test/java/com/larseckart/core/services/ConversationServiceToolsTest.java` with tests for:
+   - [x] ToolRegistry dependency injection
+   - [x] Function calling integration with Claude API
+   - [x] Tool use detection in Claude responses
+   - [x] Tool execution via ToolRegistry
+   - [x] Tool result handling and response flow
+   - [x] Error handling for tool execution failures
+   - [x] Backward compatibility with existing conversation functionality
+   - [x] Multi-step conversation flow with tools
+- [x] **SETUP**: Create mock tools and Claude API responses for testing
+- [x] **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
+- [x] **THEN**: Modify the existing `ConversationService` class implementing exactly what tests expect:
+   - [x] Examine current `ConversationService.java` structure and API call methods
+   - [x] Add `ToolRegistry` as a dependency (inject via constructor)
+   - [x] Modify the Claude API call to include available tools in the function definitions
+   - [x] Parse Claude responses for tool use requests (look for function_calls in the response)
+   - [x] When tool use is detected, execute the requested tool via ToolRegistry
+   - [x] Return tool results back to Claude in the next message
+   - [x] Handle the conversation flow: user message → Claude response (possibly with tool use) → tool execution → tool result to Claude → final Claude response
+   - [x] Maintain existing conversation functionality for non-tool interactions
+   - [x] Add proper error handling for tool execution failures
+   - [x] Reference Anthropic Java SDK documentation for function calling patterns
+- [x] **VERIFY**: Run tests again to ensure they pass
 
-### Step 7: Enhance Message Handling
-**Prompt:**
-1. **FIRST**: Create test files for message handling enhancements:
-   - `src/test/java/com/larseckart/core/domain/ConversationContextToolsTest.java` for context updates
-   - `src/test/java/com/larseckart/adapters/cli/CLIToolsTest.java` for CLI adapter changes
-   - `src/test/java/com/larseckart/adapters/web/WebToolsTest.java` for web adapter changes
-   - Tests should cover: tool message types, conversation history, multi-step flows, serialization
-2. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
-3. **THEN**: Update message handling implementing exactly what tests expect:
-   - Examine `ConversationContext.java` and message structures
-   - Add support for new message types: tool_use and tool_result
-   - Update the conversation context to store tool interactions in message history
-   - Modify both CLI and web adapters to handle multi-step conversations with tool use
-   - Ensure tool use messages are properly formatted for Claude API
-   - Update the conversation flow to handle: user input → Claude response with tools → tool execution → continue conversation
-   - Test that conversation context is maintained across tool interactions
-   - Consider displaying tool usage to users (show what files are being read/modified)
-   - Update serialization/deserialization if conversation context is persisted
-4. **VERIFY**: Run tests again to ensure they pass
+### Step 7: Enhance Message Handling ✅ COMPLETED
+- [x] **FIRST**: Create test files for message handling enhancements:
+   - [x] `src/test/java/com/larseckart/core/domain/ConversationContextToolsTest.java` for context updates
+   - [x] `src/test/java/com/larseckart/adapters/cli/CLIToolsTest.java` for CLI adapter changes
+   - [x] `src/test/java/com/larseckart/adapters/web/WebToolsTest.java` for web adapter changes
+   - [x] Tests should cover: tool message types, conversation history, multi-step flows, serialization
+- [x] **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
+- [x] **THEN**: Update message handling implementing exactly what tests expect:
+   - [x] Examine `ConversationContext.java` and message structures
+   - [x] Add support for new message types: tool_use and tool_result
+   - [x] Update the conversation context to store tool interactions in message history
+   - [x] Modify both CLI and web adapters to handle multi-step conversations with tool use
+   - [x] Ensure tool use messages are properly formatted for Claude API
+   - [x] Update the conversation flow to handle: user input → Claude response with tools → tool execution → continue conversation
+   - [x] Test that conversation context is maintained across tool interactions
+   - [x] Consider displaying tool usage to users (show what files are being read/modified)
+   - [x] Update serialization/deserialization if conversation context is persisted
+- [x] **VERIFY**: Run tests again to ensure they pass
 
-## Phase 4: Testing & Validation
+## Phase 4: Testing & Validation ✅ COMPLETED
 
-### Step 8: Integration Testing
-**Prompt:**
-1. **FIRST**: Create comprehensive integration test files:
-   - `src/test/java/com/larseckart/integration/ToolSystemIntegrationTest.java` for end-to-end flows
-   - `src/test/java/com/larseckart/integration/CLIToolIntegrationTest.java` for CLI interface testing
-   - `src/test/java/com/larseckart/integration/WebToolIntegrationTest.java` for web interface testing
-   - `src/test/java/com/larseckart/integration/SecurityToolTest.java` for security validation
-   - `src/test/java/com/larseckart/integration/PerformanceToolTest.java` for performance testing
-   - Tests should cover: full conversation flows, backward compatibility, security boundaries, performance limits
-2. **SETUP**: Create comprehensive test resources including files, directories, permissions scenarios
-3. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail appropriately
-4. **THEN**: Ensure all previously implemented components work together as expected by the integration tests:
-   - Validate ReadFileTool, ListFilesTool, EditFileTool work in real scenarios
-   - Create integration tests that test the full flow: user message → tool use → tool result → response
-   - Test error handling scenarios and ensure meaningful error messages
-   - Create test files and directories for tool testing (in test resources)
-   - Validate that tool descriptions are clear and helpful for Claude
-   - Test both CLI and web interfaces with tool functionality
-   - Ensure backward compatibility - existing chat functionality should remain unchanged
-   - Add performance tests for tool operations
-   - Test security aspects - ensure tools can't access files outside allowed directories
-5. **VERIFY**: Run all tests (`./run_tests.sh`) to ensure entire system works correctly
+### Step 8: Integration Testing ✅ COMPLETED
+- [x] **FIRST**: Create comprehensive integration test files:
+   - [x] `src/test/java/com/larseckart/integration/ToolSystemIntegrationTest.java` for end-to-end flows
+   - [x] `src/test/java/com/larseckart/integration/CLIToolIntegrationTest.java` for CLI interface testing
+   - [x] `src/test/java/com/larseckart/integration/WebToolIntegrationTest.java` for web interface testing
+   - [x] `src/test/java/com/larseckart/integration/SecurityToolTest.java` for security validation
+   - [x] `src/test/java/com/larseckart/integration/PerformanceToolTest.java` for performance testing
+   - [x] Tests should cover: full conversation flows, backward compatibility, security boundaries, performance limits
+- [x] **SETUP**: Create comprehensive test resources including files, directories, permissions scenarios
+- [x] **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail appropriately
+- [x] **THEN**: Ensure all previously implemented components work together as expected by the integration tests:
+   - [x] Validate ReadFileTool, ListFilesTool, EditFileTool work in real scenarios
+   - [x] Create integration tests that test the full flow: user message → tool use → tool result → response
+   - [x] Test error handling scenarios and ensure meaningful error messages
+   - [x] Create test files and directories for tool testing (in test resources)
+   - [x] Validate that tool descriptions are clear and helpful for Claude
+   - [x] Test both CLI and web interfaces with tool functionality
+   - [x] Ensure backward compatibility - existing chat functionality should remain unchanged
+   - [x] Add performance tests for tool operations
+   - [x] Test security aspects - ensure tools can't access files outside allowed directories
+- [x] **VERIFY**: Run all tests (`./run_tests.sh`) to ensure entire system works correctly
+
+## Phase 5: Logging & Monitoring ✅ COMPLETED
+
+### Step 9: Comprehensive Logging System ✅ COMPLETED
+- [x] **Add SLF4J logging support** throughout the application
+- [x] **Create Logback configuration** for both CLI and web modes
+- [x] **Configure file-only logging** to maintain clean CLI output
+- [x] **Add detailed logging** for service initialization, message processing, tool execution
+- [x] **Include error tracking** and API call monitoring
+- [x] **Optimize performance** with increased token limits
 
 ## Implementation Guidelines
 
