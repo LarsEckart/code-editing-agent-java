@@ -5,16 +5,20 @@ import com.anthropic.client.okhttp.AnthropicOkHttpClient;
 import com.anthropic.models.messages.ContentBlock;
 import com.anthropic.models.messages.MessageCreateParams;
 import com.anthropic.models.messages.Model;
+import com.anthropic.models.messages.Tool;
 import com.anthropic.models.messages.ToolUnion;
 import com.anthropic.models.messages.ToolUseBlock;
+import com.anthropic.core.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larseckart.ApiKey;
 import com.larseckart.core.domain.ChatMessage;
 import com.larseckart.core.domain.ConversationContext;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ConversationService {
 
@@ -58,7 +62,27 @@ public class ConversationService {
       if (toolRegistry != null) {
         List<Map<String, Object>> toolDefinitions = toolRegistry.convertToClaudeFunctionDefinitions();
         if (!toolDefinitions.isEmpty()) {
-          paramsBuilder.tools(toolDefinitions);
+          List<ToolUnion> tools = toolDefinitions.stream()
+              .map(toolDef -> {
+                String name = (String) toolDef.get("name");
+                String description = (String) toolDef.get("description");
+                Map<String, Object> inputSchema = (Map<String, Object>) toolDef.get("input_schema");
+                
+                JsonValue schemaJson = JsonValue.from(inputSchema);
+                Tool.InputSchema schema = Tool.InputSchema.builder()
+                    .properties(schemaJson)
+                    .build();
+                
+                Tool tool = Tool.builder()
+                    .name(name)
+                    .description(description)
+                    .inputSchema(schema)
+                    .build();
+                    
+                return ToolUnion.ofTool(tool);
+              })
+              .collect(Collectors.toList());
+          paramsBuilder.tools(tools);
         }
       }
 
@@ -102,7 +126,8 @@ public class ConversationService {
         if (block.toolUse().isPresent()) {
           var toolUse = block.toolUse().get();
           String toolName = toolUse.name();
-          JsonNode parameters = toolUse.input();
+          JsonValue inputValue = toolUse._input();
+          JsonNode parameters = objectMapper.readTree(inputValue.toString());
           
           // Execute the tool
           String result = toolRegistry.routeFunctionCall(toolName, parameters);
@@ -137,7 +162,27 @@ public class ConversationService {
       if (toolRegistry != null) {
         List<Map<String, Object>> toolDefinitions = toolRegistry.convertToClaudeFunctionDefinitions();
         if (!toolDefinitions.isEmpty()) {
-          paramsBuilder.tools(toolDefinitions);
+          List<ToolUnion> tools = toolDefinitions.stream()
+              .map(toolDef -> {
+                String name = (String) toolDef.get("name");
+                String description = (String) toolDef.get("description");
+                Map<String, Object> inputSchema = (Map<String, Object>) toolDef.get("input_schema");
+                
+                JsonValue schemaJson = JsonValue.from(inputSchema);
+                Tool.InputSchema schema = Tool.InputSchema.builder()
+                    .properties(schemaJson)
+                    .build();
+                
+                Tool tool = Tool.builder()
+                    .name(name)
+                    .description(description)
+                    .inputSchema(schema)
+                    .build();
+                    
+                return ToolUnion.ofTool(tool);
+              })
+              .collect(Collectors.toList());
+          paramsBuilder.tools(tools);
         }
       }
 
