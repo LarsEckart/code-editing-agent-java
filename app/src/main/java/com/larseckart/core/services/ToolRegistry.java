@@ -1,5 +1,6 @@
 package com.larseckart.core.services;
 
+import com.anthropic.models.messages.ToolUnion;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larseckart.core.domain.Tool;

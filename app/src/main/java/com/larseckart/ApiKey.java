@@ -18,6 +18,10 @@ public class ApiKey {
     return new ApiKey(value);
   }
 
+  public static ApiKey forTesting(String value) {
+    return new ApiKey(value);
+  }
+
   public String getValue() {
     return value;
   }

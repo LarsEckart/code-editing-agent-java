@@ -17,7 +17,7 @@ Every step must follow strict TDD principles:
    - Mock implementations to verify method signatures
    - Parameter validation behavior expectations
    - Error handling scenarios
-2. **RUN TESTS**: Execute `./gradlew test --tests "*ToolTest*"` and confirm they fail
+2. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
 3. **THEN**: Create `Tool` interface in `core/domain/Tool.java` implementing exactly what tests expect:
    - A `getName()` method returning a String for the tool name
    - A `getDescription()` method returning a String for tool description
@@ -37,7 +37,7 @@ Every step must follow strict TDD principles:
    - Claude function definition conversion
    - Function call routing
    - Spring Boot compatibility
-2. **RUN TESTS**: Execute `./gradlew test --tests "*ToolRegistryTest*"` and confirm they fail
+2. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
 3. **THEN**: Create `ToolRegistry` service class in `core/services/ToolRegistry.java` implementing exactly what tests expect:
    - Store a collection of Tool instances (use Map<String, Tool> for name-based lookup)
    - Provide `registerTool(Tool tool)` method to add tools
@@ -64,7 +64,7 @@ Every step must follow strict TDD principles:
    - Parameter validation
    - Tool interface contract compliance
 2. **SETUP**: Create test files in `src/test/resources/` for testing scenarios
-3. **RUN TESTS**: Execute `./gradlew test --tests "*ReadFileToolTest*"` and confirm they fail
+3. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
 4. **THEN**: Create `ReadFileTool` class in `core/tools/ReadFileTool.java` implementing exactly what tests expect:
    - Tool name should be "read_file"
    - Description should explain it reads file contents from the filesystem
@@ -90,7 +90,7 @@ Every step must follow strict TDD principles:
    - Parameter validation
    - Output format consistency
 2. **SETUP**: Create test directories and files in `src/test/resources/` including hidden files
-3. **RUN TESTS**: Execute `./gradlew test --tests "*ListFilesToolTest*"` and confirm they fail
+3. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
 4. **THEN**: Create `ListFilesTool` class in `core/tools/ListFilesTool.java` implementing exactly what tests expect:
    - Tool name should be "list_files"
    - Description should explain it lists directory contents
@@ -117,7 +117,7 @@ Every step must follow strict TDD principles:
    - Parameter validation
    - Success message format verification
 2. **SETUP**: Create test files in `src/test/resources/` with various content for editing
-3. **RUN TESTS**: Execute `./gradlew test --tests "*EditFileToolTest*"` and confirm they fail
+3. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
 4. **THEN**: Create `EditFileTool` class in `core/tools/EditFileTool.java` implementing exactly what tests expect:
    - Tool name should be "edit_file"
    - Description should explain it performs simple text replacement in files
@@ -146,7 +146,7 @@ Every step must follow strict TDD principles:
    - Backward compatibility with existing conversation functionality
    - Multi-step conversation flow with tools
 2. **SETUP**: Create mock tools and Claude API responses for testing
-3. **RUN TESTS**: Execute `./gradlew test --tests "*ConversationServiceToolsTest*"` and confirm they fail
+3. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
 4. **THEN**: Modify the existing `ConversationService` class implementing exactly what tests expect:
    - Examine current `ConversationService.java` structure and API call methods
    - Add `ToolRegistry` as a dependency (inject via constructor)
@@ -167,7 +167,7 @@ Every step must follow strict TDD principles:
    - `src/test/java/com/larseckart/adapters/cli/CLIToolsTest.java` for CLI adapter changes
    - `src/test/java/com/larseckart/adapters/web/WebToolsTest.java` for web adapter changes
    - Tests should cover: tool message types, conversation history, multi-step flows, serialization
-2. **RUN TESTS**: Execute `./gradlew test --tests "*ToolsTest*"` and confirm they fail
+2. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
 3. **THEN**: Update message handling implementing exactly what tests expect:
    - Examine `ConversationContext.java` and message structures
    - Add support for new message types: tool_use and tool_result
@@ -192,7 +192,7 @@ Every step must follow strict TDD principles:
    - `src/test/java/com/larseckart/integration/PerformanceToolTest.java` for performance testing
    - Tests should cover: full conversation flows, backward compatibility, security boundaries, performance limits
 2. **SETUP**: Create comprehensive test resources including files, directories, permissions scenarios
-3. **RUN TESTS**: Execute `./gradlew test --tests "*Integration*"` and confirm they fail appropriately
+3. **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail appropriately
 4. **THEN**: Ensure all previously implemented components work together as expected by the integration tests:
    - Validate ReadFileTool, ListFilesTool, EditFileTool work in real scenarios
    - Create integration tests that test the full flow: user message → tool use → tool result → response
@@ -203,7 +203,7 @@ Every step must follow strict TDD principles:
    - Ensure backward compatibility - existing chat functionality should remain unchanged
    - Add performance tests for tool operations
    - Test security aspects - ensure tools can't access files outside allowed directories
-5. **VERIFY**: Run all tests (`./gradlew test`) to ensure entire system works correctly
+5. **VERIFY**: Run all tests (`./run_tests.sh`) to ensure entire system works correctly
 
 ## Implementation Guidelines
 
