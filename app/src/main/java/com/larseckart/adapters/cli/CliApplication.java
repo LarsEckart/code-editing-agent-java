@@ -6,6 +6,8 @@ import com.larseckart.core.ports.input.InputPort;
 import com.larseckart.core.ports.output.OutputPort;
 import com.larseckart.core.services.ChatService;
 import com.larseckart.core.services.ConversationService;
+import com.larseckart.core.services.ToolRegistry;
+import com.larseckart.core.tools.ReadFileTool;
 
 public class CliApplication {
 
@@ -15,7 +17,11 @@ public class CliApplication {
     
     ConversationContext context = new ConversationContext();
     ApiKey apiKey = ApiKey.fromEnvironment("code_editing_agent_api_key");
-    ConversationService conversationService = new ConversationService(context, apiKey);
+    
+    ToolRegistry toolRegistry = new ToolRegistry();
+    toolRegistry.registerTool(new ReadFileTool());
+    
+    ConversationService conversationService = new ConversationService(context, apiKey, toolRegistry);
     
     ChatService chatService = new ChatService(inputPort, outputPort, conversationService);
     chatService.startChat();

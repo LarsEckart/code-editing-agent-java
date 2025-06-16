@@ -36,6 +36,7 @@ public class ReadFileTool implements Tool {
   public String getParameterSchema() {
     return """
       {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
         "properties": {
           "path": {
@@ -44,11 +45,11 @@ public class ReadFileTool implements Tool {
           },
           "encoding": {
             "type": "string",
-            "description": "The character encoding to use (default: UTF-8)",
-            "default": "UTF-8"
+            "description": "The character encoding to use (default: UTF-8)"
           }
         },
-        "required": ["path"]
+        "required": ["path"],
+        "additionalProperties": false
       }""";
   }
 

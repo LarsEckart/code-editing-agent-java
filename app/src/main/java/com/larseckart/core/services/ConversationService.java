@@ -2,25 +2,23 @@ package com.larseckart.core.services;
 
 import com.anthropic.client.AnthropicClient;
 import com.anthropic.client.okhttp.AnthropicOkHttpClient;
+import com.anthropic.core.JsonValue;
 import com.anthropic.models.messages.ContentBlock;
 import com.anthropic.models.messages.MessageCreateParams;
 import com.anthropic.models.messages.Model;
 import com.anthropic.models.messages.Tool;
 import com.anthropic.models.messages.ToolUnion;
-import com.anthropic.models.messages.ToolUseBlock;
-import com.anthropic.core.JsonValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larseckart.ApiKey;
 import com.larseckart.core.domain.ChatMessage;
 import com.larseckart.core.domain.ConversationContext;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ConversationService {
+
 
   private final ConversationContext context;
   private final AnthropicClient client;
@@ -37,7 +35,8 @@ public class ConversationService {
         .build();
   }
 
-  public ConversationService(ConversationContext context, ApiKey apiKey, ToolRegistry toolRegistry) {
+  public ConversationService(ConversationContext context, ApiKey apiKey,
+      ToolRegistry toolRegistry) {
     this.context = context;
     this.toolRegistry = toolRegistry;
     this.objectMapper = new ObjectMapper();
@@ -67,18 +66,19 @@ public class ConversationService {
                 String name = (String) toolDef.get("name");
                 String description = (String) toolDef.get("description");
                 Map<String, Object> inputSchema = (Map<String, Object>) toolDef.get("input_schema");
-                
-                JsonValue schemaJson = JsonValue.from(inputSchema);
+
+                Map<String, Object> properties = (Map<String, Object>) inputSchema.get("properties");
+                JsonValue propertiesJson = JsonValue.from(properties);
                 Tool.InputSchema schema = Tool.InputSchema.builder()
-                    .properties(schemaJson)
+                    .properties(propertiesJson)
                     .build();
-                
+
                 Tool tool = Tool.builder()
                     .name(name)
                     .description(description)
                     .inputSchema(schema)
                     .build();
-                    
+
                 return ToolUnion.ofTool(tool);
               })
               .collect(Collectors.toList());
@@ -96,7 +96,7 @@ public class ConversationService {
       }
 
       var response = client.messages().create(paramsBuilder.build());
-      
+
       // Check if response contains tool use
       if (hasToolUse(response)) {
         return handleToolUse(response);
@@ -121,35 +121,47 @@ public class ConversationService {
     try {
       // Execute all tools in the response
       StringBuilder allResults = new StringBuilder();
-      
+
       for (ContentBlock block : response.content()) {
         if (block.toolUse().isPresent()) {
           var toolUse = block.toolUse().get();
           String toolName = toolUse.name();
           JsonValue inputValue = toolUse._input();
-          JsonNode parameters = objectMapper.readTree(inputValue.toString());
-          
+          JsonNode parameters = inputValue.accept(new JsonValue.Visitor<JsonNode>() {
+            @Override
+            public JsonNode visitObject(Map<String, ? extends JsonValue> value) {
+              return objectMapper.valueToTree(value);
+            }
+            
+            @Override
+            public JsonNode visitDefault() {
+              // Return empty object node for non-object values
+              return objectMapper.createObjectNode();
+            }
+          });
+
           // Execute the tool
           String result = toolRegistry.routeFunctionCall(toolName, parameters);
           allResults.append(result);
-          
+
           // Add tool result to conversation context
-          context.addAssistantMessage(ChatMessage.assistant("Tool " + toolName + " executed: " + result));
+          context.addAssistantMessage(
+              ChatMessage.assistant("Tool " + toolName + " executed: " + result));
         }
       }
-      
+
       // Send tool results back to Claude for final response
       return sendToolResultsToClaudeAndGetFinalResponse(response, allResults.toString());
-      
+
     } catch (Exception e) {
       throw new RuntimeException("Tool execution failed", e);
     }
   }
 
   private String sendToolResultsToClaudeAndGetFinalResponse(
-      com.anthropic.models.messages.Message toolUseResponse, 
+      com.anthropic.models.messages.Message toolUseResponse,
       String toolResults) {
-    
+
     try {
       // Create a new message with tool results
       var paramsBuilder = MessageCreateParams.builder()
@@ -167,18 +179,19 @@ public class ConversationService {
                 String name = (String) toolDef.get("name");
                 String description = (String) toolDef.get("description");
                 Map<String, Object> inputSchema = (Map<String, Object>) toolDef.get("input_schema");
-                
-                JsonValue schemaJson = JsonValue.from(inputSchema);
+
+                Map<String, Object> properties = (Map<String, Object>) inputSchema.get("properties");
+                JsonValue propertiesJson = JsonValue.from(properties);
                 Tool.InputSchema schema = Tool.InputSchema.builder()
-                    .properties(schemaJson)
+                    .properties(propertiesJson)
                     .build();
-                
+
                 Tool tool = Tool.builder()
                     .name(name)
                     .description(description)
                     .inputSchema(schema)
                     .build();
-                    
+
                 return ToolUnion.ofTool(tool);
               })
               .collect(Collectors.toList());
@@ -201,7 +214,7 @@ public class ConversationService {
 
       var finalResponse = client.messages().create(paramsBuilder.build());
       return extractTextFromResponse(finalResponse);
-      
+
     } catch (Exception e) {
       throw new RuntimeException("Failed to get final response after tool execution", e);
     }
