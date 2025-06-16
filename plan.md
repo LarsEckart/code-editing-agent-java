@@ -1,5 +1,8 @@
 # Development Plan: Adding Tool System to Java AI Agent
 
+## Debugging Guidelines
+If me or you the LLM agent seem to go down too deep in a debugging/fixing rabbit hole in our conversations, remind me to take a breath and think about the bigger picture instead of hacking away. Say: "I think I'm stuck, let's TOUCH GRASS". IMPORTANT: Don't try to fix errors by yourself more than twice in a row. Then STOP. Don't do anything else.
+
 ## Current State
 - Basic conversational AI with CLI/web interfaces
 - Uses Anthropic Claude API for chat functionality
