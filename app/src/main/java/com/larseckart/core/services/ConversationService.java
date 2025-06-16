@@ -1,5 +1,7 @@
 package com.larseckart.core.services;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import com.anthropic.client.AnthropicClient;
 import com.anthropic.client.okhttp.AnthropicOkHttpClient;
 import com.anthropic.core.JsonValue;
@@ -16,9 +18,11 @@ import com.larseckart.core.domain.ConversationContext;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
 
 public class ConversationService {
 
+  private static final Logger log = getLogger(ConversationService.class);
 
   private final ConversationContext context;
   private final AnthropicClient client;
@@ -26,6 +30,7 @@ public class ConversationService {
   private final ObjectMapper objectMapper;
 
   public ConversationService(ConversationContext context, ApiKey apiKey) {
+    log.info("Initializing ConversationService without tools");
     this.context = context;
     this.toolRegistry = null;
     this.objectMapper = new ObjectMapper();
@@ -33,10 +38,13 @@ public class ConversationService {
     this.client = AnthropicOkHttpClient.builder()
         .apiKey(apiKey.getValue())
         .build();
+    log.debug("ConversationService initialized successfully");
   }
 
   public ConversationService(ConversationContext context, ApiKey apiKey,
       ToolRegistry toolRegistry) {
+    int toolCount = toolRegistry != null ? toolRegistry.getAllTools().size() : 0;
+    log.info("Initializing ConversationService with {} tools", toolCount);
     this.context = context;
     this.toolRegistry = toolRegistry;
     this.objectMapper = new ObjectMapper();
@@ -44,15 +52,17 @@ public class ConversationService {
     this.client = AnthropicOkHttpClient.builder()
         .apiKey(apiKey.getValue())
         .build();
+    log.debug("ConversationService with tools initialized successfully");
   }
 
   public String sendMessage(String userInput) {
+    log.info("Processing user message: {}", userInput.length() > 100 ? userInput.substring(0, 100) + "..." : userInput);
     context.addUserMessage(ChatMessage.user(userInput));
 
     try {
       var paramsBuilder = MessageCreateParams.builder()
           .model(Model.CLAUDE_3_5_HAIKU_LATEST)
-          .maxTokens(1024L)
+          .maxTokens(4*1024L)
           // goals, constraints, and how to act
           .system(
               "You're from Germany, even when you reply in English, let some German words slip in. You're a huge fan of Estonia, mention or make references to Estonia whenever you can.");
@@ -67,7 +77,8 @@ public class ConversationService {
                 String description = (String) toolDef.get("description");
                 Map<String, Object> inputSchema = (Map<String, Object>) toolDef.get("input_schema");
 
-                Map<String, Object> properties = (Map<String, Object>) inputSchema.get("properties");
+                Map<String, Object> properties = (Map<String, Object>) inputSchema.get(
+                    "properties");
                 JsonValue propertiesJson = JsonValue.from(properties);
                 Tool.InputSchema schema = Tool.InputSchema.builder()
                     .properties(propertiesJson)
@@ -81,7 +92,7 @@ public class ConversationService {
 
                 return ToolUnion.ofTool(tool);
               })
-              .collect(Collectors.toList());
+              .toList();
           paramsBuilder.tools(tools);
         }
       }
@@ -95,15 +106,20 @@ public class ConversationService {
         }
       }
 
+      log.debug("Sending request to Claude API with {} history messages", context.getHistory().size());
       var response = client.messages().create(paramsBuilder.build());
+      log.debug("Received response from Claude API, checking for tool use");
 
       // Check if response contains tool use
       if (hasToolUse(response)) {
+        log.info("Response contains tool use, handling tools");
         return handleToolUse(response);
       } else {
+        log.debug("Response contains text only, extracting content");
         return extractTextFromResponse(response);
       }
     } catch (Exception e) {
+      log.error("Error processing message", e);
       throw new RuntimeException(e);
     }
   }
@@ -115,12 +131,14 @@ public class ConversationService {
 
   private String handleToolUse(com.anthropic.models.messages.Message response) {
     if (toolRegistry == null) {
+      log.error("Tool use detected but no ToolRegistry available");
       throw new RuntimeException("Tool use detected but no ToolRegistry available");
     }
 
     try {
       // Execute all tools in the response
       StringBuilder allResults = new StringBuilder();
+      log.debug("Starting tool execution for response");
 
       for (ContentBlock block : response.content()) {
         if (block.toolUse().isPresent()) {
@@ -141,7 +159,10 @@ public class ConversationService {
           });
 
           // Execute the tool
+          log.info("Executing tool: {}", toolName);
+          log.debug("Tool parameters: {}", parameters);
           String result = toolRegistry.routeFunctionCall(toolName, parameters);
+          log.debug("Tool {} executed successfully, result length: {}", toolName, result.length());
           allResults.append(result);
 
           // Add tool result to conversation context
@@ -151,9 +172,11 @@ public class ConversationService {
       }
 
       // Send tool results back to Claude for final response
+      log.debug("Sending tool results back to Claude for final response");
       return sendToolResultsToClaudeAndGetFinalResponse(response, allResults.toString());
 
     } catch (Exception e) {
+      log.error("Tool execution failed", e);
       throw new RuntimeException("Tool execution failed", e);
     }
   }

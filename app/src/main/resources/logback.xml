@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  
+  <!-- Define log file location -->
+  <property name="LOG_FILE" value="${LOG_FILE:-logs/application.log}"/>
+  <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+  
+  <!-- Console appender for CLI mode -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${LOG_PATTERN}</pattern>
+    </encoder>
+  </appender>
+  
+  <!-- Simple file appender -->
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>${LOG_FILE}</file>
+    <encoder>
+      <pattern>${LOG_PATTERN}</pattern>
+    </encoder>
+  </appender>
+  
+  <!-- Application-specific loggers -->
+  <logger name="com.larseckart" level="INFO"/>
+  <logger name="com.larseckart.core.services.ConversationService" level="DEBUG"/>
+  
+  <!-- Reduce noise from external libraries -->
+  <logger name="org.springframework" level="WARN"/>
+  <logger name="com.anthropic" level="INFO"/>
+  
+  <!-- Root logger -->
+  <root level="INFO">
+    <appender-ref ref="FILE"/>
+  </root>
+  
+</configuration>
