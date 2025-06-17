@@ -48,7 +48,7 @@ Every step must follow strict TDD principles:
    - [x] Use dependency injection annotations if needed for Spring Boot compatibility
 - [x] **VERIFY**: Run tests again to ensure they pass
 
-## Phase 2: File Manipulation Tools ✅ PARTIALLY COMPLETED
+## Phase 2: File Manipulation Tools ✅ COMPLETED
 
 ### Step 3: Implement ReadFileTool ✅ COMPLETED
 - [x] **FIRST**: Create test file `src/test/java/com/larseckart/core/tools/ReadFileToolTest.java` with tests for:
@@ -100,32 +100,32 @@ Every step must follow strict TDD principles:
    - [x] Return results in a format that's easy for Claude to parse and present to users
 - [x] **VERIFY**: Run tests again to ensure they pass
 
-### Step 5: Implement EditFileTool ⏳ PENDING IMPLEMENTATION
-- [ ] **FIRST**: Create test file `src/test/java/com/larseckart/core/tools/EditFileToolTest.java` with tests for:
-   - [ ] Successful text replacement scenarios
-   - [ ] Backup file creation verification
-   - [ ] Search text validation (exists/doesn't exist)
-   - [ ] Multiple replacement occurrences
-   - [ ] File access permission handling
-   - [ ] Directory traversal attack prevention
-   - [ ] Atomic operation behavior
-   - [ ] Parameter validation
-   - [ ] Success message format verification
-- [ ] **SETUP**: Create test files in `src/test/resources/` with various content for editing
-- [ ] **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
-- [ ] **THEN**: Create `EditFileTool` class in `core/tools/EditFileTool.java` implementing exactly what tests expect:
-   - [ ] Tool name should be "edit_file"
-   - [ ] Description should explain it performs simple text replacement in files
-   - [ ] Parameter schema should require "path" (string), "search_text" (string), and "replace_text" (string) fields
-   - [ ] Execute method should find and replace text in the specified file
-   - [ ] Create backup of original file before editing (with .backup extension)
-   - [ ] Validate that the search text exists in the file before replacement
-   - [ ] Return success message with details of changes made
-   - [ ] Include comprehensive error handling for file access issues
-   - [ ] Consider security implications - validate paths to prevent directory traversal
-   - [ ] Use atomic operations where possible to prevent file corruption
-   - [ ] Support both simple string replacement and consider regex patterns for future extension
-- [ ] **VERIFY**: Run tests again to ensure they pass
+### Step 5: Implement EditFileTool ✅ COMPLETED
+- [x] **FIRST**: Create test file `src/test/java/com/larseckart/core/tools/EditFileToolTest.java` with tests for:
+   - [x] Successful text replacement scenarios
+   - [x] Backup file creation verification
+   - [x] Search text validation (exists/doesn't exist)
+   - [x] Multiple replacement occurrences
+   - [x] File access permission handling
+   - [x] Directory traversal attack prevention
+   - [x] Atomic operation behavior
+   - [x] Parameter validation
+   - [x] Success message format verification
+- [x] **SETUP**: Create test files in `src/test/resources/` with various content for editing
+- [x] **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
+- [x] **THEN**: Create `EditFileTool` class in `core/tools/EditFileTool.java` implementing exactly what tests expect:
+   - [x] Tool name should be "edit_file"
+   - [x] Description should explain it performs simple text replacement in files
+   - [x] Parameter schema should require "path" (string), "search_text" (string), and "replace_text" (string) fields
+   - [x] Execute method should find and replace text in the specified file
+   - [x] Create backup of original file before editing (with .backup extension)
+   - [x] Validate that the search text exists in the file before replacement
+   - [x] Return success message with details of changes made
+   - [x] Include comprehensive error handling for file access issues
+   - [x] Consider security implications - validate paths to prevent directory traversal
+   - [x] Use atomic operations where possible to prevent file corruption
+   - [x] Support both simple string replacement and consider regex patterns for future extension
+- [x] **VERIFY**: Run tests again to ensure they pass
 
 ## Phase 3: Function Calling Integration ✅ COMPLETED
 

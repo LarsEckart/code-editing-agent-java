@@ -6,6 +6,7 @@ import com.larseckart.core.services.ConversationService;
 import com.larseckart.core.services.ToolRegistry;
 import com.larseckart.core.tools.ReadFileTool;
 import com.larseckart.core.tools.ListFilesTool;
+import com.larseckart.core.tools.EditFileTool;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +33,7 @@ public class WebApplication {
     ToolRegistry registry = new ToolRegistry();
     registry.registerTool(new ReadFileTool());
     registry.registerTool(new ListFilesTool());
+    registry.registerTool(new EditFileTool());
     return registry;
   }
 

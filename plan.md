@@ -22,7 +22,7 @@ If me or you the LLM agent seem to go down too deep in a debugging/fixing rabbit
    - ✅ Claude function definition conversion
    - ✅ Function call routing to appropriate tools
 
-### Phase 2: File Manipulation Tools ✅ PARTIALLY COMPLETED
+### Phase 2: File Manipulation Tools ✅ COMPLETED
 3. ✅ **Implement ReadFileTool** (`core/tools/ReadFileTool.java`)
    - ✅ File reading with comprehensive error handling
    - ✅ Support for relative/absolute paths, multiple encodings
@@ -35,9 +35,13 @@ If me or you the LLM agent seem to go down too deep in a debugging/fixing rabbit
    - ✅ Alphabetical sorting for consistent output
    - ✅ Comprehensive error handling for permissions and missing directories
 
-5. ⏳ **Implement EditFileTool** (NOT YET IMPLEMENTED)
-   - Simple text replacement editing
-   - Backup and validation
+5. ✅ **Implement EditFileTool** (`core/tools/EditFileTool.java`)
+   - ✅ Simple text replacement editing with occurrence counting
+   - ✅ Automatic backup file creation (.backup extension)
+   - ✅ Search text validation before replacement
+   - ✅ Comprehensive error handling and security checks
+   - ✅ Directory traversal attack prevention
+   - ✅ Integration with CLI and web applications
 
 ### Phase 3: Function Calling Integration ✅ COMPLETED
 6. ✅ **Update ConversationService**
@@ -69,18 +73,18 @@ If me or you the LLM agent seem to go down too deep in a debugging/fixing rabbit
 
 ## Success Criteria Status
 - ✅ Agent can read files via natural language commands (ReadFileTool working)
-- ⏳ Agent can list and edit files (ListFilesTool, EditFileTool pending)
+- ✅ Agent can list and edit files (ListFilesTool and EditFileTool fully implemented)
 - ✅ Conversation maintains context across tool interactions
 - ✅ Error handling provides meaningful feedback
 - ✅ Tools integrate seamlessly with CLI interface
 - ✅ Comprehensive logging for debugging and monitoring
 
 ## Next Steps (Future Development)
-1. **Implement ListFilesTool** for directory browsing
-2. **Implement EditFileTool** for file modification capabilities
-3. **Add more advanced tools** (search, execute commands, etc.)
-4. **Enhance security** with path validation and access controls
-5. **Optimize performance** for large file operations
+1. **Add more advanced tools** (search, execute commands, etc.)
+2. **Enhance security** with additional path validation and access controls
+3. **Optimize performance** for large file operations
+4. **Implement regex support** in EditFileTool for advanced text replacement
+5. **Add file creation and deletion tools**
 
 ## Technical Implementation Notes
 - ✅ Hexagonal architecture patterns maintained
