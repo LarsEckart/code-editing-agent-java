@@ -1,5 +1,7 @@
 package com.larseckart.core.tools;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larseckart.core.domain.Tool;
 
@@ -10,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.slf4j.Logger;
 
 /**
  * A tool that reads file contents from the filesystem.
@@ -17,6 +20,8 @@ import java.nio.file.Paths;
  * proper error handling and file size limits.
  */
 public class ReadFileTool implements Tool {
+
+  private static final Logger log = getLogger(ReadFileTool.class);
 
   private static final long MAX_FILE_SIZE = 1024 * 1024; // 1MB limit
   private static final String DEFAULT_ENCODING = "UTF-8";
@@ -55,6 +60,7 @@ public class ReadFileTool implements Tool {
 
   @Override
   public String execute(JsonNode parameters) {
+    log.info("Executing ReadFileTool with parameters: {}", parameters);
     if (parameters == null) {
       throw new IllegalArgumentException("Parameters cannot be null");
     }

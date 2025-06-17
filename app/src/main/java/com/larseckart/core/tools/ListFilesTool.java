@@ -1,5 +1,7 @@
 package com.larseckart.core.tools;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larseckart.core.domain.Tool;
 
@@ -10,8 +12,11 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
 
 public class ListFilesTool implements Tool {
+
+  private static final Logger log = getLogger(ListFilesTool.class);
 
   @Override
   public String getName() {
@@ -59,6 +64,7 @@ public class ListFilesTool implements Tool {
 
   @Override
   public String execute(JsonNode parameters) {
+    log.info("Executing ListFilesTool with parameters: {}", parameters);
     try {
       String pathStr = parameters.has("path") ? parameters.get("path").asText() : ".";
       boolean showHidden = parameters.has("show_hidden") && parameters.get("show_hidden").asBoolean();

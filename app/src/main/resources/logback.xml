@@ -12,9 +12,10 @@
     </encoder>
   </appender>
   
-  <!-- Simple file appender -->
+  <!-- Simple file appender that overwrites on each session -->
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>${LOG_FILE}</file>
+    <append>false</append>
     <encoder>
       <pattern>${LOG_PATTERN}</pattern>
     </encoder>
