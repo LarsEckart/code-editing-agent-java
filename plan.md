@@ -28,9 +28,12 @@ If me or you the LLM agent seem to go down too deep in a debugging/fixing rabbit
    - ✅ Support for relative/absolute paths, multiple encodings
    - ✅ File size limits and security checks
 
-4. ⏳ **Implement ListFilesTool** (NOT YET IMPLEMENTED)
-   - List directory contents
-   - Filter and format output
+4. ✅ **Implement ListFilesTool** (`core/tools/ListFilesTool.java`)
+   - ✅ List directory contents with file/directory type indicators
+   - ✅ Show file sizes with human-readable formatting
+   - ✅ Filter hidden files (with optional show_hidden parameter)
+   - ✅ Alphabetical sorting for consistent output
+   - ✅ Comprehensive error handling for permissions and missing directories
 
 5. ⏳ **Implement EditFileTool** (NOT YET IMPLEMENTED)
    - Simple text replacement editing

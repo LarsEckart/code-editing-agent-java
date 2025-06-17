@@ -74,31 +74,31 @@ Every step must follow strict TDD principles:
    - [x] Follow Java NIO.2 patterns and use try-with-resources for proper resource management
 - [x] **VERIFY**: Run tests again to ensure they pass
 
-### Step 4: Implement ListFilesTool ⏳ PENDING IMPLEMENTATION
-- [ ] **FIRST**: Create test file `src/test/java/com/larseckart/core/tools/ListFilesToolTest.java` with tests for:
-   - [ ] Directory listing with various path types
-   - [ ] Hidden file filtering behavior
-   - [ ] File/directory type identification
-   - [ ] File size reporting
-   - [ ] Alphabetical sorting
-   - [ ] Directory not found scenarios
-   - [ ] Permission denied scenarios
-   - [ ] Parameter validation
-   - [ ] Output format consistency
-- [ ] **SETUP**: Create test directories and files in `src/test/resources/` including hidden files
-- [ ] **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
-- [ ] **THEN**: Create `ListFilesTool` class in `core/tools/ListFilesTool.java` implementing exactly what tests expect:
-   - [ ] Tool name should be "list_files"
-   - [ ] Description should explain it lists directory contents
-   - [ ] Parameter schema should require a "path" field (string, defaults to current directory) and optional "show_hidden" boolean field
-   - [ ] Execute method should list files and directories in the specified path
-   - [ ] Format output as a clear text listing showing file names, types (file/directory), and sizes
-   - [ ] Handle both relative and absolute paths
-   - [ ] Include error handling for directory not found, permission denied
-   - [ ] Filter hidden files unless show_hidden is true
-   - [ ] Sort output alphabetically for consistency
-   - [ ] Return results in a format that's easy for Claude to parse and present to users
-- [ ] **VERIFY**: Run tests again to ensure they pass
+### Step 4: Implement ListFilesTool ✅ COMPLETED
+- [x] **FIRST**: Create test file `src/test/java/com/larseckart/core/tools/ListFilesToolTest.java` with tests for:
+   - [x] Directory listing with various path types
+   - [x] Hidden file filtering behavior
+   - [x] File/directory type identification
+   - [x] File size reporting
+   - [x] Alphabetical sorting
+   - [x] Directory not found scenarios
+   - [x] Permission denied scenarios
+   - [x] Parameter validation
+   - [x] Output format consistency
+- [x] **SETUP**: Create test directories and files in `src/test/resources/` including hidden files
+- [x] **RUN TESTS**: Execute `./run_tests.sh` and confirm they fail
+- [x] **THEN**: Create `ListFilesTool` class in `core/tools/ListFilesTool.java` implementing exactly what tests expect:
+   - [x] Tool name should be "list_files"
+   - [x] Description should explain it lists directory contents
+   - [x] Parameter schema should require a "path" field (string, defaults to current directory) and optional "show_hidden" boolean field
+   - [x] Execute method should list files and directories in the specified path
+   - [x] Format output as a clear text listing showing file names, types (file/directory), and sizes
+   - [x] Handle both relative and absolute paths
+   - [x] Include error handling for directory not found, permission denied
+   - [x] Filter hidden files unless show_hidden is true
+   - [x] Sort output alphabetically for consistency
+   - [x] Return results in a format that's easy for Claude to parse and present to users
+- [x] **VERIFY**: Run tests again to ensure they pass
 
 ### Step 5: Implement EditFileTool ⏳ PENDING IMPLEMENTATION
 - [ ] **FIRST**: Create test file `src/test/java/com/larseckart/core/tools/EditFileToolTest.java` with tests for:

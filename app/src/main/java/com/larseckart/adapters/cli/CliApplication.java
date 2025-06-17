@@ -8,6 +8,7 @@ import com.larseckart.core.services.ChatService;
 import com.larseckart.core.services.ConversationService;
 import com.larseckart.core.services.ToolRegistry;
 import com.larseckart.core.tools.ReadFileTool;
+import com.larseckart.core.tools.ListFilesTool;
 
 public class CliApplication {
 
@@ -20,6 +21,7 @@ public class CliApplication {
     
     ToolRegistry toolRegistry = new ToolRegistry();
     toolRegistry.registerTool(new ReadFileTool());
+    toolRegistry.registerTool(new ListFilesTool());
     
     ConversationService conversationService = new ConversationService(context, apiKey, toolRegistry);
     

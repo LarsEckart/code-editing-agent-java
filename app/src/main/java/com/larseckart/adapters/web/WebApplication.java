@@ -3,6 +3,9 @@ package com.larseckart.adapters.web;
 import com.larseckart.ApiKey;
 import com.larseckart.core.domain.ConversationContext;
 import com.larseckart.core.services.ConversationService;
+import com.larseckart.core.services.ToolRegistry;
+import com.larseckart.core.tools.ReadFileTool;
+import com.larseckart.core.tools.ListFilesTool;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +28,15 @@ public class WebApplication {
   }
 
   @Bean
-  public ConversationService conversationService(ConversationContext context, ApiKey apiKey) {
-    return new ConversationService(context, apiKey);
+  public ToolRegistry toolRegistry() {
+    ToolRegistry registry = new ToolRegistry();
+    registry.registerTool(new ReadFileTool());
+    registry.registerTool(new ListFilesTool());
+    return registry;
+  }
+
+  @Bean
+  public ConversationService conversationService(ConversationContext context, ApiKey apiKey, ToolRegistry toolRegistry) {
+    return new ConversationService(context, apiKey, toolRegistry);
   }
 }
