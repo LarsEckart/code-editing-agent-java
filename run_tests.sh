@@ -14,33 +14,67 @@ trap 'rm -f "$output_file"' EXIT INT TERM
 ./gradlew test -i >"$output_file" 2>&1 || true
 
 # Check for compilation errors first
-compilation_errors=$(grep -E "error: cannot find symbol|[0-9]+ errors?$|Compilation failed" "$output_file" || true)
+compilation_errors=$(grep -E "error:|[0-9]+ errors?$|Compilation failed" "$output_file" || true)
 
 if [ -n "$compilation_errors" ]; then
     # If there are compilation errors, print them
     printf "\nCompilation errors found:\n"
-    # Extract and format compilation errors from the "What went wrong" section
+    
+    # Extract compilation errors with full file path and line number
     awk '
-    /^\* What went wrong:/ {in_error_section=1; next;}
-    /^\* Try:/ {in_error_section=0;}
-    in_error_section && /error: cannot find symbol/ {
-        # Print the file and error
-        print "  ⎿  Error: " $0;
-        # Read next lines for context
-        getline; if ($0 && !/^$/ && !/^\s*\^/) print "       " $0;
-        getline; if ($0 && !/^$/ && !/^\s*\^/) print "       " $0;
-    }
-    END {
-        # Print error count at the end
-        if (error_count > 0) {
-            print "  ⎿  " error_count " errors found";
+    # Match Java compilation error pattern: /path/to/file.java:line: error: message
+    /^\/.*\.java:[0-9]+: error:/ {
+        # Use regex substitution to extract parts
+        # First extract the error message (everything after ": error: ")
+        error_msg = $0;
+        sub(/^.*: error: /, "", error_msg);
+        
+        # Extract file path and line number (everything before ": error: ")
+        file_and_line = $0;
+        sub(/: error:.*$/, "", file_and_line);
+        
+        # Split by colons to get file path and line number
+        split(file_and_line, parts, ":");
+        # Last part is line number, everything else is file path
+        line_number = parts[length(parts)];
+        file_path = file_and_line;
+        sub(/:[0-9]+$/, "", file_path);
+        
+        # Get just the filename from the full path
+        split(file_path, path_parts, "/");
+        filename = path_parts[length(path_parts)];
+        
+        printf "  ⎿  %s:%s - %s\n", filename, line_number, error_msg;
+        
+        # Print the next line if it contains the problematic code
+        getline;
+        if ($0 && !/^$/ && !/^\s*\^/) {
+            gsub(/^\s+/, "      ", $0);  # Indent the code line
+            print $0;
+        }
+        
+        # Print the caret line if it exists
+        getline;
+        if ($0 && /^\s*\^/) {
+            gsub(/^\s+/, "      ", $0);  # Indent the caret line
+            print $0;
         }
     }
-    /[0-9]+ errors?$/ && !printed_count {
-        error_count = $1;
-        printed_count = 1;
+    
+    # Also capture error count
+    /[0-9]+ errors?$/ {
+        printf "  ⎿  Total: %s\n", $0;
     }
     ' "$output_file"
+    
+    # Also show the "What went wrong" section for additional context
+    printf "\nDetailed error information:\n"
+    awk '
+    /^\* What went wrong:/ { in_section = 1; print "  " $0; next; }
+    /^\* Try:/ { in_section = 0; }
+    in_section && NF > 0 { print "  " $0; }
+    ' "$output_file"
+    
     exit 1
 fi
 
