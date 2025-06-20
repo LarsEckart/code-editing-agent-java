@@ -3,6 +3,37 @@
 A Java-based conversational AI agent that communicates with Anthropic's Claude API, following Thorsten Ball's tutorial at [How to Build an Agent](https://ampcode.com/how-to-build-an-agent). 
 This application demonstrates clean architecture principles and provides both CLI and web interfaces for interacting with Claude.
 
+## AI Contributions
+
+Analyzing git commit history for AI contributions...
+### Project Statistics
+
+- **Total Commits**: 46
+- **AI-Assisted Commits**: 29 (63.04%)
+- **Total Lines Added**: 5808
+- **AI-Assisted Lines Added**: 4194 (72.21%)
+- **Total Lines Changed**: 8061
+- **AI-Assisted Lines Changed**: 5772 (71.60%)
+
+### Breakdown by AI Assistant
+
+#### Claude
+
+- **Commits**: 28 (60.87%)
+- **Lines Added**: 4153
+- **Lines Deleted**: 1574
+- **Lines Changed**: 5727 (71.05%)
+
+#### Amp
+
+- **Commits**: 1 (2.17%)
+- **Lines Added**: 41
+- **Lines Deleted**: 4
+- **Lines Changed**: 45 (0.56%)
+
+
+*Statistics are automatically updated on each commit.*
+
 ## Features
 
 - **Dual Interface Support**: Run as a command-line application or web server
@@ -42,7 +73,15 @@ cd code-editing-agent-java
 ./gradlew build
 ```
 
-### 3. Run the Application
+### 3. Install Git Hooks (Optional)
+
+To automatically update AI contribution statistics in the README:
+
+```bash
+./scripts/install-hooks.sh
+```
+
+### 4. Run the Application
 
 #### CLI Mode (Default)
 ```bash

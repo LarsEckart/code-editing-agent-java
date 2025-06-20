@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Pre-commit hook to update README with AI contribution statistics
+
+set -e
+
+echo "Running AI contribution analysis..."
+
+# Generate the AI contribution report
+ai_report=$(./analyze_ai_contributions.sh)
+
+# Create a temporary file with the updated README
+temp_file=$(mktemp)
+
+# Read the README, remove existing AI section, and insert new one before ## Features
+awk '
+BEGIN { in_ai_section = 0 }
+/^## AI Contributions/ { in_ai_section = 1; next }
+/^## [^A]/ && in_ai_section { in_ai_section = 0 }
+/^## Features/ && !in_ai_section {
+    print "## AI Contributions"
+    print ""
+    system("./analyze_ai_contributions.sh")
+    print ""
+    print "*Statistics are automatically updated on each commit.*"
+    print ""
+    print $0
+    next
+}
+!in_ai_section { print }
+' README.md > "$temp_file"
+
+# Replace the original README
+mv "$temp_file" README.md
+
+# Stage the updated README
+git add README.md
+
+echo "Updated README.md with AI contribution statistics."

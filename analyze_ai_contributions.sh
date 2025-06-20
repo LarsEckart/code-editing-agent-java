@@ -10,8 +10,6 @@ if [ "${BASH_VERSION%%.*}" -lt 4 ]; then
     exit 1
 fi
 
-echo "Analyzing git commit history for AI contributions..."
-
 # Initialize counters
 total_commits=0
 ai_commits=0
@@ -92,21 +90,21 @@ ai_commit_percentage=$(awk "BEGIN { printf \"%.2f\", ($ai_commits / $total_commi
 ai_lines_added_percentage=$(awk "BEGIN { printf \"%.2f\", ($ai_lines_added / $total_lines_added) * 100 }")
 ai_lines_changed_percentage=$(awk "BEGIN { printf \"%.2f\", ($ai_lines_added + $ai_lines_deleted) / ($total_lines_added + $total_lines_deleted) * 100 }")
 
-# Print report
-echo "===== AI Contribution Report ====="
-echo "Total commits: $total_commits"
-echo "AI-assisted commits: $ai_commits ($ai_commit_percentage%)"
+# Print report in markdown format
+echo "### Project Statistics"
 echo ""
-echo "Total lines added: $total_lines_added"
-echo "AI-assisted lines added: $ai_lines_added ($ai_lines_added_percentage%)"
-echo ""
-echo "Total lines changed (added + deleted): $((total_lines_added + total_lines_deleted))"
-echo "AI-assisted lines changed: $((ai_lines_added + ai_lines_deleted)) ($ai_lines_changed_percentage%)"
+echo "- **Total Commits**: $total_commits"
+echo "- **AI-Assisted Commits**: $ai_commits ($ai_commit_percentage%)"
+echo "- **Total Lines Added**: $total_lines_added"
+echo "- **AI-Assisted Lines Added**: $ai_lines_added ($ai_lines_added_percentage%)"
+echo "- **Total Lines Changed**: $((total_lines_added + total_lines_deleted))"
+echo "- **AI-Assisted Lines Changed**: $((ai_lines_added + ai_lines_deleted)) ($ai_lines_changed_percentage%)"
 
 # Print AI breakdown
 if [ ${#ai_commit_counts[@]} -gt 0 ]; then
     echo ""
-    echo "===== AI Breakdown ====="
+    echo "### Breakdown by AI Assistant"
+    echo ""
     for ai in "${!ai_commit_counts[@]}"; do
         ai_commits_for_this_ai=${ai_commit_counts[$ai]}
         ai_lines_added_for_this_ai=${ai_lines_added_counts[$ai]}
@@ -116,14 +114,12 @@ if [ ${#ai_commit_counts[@]} -gt 0 ]; then
         ai_commit_percentage_for_this_ai=$(awk "BEGIN { printf \"%.2f\", ($ai_commits_for_this_ai / $total_commits) * 100 }")
         ai_lines_percentage_for_this_ai=$(awk "BEGIN { printf \"%.2f\", ($ai_lines_changed_for_this_ai / ($total_lines_added + $total_lines_deleted)) * 100 }")
         
-        echo "$ai:"
-        echo "  Commits: $ai_commits_for_this_ai ($ai_commit_percentage_for_this_ai%)"
-        echo "  Lines added: $ai_lines_added_for_this_ai"
-        echo "  Lines deleted: $ai_lines_deleted_for_this_ai"
-        echo "  Lines changed: $ai_lines_changed_for_this_ai ($ai_lines_percentage_for_this_ai%)"
+        echo "#### $ai"
+        echo ""
+        echo "- **Commits**: $ai_commits_for_this_ai ($ai_commit_percentage_for_this_ai%)"
+        echo "- **Lines Added**: $ai_lines_added_for_this_ai"
+        echo "- **Lines Deleted**: $ai_lines_deleted_for_this_ai"
+        echo "- **Lines Changed**: $ai_lines_changed_for_this_ai ($ai_lines_percentage_for_this_ai%)"
         echo ""
     done
 fi
-
-
-echo "=================================="
