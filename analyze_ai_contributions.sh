@@ -35,19 +35,13 @@ while IFS= read -r commit_hash; do
     ai_name=""
     
     if echo "$commit_message" | grep -iE 'Co-authored-by:.*Claude' > /dev/null; then
-        ai_name="Claude"
+        ai_name="Claude Code"
         is_ai_commit=1
     elif echo "$commit_message" | grep -iE 'Co-authored-by:.*Copilot' > /dev/null; then
         ai_name="GitHub Copilot"
         is_ai_commit=1
     elif echo "$commit_message" | grep -iE 'Co-authored-by:.*ChatGPT' > /dev/null; then
         ai_name="ChatGPT"
-        is_ai_commit=1
-    elif echo "$commit_message" | grep -iE 'Co-authored-by:.*OpenAI' > /dev/null; then
-        ai_name="OpenAI"
-        is_ai_commit=1
-    elif echo "$commit_message" | grep -iE 'Co-authored-by:.*Anthropic' > /dev/null; then
-        ai_name="Anthropic"
         is_ai_commit=1
     elif echo "$commit_message" | grep -iE 'Co-authored-by:.*Amp' > /dev/null; then
         ai_name="Amp"
@@ -105,21 +99,25 @@ if [ ${#ai_commit_counts[@]} -gt 0 ]; then
     echo ""
     echo "### Breakdown by AI Assistant"
     echo ""
-    for ai in "${!ai_commit_counts[@]}"; do
-        ai_commits_for_this_ai=${ai_commit_counts[$ai]}
-        ai_lines_added_for_this_ai=${ai_lines_added_counts[$ai]}
-        ai_lines_deleted_for_this_ai=${ai_lines_deleted_counts[$ai]}
-        ai_lines_changed_for_this_ai=$((ai_lines_added_for_this_ai + ai_lines_deleted_for_this_ai))
-        
-        ai_commit_percentage_for_this_ai=$(awk "BEGIN { printf \"%.2f\", ($ai_commits_for_this_ai / $total_commits) * 100 }")
-        ai_lines_percentage_for_this_ai=$(awk "BEGIN { printf \"%.2f\", ($ai_lines_changed_for_this_ai / ($total_lines_added + $total_lines_deleted)) * 100 }")
-        
-        echo "#### $ai"
-        echo ""
-        echo "- **Commits**: $ai_commits_for_this_ai ($ai_commit_percentage_for_this_ai%)"
-        echo "- **Lines Added**: $ai_lines_added_for_this_ai"
-        echo "- **Lines Deleted**: $ai_lines_deleted_for_this_ai"
-        echo "- **Lines Changed**: $ai_lines_changed_for_this_ai ($ai_lines_percentage_for_this_ai%)"
-        echo ""
+    # Define the fixed order of AI assistants
+    ai_order=("Claude Code" "Amp" "GitHub Copilot" "ChatGPT" "AI (Generic)")
+    for ai in "${ai_order[@]}"; do
+        if [ -n "${ai_commit_counts[$ai]+set}" ]; then
+            ai_commits_for_this_ai=${ai_commit_counts[$ai]}
+            ai_lines_added_for_this_ai=${ai_lines_added_counts[$ai]}
+            ai_lines_deleted_for_this_ai=${ai_lines_deleted_counts[$ai]}
+            ai_lines_changed_for_this_ai=$((ai_lines_added_for_this_ai + ai_lines_deleted_for_this_ai))
+
+            ai_commit_percentage_for_this_ai=$(awk "BEGIN { printf \"%.2f\", ($ai_commits_for_this_ai / $total_commits) * 100 }")
+            ai_lines_percentage_for_this_ai=$(awk "BEGIN { printf \"%.2f\", ($ai_lines_changed_for_this_ai / ($total_lines_added + $total_lines_deleted)) * 100 }")
+
+            echo "#### $ai"
+            echo ""
+            echo "- **Commits**: $ai_commits_for_this_ai ($ai_commit_percentage_for_this_ai%)"
+            echo "- **Lines Added**: $ai_lines_added_for_this_ai"
+            echo "- **Lines Deleted**: $ai_lines_deleted_for_this_ai"
+            echo "- **Lines Changed**: $ai_lines_changed_for_this_ai ($ai_lines_percentage_for_this_ai%)"
+            echo ""
+        fi
     done
 fi
