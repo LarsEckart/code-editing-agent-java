@@ -165,7 +165,7 @@ class ReadFileToolTest {
       assertThat(result.contains("Error") || result.contains("Permission denied")).isTrue();
     } catch (UnsupportedOperationException e) {
       // Skip this test on systems that don't support POSIX permissions
-      assumeTrue(false, "POSIX permissions not supported on this system");
+      assumeTrue();
     }
   }
 
@@ -280,9 +280,7 @@ class ReadFileToolTest {
     assertThat(result).isEqualTo(content);
   }
 
-  private void assumeTrue(boolean condition, String message) {
-    if (!condition) {
-      Assumptions.assumeTrue(false, message);
-    }
+  private void assumeTrue() {
+    Assumptions.assumeTrue(false, "POSIX permissions not supported on this system");
   }
 }

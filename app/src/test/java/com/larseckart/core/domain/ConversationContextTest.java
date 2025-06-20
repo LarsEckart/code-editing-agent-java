@@ -31,7 +31,7 @@ class ConversationContextTest {
 
     List<ChatMessage> history = context.getHistory();
     assertThat(history.size()).isEqualTo(1);
-    assertThat(history.get(0)).isEqualTo(userMessage);
+    assertThat(history.getFirst()).isEqualTo(userMessage);
   }
 
   @Test
@@ -41,7 +41,7 @@ class ConversationContextTest {
 
     List<ChatMessage> history = context.getHistory();
     assertThat(history.size()).isEqualTo(1);
-    assertThat(history.get(0)).isEqualTo(assistantMessage);
+    assertThat(history.getFirst()).isEqualTo(assistantMessage);
   }
 
   @Test
@@ -71,23 +71,12 @@ class ConversationContextTest {
 
     List<ChatMessage> history = context.getHistory();
 
-    assertThatThrownBy(
-            () -> {
-              history.add(ChatMessage.assistant("Should not be able to add"));
-            })
+    assertThatThrownBy(() -> history.add(ChatMessage.assistant("Should not be able to add")))
         .isInstanceOf(UnsupportedOperationException.class);
 
-    assertThatThrownBy(
-            () -> {
-              history.remove(0);
-            })
-        .isInstanceOf(UnsupportedOperationException.class);
+    assertThatThrownBy(history::removeFirst).isInstanceOf(UnsupportedOperationException.class);
 
-    assertThatThrownBy(
-            () -> {
-              history.clear();
-            })
-        .isInstanceOf(UnsupportedOperationException.class);
+    assertThatThrownBy(history::clear).isInstanceOf(UnsupportedOperationException.class);
   }
 
   @Test
@@ -131,7 +120,12 @@ class ConversationContextTest {
     context.addUserMessage(ChatMessage.user("Thank you!"));
 
     String result = context.toString();
-    String expected = "User: What is 2+2?\n" + "Assistant: 2+2 equals 4\n" + "User: Thank you!\n";
+    String expected =
+        """
+        User: What is 2+2?
+        Assistant: 2+2 equals 4
+        User: Thank you!
+        """;
 
     assertThat(result).isEqualTo(expected);
   }
@@ -143,7 +137,12 @@ class ConversationContextTest {
     context.addUserMessage(ChatMessage.user(""));
 
     String result = context.toString();
-    String expected = "User: \n" + "Assistant: Non-empty response\n" + "User: \n";
+    String expected =
+        """
+        User:\s
+        Assistant: Non-empty response
+        User:\s
+        """;
 
     assertThat(result).isEqualTo(expected);
   }
@@ -155,7 +154,11 @@ class ConversationContextTest {
 
     String result = context.toString();
     String expected =
-        "User: Message with\nnewlines\n" + "Assistant: Message with\ttabs and \"quotes\"\n";
+        """
+            User: Message with
+            newlines
+            Assistant: Message with\ttabs and "quotes"
+            """;
 
     assertThat(result).isEqualTo(expected);
   }

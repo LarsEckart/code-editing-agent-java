@@ -133,7 +133,7 @@ class ListFilesToolTest {
   }
 
   @Test
-  void should_use_current_directory_when_path_not_provided() throws Exception {
+  void should_use_current_directory_when_path_not_provided() {
     ObjectNode params = objectMapper.createObjectNode();
 
     String result = tool.execute(params);
@@ -160,7 +160,7 @@ class ListFilesToolTest {
   }
 
   @Test
-  void should_return_error_for_non_existent_directory() throws Exception {
+  void should_return_error_for_non_existent_directory() {
     ObjectNode params = objectMapper.createObjectNode();
     params.put("path", "/path/that/does/not/exist");
 
@@ -204,7 +204,7 @@ class ListFilesToolTest {
 
     for (int i = 2; i < lines.length; i++) {
       if (!lines[i].isEmpty()) {
-        assertThat(lines[i]).matches(".*\\[(file|directory)\\].*");
+        assertThat(lines[i]).matches(".*\\[(file|directory)].*");
       }
     }
   }

@@ -45,7 +45,7 @@ class ToolTest {
   }
 
   @Test
-  void should_have_execute_method() throws Exception {
+  void should_have_execute_method() {
     JsonNode parameters = objectMapper.createObjectNode();
     String result = mockTool.execute(parameters);
     assertThat(result).isNotNull();
@@ -57,7 +57,7 @@ class ToolTest {
   }
 
   @Test
-  void should_have_validate_method() throws Exception {
+  void should_have_validate_method() {
     JsonNode validParameters = objectMapper.createObjectNode();
     assertThatCode(() -> mockTool.validate(validParameters)).doesNotThrowAnyException();
   }

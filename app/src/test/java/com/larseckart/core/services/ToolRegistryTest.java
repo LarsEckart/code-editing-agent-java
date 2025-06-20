@@ -119,7 +119,7 @@ class ToolRegistryTest {
     List<Map<String, Object>> functionDefs = toolRegistry.convertToClaudeFunctionDefinitions();
     assertThat(functionDefs).hasSize(1);
 
-    Map<String, Object> functionDef = functionDefs.get(0);
+    Map<String, Object> functionDef = functionDefs.getFirst();
     assertThat(functionDef.get("name")).isEqualTo("searchTool");
     assertThat(functionDef.get("description")).isEqualTo("Search for information");
 
