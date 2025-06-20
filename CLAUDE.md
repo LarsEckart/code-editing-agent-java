@@ -8,6 +8,13 @@ This is a very simple AI agent, following this tutorial: https://ampcode.com/how
 It's implemented in java though.
 
 
+## Project Structure
+
+This is a multi-module Gradle project with Kotlin DSL:
+- **Root directory**: Contains `settings.gradle.kts` and project scripts
+- **Main module**: `app/` directory contains `build.gradle.kts` and all source code
+- **Build file**: `app/build.gradle.kts` (NOT `build.gradle` at root level)
+
 ## Build Commands
 
 - **Build**: `./gradlew build` (includes fatJar creation)
