@@ -18,6 +18,7 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     
     testImplementation(libs.junit.jupiter)
+    testImplementation(libs.assertj.core)
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

@@ -1,8 +1,6 @@
 package com.larseckart.core.domain;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +21,7 @@ class ConversationContextTest {
   @Test
   void test_empty_context() {
     List<ChatMessage> history = context.getHistory();
-    assertTrue(history.isEmpty());
+    assertThat(history.isEmpty()).isTrue();
   }
 
   @Test
@@ -32,8 +30,8 @@ class ConversationContextTest {
     context.addUserMessage(userMessage);
 
     List<ChatMessage> history = context.getHistory();
-    assertEquals(1, history.size());
-    assertEquals(userMessage, history.get(0));
+    assertThat(history.size()).isEqualTo(1);
+    assertThat(history.get(0)).isEqualTo(userMessage);
   }
 
   @Test
@@ -42,8 +40,8 @@ class ConversationContextTest {
     context.addAssistantMessage(assistantMessage);
 
     List<ChatMessage> history = context.getHistory();
-    assertEquals(1, history.size());
-    assertEquals(assistantMessage, history.get(0));
+    assertThat(history.size()).isEqualTo(1);
+    assertThat(history.get(0)).isEqualTo(assistantMessage);
   }
 
   @Test
@@ -59,11 +57,11 @@ class ConversationContextTest {
     context.addAssistantMessage(assistantMessage2);
 
     List<ChatMessage> history = context.getHistory();
-    assertEquals(4, history.size());
-    assertEquals(userMessage1, history.get(0));
-    assertEquals(assistantMessage1, history.get(1));
-    assertEquals(userMessage2, history.get(2));
-    assertEquals(assistantMessage2, history.get(3));
+    assertThat(history.size()).isEqualTo(4);
+    assertThat(history.get(0)).isEqualTo(userMessage1);
+    assertThat(history.get(1)).isEqualTo(assistantMessage1);
+    assertThat(history.get(2)).isEqualTo(userMessage2);
+    assertThat(history.get(3)).isEqualTo(assistantMessage2);
   }
 
   @Test
@@ -73,17 +71,17 @@ class ConversationContextTest {
 
     List<ChatMessage> history = context.getHistory();
     
-    assertThrows(UnsupportedOperationException.class, () -> {
+    assertThatThrownBy(() -> {
       history.add(ChatMessage.assistant("Should not be able to add"));
-    });
+    }).isInstanceOf(UnsupportedOperationException.class);
     
-    assertThrows(UnsupportedOperationException.class, () -> {
+    assertThatThrownBy(() -> {
       history.remove(0);
-    });
+    }).isInstanceOf(UnsupportedOperationException.class);
     
-    assertThrows(UnsupportedOperationException.class, () -> {
+    assertThatThrownBy(() -> {
       history.clear();
-    });
+    }).isInstanceOf(UnsupportedOperationException.class);
   }
 
   @Test
@@ -94,14 +92,14 @@ class ConversationContextTest {
     List<ChatMessage> firstCopy = context.getHistory();
     List<ChatMessage> secondCopy = context.getHistory();
 
-    assertEquals(firstCopy, secondCopy);
-    assertTrue(firstCopy != secondCopy); // Different object references
+    assertThat(firstCopy).isEqualTo(secondCopy);
+    assertThat(firstCopy != secondCopy).isTrue(); // Different object references
   }
 
   @Test
   void test_to_string_empty_context() {
     String result = context.toString();
-    assertEquals("", result);
+    assertThat(result).isEqualTo("");
   }
 
   @Test
@@ -109,7 +107,7 @@ class ConversationContextTest {
     context.addUserMessage(ChatMessage.user("Hello"));
 
     String result = context.toString();
-    assertEquals("User: Hello\n", result);
+    assertThat(result).isEqualTo("User: Hello\n");
   }
 
   @Test
@@ -117,7 +115,7 @@ class ConversationContextTest {
     context.addAssistantMessage(ChatMessage.assistant("Hi there!"));
 
     String result = context.toString();
-    assertEquals("Assistant: Hi there!\n", result);
+    assertThat(result).isEqualTo("Assistant: Hi there!\n");
   }
 
   @Test
@@ -131,7 +129,7 @@ class ConversationContextTest {
                       "Assistant: 2+2 equals 4\n" +
                       "User: Thank you!\n";
 
-    assertEquals(expected, result);
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -145,7 +143,7 @@ class ConversationContextTest {
                       "Assistant: Non-empty response\n" +
                       "User: \n";
 
-    assertEquals(expected, result);
+    assertThat(result).isEqualTo(expected);
   }
 
   @Test
@@ -157,6 +155,6 @@ class ConversationContextTest {
     String expected = "User: Message with\nnewlines\n" +
                       "Assistant: Message with\ttabs and \"quotes\"\n";
 
-    assertEquals(expected, result);
+    assertThat(result).isEqualTo(expected);
   }
 }

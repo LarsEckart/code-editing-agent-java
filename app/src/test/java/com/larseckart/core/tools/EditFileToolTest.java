@@ -13,7 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class EditFileToolTest {
@@ -32,23 +32,23 @@ class EditFileToolTest {
 
   @Test
   void should_have_correct_name() {
-    assertEquals("edit_file", editFileTool.getName());
+    assertThat(editFileTool.getName()).isEqualTo("edit_file");
   }
 
   @Test
   void should_have_descriptive_description() {
     String description = editFileTool.getDescription();
-    assertTrue(description.contains("text replacement"));
-    assertTrue(description.contains("file"));
+    assertThat(description.contains("text replacement")).isTrue();
+    assertThat(description.contains("file")).isTrue();
   }
 
   @Test
   void should_have_correct_parameter_schema() {
     String schema = editFileTool.getParameterSchema();
-    assertNotNull(schema);
-    assertTrue(schema.contains("path"));
-    assertTrue(schema.contains("search_text"));
-    assertTrue(schema.contains("replace_text"));
+    assertThat(schema).isNotNull();
+    assertThat(schema.contains("path")).isTrue();
+    assertThat(schema.contains("search_text")).isTrue();
+    assertThat(schema.contains("replace_text")).isTrue();
   }
 
   @Test
@@ -69,17 +69,17 @@ class EditFileToolTest {
     String result = editFileTool.execute(params);
 
     // Verify result message
-    assertTrue(result.contains("successfully"));
-    assertTrue(result.contains("2 occurrences"));
+    assertThat(result.contains("successfully")).isTrue();
+    assertThat(result.contains("2 occurrences")).isTrue();
 
     // Verify file content
     String newContent = Files.readString(testFile);
-    assertEquals("Hi World!\nThis is a test file.\nHi again!", newContent);
+    assertThat(newContent).isEqualTo("Hi World!\nThis is a test file.\nHi again!");
 
     // Verify backup file was created
     Path backupFile = testFile.getParent().resolve("test.txt.backup");
-    assertTrue(Files.exists(backupFile));
-    assertEquals(originalContent, Files.readString(backupFile));
+    assertThat(Files.exists(backupFile)).isTrue();
+    assertThat(Files.readString(backupFile)).isEqualTo(originalContent);
   }
 
   @Test
@@ -96,9 +96,9 @@ class EditFileToolTest {
 
     String result = editFileTool.execute(params);
 
-    assertTrue(result.contains("3 occurrences"));
+    assertThat(result.contains("3 occurrences")).isTrue();
     String newContent = Files.readString(testFile);
-    assertEquals("elephant dog elephant bird elephant mouse", newContent);
+    assertThat(newContent).isEqualTo("elephant dog elephant bird elephant mouse");
   }
 
   @Test
@@ -114,8 +114,8 @@ class EditFileToolTest {
 
     String result = editFileTool.execute(params);
 
-    assertTrue(result.contains("not found"));
-    assertTrue(result.contains("nonexistent"));
+    assertThat(result.contains("not found")).isTrue();
+    assertThat(result.contains("nonexistent")).isTrue();
   }
 
   @Test
@@ -128,7 +128,7 @@ class EditFileToolTest {
 
     String result = editFileTool.execute(params);
 
-    assertTrue(result.contains("Error") || result.contains("not found"));
+    assertThat(result.contains("Error") || result.contains("not found")).isTrue();
   }
 
   @Test
@@ -140,7 +140,7 @@ class EditFileToolTest {
     ));
 
     String result = editFileTool.execute(paramsNoPat);
-    assertTrue(result.contains("path") && result.contains("required"));
+    assertThat(result.contains("path") && result.contains("required")).isTrue();
 
     // Missing search_text parameter
     JsonNode paramsNoSearch = objectMapper.valueToTree(Map.of(
@@ -149,7 +149,7 @@ class EditFileToolTest {
     ));
 
     result = editFileTool.execute(paramsNoSearch);
-    assertTrue(result.contains("search_text") && result.contains("required"));
+    assertThat(result.contains("search_text") && result.contains("required")).isTrue();
 
     // Missing replace_text parameter
     JsonNode paramsNoReplace = objectMapper.valueToTree(Map.of(
@@ -158,7 +158,7 @@ class EditFileToolTest {
     ));
 
     result = editFileTool.execute(paramsNoReplace);
-    assertTrue(result.contains("replace_text") && result.contains("required"));
+    assertThat(result.contains("replace_text") && result.contains("required")).isTrue();
   }
 
   @Test
@@ -174,7 +174,7 @@ class EditFileToolTest {
 
     String result = editFileTool.execute(params);
 
-    assertTrue(result.contains("not found"));
+    assertThat(result.contains("not found")).isTrue();
   }
 
   @Test
@@ -191,9 +191,9 @@ class EditFileToolTest {
 
     String result = editFileTool.execute(params);
 
-    assertTrue(result.contains("successfully"));
+    assertThat(result.contains("successfully")).isTrue();
     String newContent = Files.readString(testFile);
-    assertEquals("Special chars: €200 & more!", newContent);
+    assertThat(newContent).isEqualTo("Special chars: €200 & more!");
   }
 
   @Test
@@ -206,7 +206,7 @@ class EditFileToolTest {
 
     String result = editFileTool.execute(params);
 
-    assertTrue(result.contains("Error") || result.contains("not allowed"));
+    assertThat(result.contains("Error") || result.contains("not allowed")).isTrue();
   }
 
   @Test
@@ -227,7 +227,7 @@ class EditFileToolTest {
 
     String result = editFileTool.execute(params);
 
-    assertTrue(result.contains("successfully") || result.contains("Error"));
+    assertThat(result.contains("successfully") || result.contains("Error")).isTrue();
   }
 
   @Test
@@ -244,8 +244,8 @@ class EditFileToolTest {
     editFileTool.execute(params);
 
     Path backupFile = testFile.getParent().resolve("backup-test.java.backup");
-    assertTrue(Files.exists(backupFile));
-    assertEquals("public class Test {}", Files.readString(backupFile));
+    assertThat(Files.exists(backupFile)).isTrue();
+    assertThat(Files.readString(backupFile)).isEqualTo("public class Test {}");
   }
 
   @Test
@@ -262,8 +262,8 @@ class EditFileToolTest {
 
     String result = editFileTool.execute(params);
 
-    assertTrue(result.contains("2 occurrences"));
+    assertThat(result.contains("2 occurrences")).isTrue();
     String newContent = Files.readString(testFile);
-    assertEquals("Line 1\nLine 2 modified\nLine 3\nAnother line modified", newContent);
+    assertThat(newContent).isEqualTo("Line 1\nLine 2 modified\nLine 3\nAnother line modified");
   }
 }

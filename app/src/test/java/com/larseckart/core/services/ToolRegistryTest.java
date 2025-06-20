@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ToolRegistryTest {
@@ -59,15 +59,15 @@ class ToolRegistryTest {
     toolRegistry.registerTool(mockTool);
     
     Tool retrieved = toolRegistry.getTool("testTool");
-    assertNotNull(retrieved);
-    assertEquals("testTool", retrieved.getName());
-    assertEquals("A test tool", retrieved.getDescription());
+    assertThat(retrieved).isNotNull();
+    assertThat(retrieved.getName()).isEqualTo("testTool");
+    assertThat(retrieved.getDescription()).isEqualTo("A test tool");
   }
   
   @Test
   void should_return_null_for_unknown_tool() {
     Tool retrieved = toolRegistry.getTool("unknownTool");
-    assertNull(retrieved);
+    assertThat(retrieved).isNull();
   }
   
   @Test
@@ -79,9 +79,9 @@ class ToolRegistryTest {
     toolRegistry.registerTool(tool2);
     
     Collection<Tool> allTools = toolRegistry.getAllTools();
-    assertEquals(2, allTools.size());
-    assertTrue(allTools.contains(tool1));
-    assertTrue(allTools.contains(tool2));
+    assertThat(allTools).hasSize(2);
+    assertThat(allTools).contains(tool1);
+    assertThat(allTools).contains(tool2);
   }
   
   @Test
@@ -116,22 +116,22 @@ class ToolRegistryTest {
     toolRegistry.registerTool(mockTool);
     
     List<Map<String, Object>> functionDefs = toolRegistry.convertToClaudeFunctionDefinitions();
-    assertEquals(1, functionDefs.size());
+    assertThat(functionDefs).hasSize(1);
     
     Map<String, Object> functionDef = functionDefs.get(0);
-    assertEquals("searchTool", functionDef.get("name"));
-    assertEquals("Search for information", functionDef.get("description"));
+    assertThat(functionDef.get("name")).isEqualTo("searchTool");
+    assertThat(functionDef.get("description")).isEqualTo("Search for information");
     
     @SuppressWarnings("unchecked")
     Map<String, Object> inputSchema = (Map<String, Object>) functionDef.get("input_schema");
-    assertNotNull(inputSchema);
-    assertEquals("object", inputSchema.get("type"));
+    assertThat(inputSchema).isNotNull();
+    assertThat(inputSchema.get("type")).isEqualTo("object");
     
     @SuppressWarnings("unchecked")
     Map<String, Object> properties = (Map<String, Object>) inputSchema.get("properties");
-    assertNotNull(properties);
-    assertTrue(properties.containsKey("query"));
-    assertTrue(properties.containsKey("limit"));
+    assertThat(properties).isNotNull();
+    assertThat(properties).containsKey("query");
+    assertThat(properties).containsKey("limit");
   }
   
   @Test
@@ -169,16 +169,15 @@ class ToolRegistryTest {
     params.put("expression", "2+2");
     
     String result = toolRegistry.routeFunctionCall("calculator", params);
-    assertEquals("Result: 2+2", result);
+    assertThat(result).isEqualTo("Result: 2+2");
   }
   
   @Test
   void should_throw_exception_when_routing_to_unknown_tool() {
     ObjectNode params = mapper.createObjectNode();
     
-    assertThrows(IllegalArgumentException.class, () -> {
-      toolRegistry.routeFunctionCall("unknownTool", params);
-    });
+    assertThatThrownBy(() -> toolRegistry.routeFunctionCall("unknownTool", params))
+        .isInstanceOf(IllegalArgumentException.class);
   }
   
   @Test
@@ -190,10 +189,10 @@ class ToolRegistryTest {
     toolRegistry.registerTool(tool2);
     
     Collection<Tool> allTools = toolRegistry.getAllTools();
-    assertEquals(1, allTools.size());
+    assertThat(allTools).hasSize(1);
     
     Tool retrieved = toolRegistry.getTool("sameName");
-    assertEquals("Second version", retrieved.getDescription());
+    assertThat(retrieved.getDescription()).isEqualTo("Second version");
   }
   
   private Tool createMockTool(String name, String description) {

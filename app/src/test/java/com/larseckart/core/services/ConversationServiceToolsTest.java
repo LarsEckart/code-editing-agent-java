@@ -1,9 +1,6 @@
 package com.larseckart.core.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larseckart.ApiKey;
@@ -39,7 +36,7 @@ class ConversationServiceToolsTest {
   void should_accept_tool_registry_in_constructor() {
     // Test that ConversationService now accepts ToolRegistry
     ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
-    assertNotNull(service);
+    assertThat(service).isNotNull();
 
     // Check that constructor with ToolRegistry parameter exists
     Constructor<?>[] constructors = ConversationService.class.getConstructors();
@@ -54,7 +51,7 @@ class ConversationServiceToolsTest {
       }
     }
 
-    assertTrue(hasToolRegistryConstructor, "Constructor with ToolRegistry should exist");
+    assertThat(hasToolRegistryConstructor).as("Constructor with ToolRegistry should exist").isTrue();
   }
 
   @Test
@@ -63,13 +60,13 @@ class ConversationServiceToolsTest {
 
     // Check if sendMessage method exists (it should)
     Method sendMessageMethod = service.getClass().getMethod("sendMessage", String.class);
-    assertNotNull(sendMessageMethod);
+    assertThat(sendMessageMethod).isNotNull();
 
     // Check if there's a method to handle tool use
     Method handleToolUseMethod = service.getClass().getDeclaredMethod("handleToolUse",
         com.anthropic.models.messages.Message.class);
-    assertNotNull(handleToolUseMethod);
-    assertEquals("handleToolUse", handleToolUseMethod.getName());
+    assertThat(handleToolUseMethod).isNotNull();
+    assertThat(handleToolUseMethod.getName()).isEqualTo("handleToolUse");
   }
 
   @Test
@@ -78,8 +75,8 @@ class ConversationServiceToolsTest {
 
     // Check if toolRegistry field exists
     Field toolRegistryField = service.getClass().getDeclaredField("toolRegistry");
-    assertNotNull(toolRegistryField);
-    assertEquals(ToolRegistry.class, toolRegistryField.getType());
+    assertThat(toolRegistryField).isNotNull();
+    assertThat(toolRegistryField.getType()).isEqualTo(ToolRegistry.class);
   }
 
   @Test
@@ -87,13 +84,13 @@ class ConversationServiceToolsTest {
     ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
 
     // Verify service exists and has tool support methods
-    assertNotNull(service);
+    assertThat(service).isNotNull();
 
     // Check if hasToolUse method exists
     Method hasToolUseMethod = service.getClass().getDeclaredMethod("hasToolUse",
         com.anthropic.models.messages.Message.class);
-    assertNotNull(hasToolUseMethod);
-    assertEquals("hasToolUse", hasToolUseMethod.getName());
+    assertThat(hasToolUseMethod).isNotNull();
+    assertThat(hasToolUseMethod.getName()).isEqualTo("hasToolUse");
   }
 
   @Test
@@ -102,25 +99,25 @@ class ConversationServiceToolsTest {
     ConversationService service = new ConversationService(context, apiKey);
 
     // Should be able to create service without ToolRegistry
-    assertNotNull(service);
+    assertThat(service).isNotNull();
 
     // Should have sendMessage method
     try {
       service.getClass().getMethod("sendMessage", String.class);
-      assertTrue(true); // Method exists
+      assertThat(true).isTrue(); // Method exists
     } catch (NoSuchMethodException e) {
-      fail("sendMessage method should exist");
+      throw new AssertionError("sendMessage method should exist");
     }
 
     // Context should start empty
-    assertEquals(0, context.getHistory().size());
+    assertThat(context.getHistory().size()).isEqualTo(0);
   }
 
   @Test
   void constructor_reflection_test() {
     // Test that both constructors exist
     Constructor<?>[] constructors = ConversationService.class.getConstructors();
-    assertEquals(2, constructors.length, "Should have two constructors");
+    assertThat(constructors).as("Should have two constructors").hasSize(2);
 
     boolean hasOriginalConstructor = false;
     boolean hasToolRegistryConstructor = false;
@@ -139,9 +136,9 @@ class ConversationServiceToolsTest {
       }
     }
 
-    assertTrue(hasOriginalConstructor,
-        "Original constructor should exist for backward compatibility");
-    assertTrue(hasToolRegistryConstructor, "Constructor with ToolRegistry should exist");
+    assertThat(hasOriginalConstructor)
+        .as("Original constructor should exist for backward compatibility").isTrue();
+    assertThat(hasToolRegistryConstructor).as("Constructor with ToolRegistry should exist").isTrue();
   }
 
   @Test
@@ -151,16 +148,16 @@ class ConversationServiceToolsTest {
     // Check if tool handling methods exist
     Method hasToolUseMethod = service.getClass().getDeclaredMethod("hasToolUse",
         com.anthropic.models.messages.Message.class);
-    assertNotNull(hasToolUseMethod);
+    assertThat(hasToolUseMethod).isNotNull();
 
     Method handleToolUseMethod = service.getClass().getDeclaredMethod("handleToolUse",
         com.anthropic.models.messages.Message.class);
-    assertNotNull(handleToolUseMethod);
+    assertThat(handleToolUseMethod).isNotNull();
 
     Method sendToolResultsMethod = service.getClass()
         .getDeclaredMethod("sendToolResultsToClaudeAndGetFinalResponse",
             com.anthropic.models.messages.Message.class, String.class);
-    assertNotNull(sendToolResultsMethod);
+    assertThat(sendToolResultsMethod).isNotNull();
   }
 
   @Test
@@ -169,7 +166,7 @@ class ConversationServiceToolsTest {
 
     // Check if objectMapper field exists
     Field objectMapperField = service.getClass().getDeclaredField("objectMapper");
-    assertNotNull(objectMapperField);
-    assertEquals(ObjectMapper.class, objectMapperField.getType());
+    assertThat(objectMapperField).isNotNull();
+    assertThat(objectMapperField.getType()).isEqualTo(ObjectMapper.class);
   }
 }
