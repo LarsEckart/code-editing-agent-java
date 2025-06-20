@@ -11,7 +11,8 @@ trap 'rm -f "$output_file"' EXIT INT TERM
 
 # Run Gradle tests with info-level output, redirect all output (stdout and stderr) to the temp file
 # The '|| true' ensures this script continues even if tests fail
-./gradlew test -i >"$output_file" 2>&1 || true
+# --no-build-cache forces tests to run even if results are cached, but allows incremental compilation
+./gradlew test --no-build-cache -i >"$output_file" 2>&1 || true
 
 # Check for compilation errors first
 compilation_errors=$(grep -E "error:|[0-9]+ errors?$|Compilation failed" "$output_file" || true)
