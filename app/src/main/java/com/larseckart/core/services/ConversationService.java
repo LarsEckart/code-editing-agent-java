@@ -56,13 +56,14 @@ public class ConversationService {
   }
 
   public String sendMessage(String userInput) {
-    log.info("Processing user message: {}", userInput.length() > 100 ? userInput.substring(0, 100) + "..." : userInput);
+    log.info("Processing user message: {}",
+        userInput.length() > 100 ? userInput.substring(0, 100) + "..." : userInput);
     context.addUserMessage(ChatMessage.user(userInput));
 
     try {
       var paramsBuilder = MessageCreateParams.builder()
           .model(Model.CLAUDE_3_5_HAIKU_LATEST)
-          .maxTokens(4*1024L)
+          .maxTokens(4 * 1024L)
           // goals, constraints, and how to act
           .system(
               "You're from Germany, even when you reply in English, let some German words slip in. You're a huge fan of Estonia, mention or make references to Estonia whenever you can.");
@@ -106,7 +107,8 @@ public class ConversationService {
         }
       }
 
-      log.debug("Sending request to Claude API with {} history messages", context.getHistory().size());
+      log.debug("Sending request to Claude API with {} history messages",
+          context.getHistory().size());
       var response = client.messages().create(paramsBuilder.build());
       log.debug("Received response from Claude API, checking for tool use");
 
@@ -150,7 +152,7 @@ public class ConversationService {
             public JsonNode visitObject(Map<String, ? extends JsonValue> value) {
               return objectMapper.valueToTree(value);
             }
-            
+
             @Override
             public JsonNode visitDefault() {
               // Return empty object node for non-object values
@@ -203,7 +205,8 @@ public class ConversationService {
                 String description = (String) toolDef.get("description");
                 Map<String, Object> inputSchema = (Map<String, Object>) toolDef.get("input_schema");
 
-                Map<String, Object> properties = (Map<String, Object>) inputSchema.get("properties");
+                Map<String, Object> properties = (Map<String, Object>) inputSchema.get(
+                    "properties");
                 JsonValue propertiesJson = JsonValue.from(properties);
                 Tool.InputSchema schema = Tool.InputSchema.builder()
                     .properties(propertiesJson)
