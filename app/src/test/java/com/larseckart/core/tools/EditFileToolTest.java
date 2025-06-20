@@ -215,19 +215,26 @@ class EditFileToolTest {
     Path testFile = tempDir.resolve("relative.txt");
     Files.write(testFile, "Test content".getBytes());
 
-    // Change to temp directory context (simulate relative path)
-    String relativePath = "relative.txt";
-    System.setProperty("user.dir", tempDir.toString());
+    // Store original user.dir and restore it after test
+    String originalUserDir = System.getProperty("user.dir");
+    try {
+      // Change to temp directory context (simulate relative path)
+      String relativePath = "relative.txt";
+      System.setProperty("user.dir", tempDir.toString());
 
-    JsonNode params = objectMapper.valueToTree(Map.of(
-        "path", relativePath,
-        "search_text", "Test",
-        "replace_text", "Updated"
-    ));
+      JsonNode params = objectMapper.valueToTree(Map.of(
+          "path", relativePath,
+          "search_text", "Test",
+          "replace_text", "Updated"
+      ));
 
-    String result = editFileTool.execute(params);
+      String result = editFileTool.execute(params);
 
-    assertThat(result.contains("successfully") || result.contains("Error")).isTrue();
+      assertThat(result.contains("successfully") || result.contains("Error")).isTrue();
+    } finally {
+      // Always restore original user.dir to avoid affecting other tests
+      System.setProperty("user.dir", originalUserDir);
+    }
   }
 
   @Test
