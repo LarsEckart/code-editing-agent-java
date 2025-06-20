@@ -85,8 +85,7 @@ public class ReadFileTool implements Tool {
 
       // Read file content with specified encoding
       Charset charset = Charset.forName(encoding);
-      String content = Files.readString(path, charset);
-      return content;
+      return Files.readString(path, charset);
 
     } catch (NoSuchFileException e) {
       return "Error: File not found: " + e.getFile();

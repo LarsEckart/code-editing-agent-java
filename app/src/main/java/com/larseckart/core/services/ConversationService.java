@@ -149,7 +149,7 @@ public class ConversationService {
           JsonValue inputValue = toolUse._input();
           JsonNode parameters =
               inputValue.accept(
-                  new JsonValue.Visitor<JsonNode>() {
+                  new JsonValue.Visitor<>() {
                     @Override
                     public JsonNode visitObject(Map<String, ? extends JsonValue> value) {
                       return objectMapper.valueToTree(value);

@@ -1,7 +1,6 @@
 package com.larseckart.core.tools;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larseckart.core.domain.Tool;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,7 +18,6 @@ import org.slf4j.LoggerFactory;
 public class EditFileTool implements Tool {
 
   private static final Logger logger = LoggerFactory.getLogger(EditFileTool.class);
-  private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
   public String getName() {
@@ -145,7 +143,7 @@ public class EditFileTool implements Tool {
       int occurrences = content.split(searchText, -1).length - 1;
 
       // Create backup file
-      Path backupPath = Paths.get(filePath.toString() + ".backup");
+      Path backupPath = Paths.get(filePath + ".backup");
       try {
         Files.copy(filePath, backupPath, StandardCopyOption.REPLACE_EXISTING);
         logger.info("Created backup file: {}", backupPath);

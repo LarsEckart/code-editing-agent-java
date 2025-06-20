@@ -87,7 +87,7 @@ public class ListFilesTool implements Tool {
             files
                 .filter(p -> showHidden || !p.getFileName().toString().startsWith("."))
                 .sorted(Comparator.comparing(p -> p.getFileName().toString().toLowerCase()))
-                .collect(Collectors.toList());
+                .toList();
 
         if (fileList.isEmpty()) {
           result.append("(empty)");
