@@ -7,16 +7,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Set;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -77,7 +77,7 @@ class ReadFileToolTest {
     // Create test file
     Path testFile = tempDir.resolve("test.txt");
     String content = "Hello, World!";
-    Files.write(testFile, content.getBytes(StandardCharsets.UTF_8));
+    Files.writeString(testFile, content);
 
     ObjectNode params = objectMapper.createObjectNode();
     params.put("path", testFile.toAbsolutePath().toString());
@@ -94,7 +94,7 @@ class ReadFileToolTest {
     String content = "Relative path test";
 
     try {
-      Files.write(testFile, content.getBytes(StandardCharsets.UTF_8));
+      Files.writeString(testFile, content);
 
       ObjectNode params = objectMapper.createObjectNode();
       params.put("path", "test-relative.txt");
@@ -145,28 +145,24 @@ class ReadFileToolTest {
   }
 
   @Test
+  @DisabledOnOs(value = OS.WINDOWS, disabledReason = "POSIX permissions not supported on Windows")
   void should_handle_permission_denied() throws Exception {
     // This test might not work on all systems, so we'll make it conditional
     Path testFile = tempDir.resolve("no-permission.txt");
     Files.writeString(testFile, "secret content");
 
-    try {
-      // Try to remove read permissions (Unix-like systems only)
-      Set<PosixFilePermission> permissions = Files.getPosixFilePermissions(testFile);
-      permissions.remove(PosixFilePermission.OWNER_READ);
-      permissions.remove(PosixFilePermission.GROUP_READ);
-      permissions.remove(PosixFilePermission.OTHERS_READ);
-      Files.setPosixFilePermissions(testFile, permissions);
+    // Try to remove read permissions (Unix-like systems only)
+    Set<PosixFilePermission> permissions = Files.getPosixFilePermissions(testFile);
+    permissions.remove(PosixFilePermission.OWNER_READ);
+    permissions.remove(PosixFilePermission.GROUP_READ);
+    permissions.remove(PosixFilePermission.OTHERS_READ);
+    Files.setPosixFilePermissions(testFile, permissions);
 
-      ObjectNode params = objectMapper.createObjectNode();
-      params.put("path", testFile.toAbsolutePath().toString());
+    ObjectNode params = objectMapper.createObjectNode();
+    params.put("path", testFile.toAbsolutePath().toString());
 
-      String result = readFileTool.execute(params);
-      assertThat(result.contains("Error") || result.contains("Permission denied")).isTrue();
-    } catch (UnsupportedOperationException e) {
-      // Skip this test on systems that don't support POSIX permissions
-      assumeTrue();
-    }
+    String result = readFileTool.execute(params);
+    assertThat(result.contains("Error") || result.contains("Permission denied")).isTrue();
   }
 
   @Test
@@ -278,9 +274,5 @@ class ReadFileToolTest {
 
     String result = readFileTool.execute(params);
     assertThat(result).isEqualTo(content);
-  }
-
-  private void assumeTrue() {
-    Assumptions.assumeTrue(false, "POSIX permissions not supported on this system");
   }
 }
