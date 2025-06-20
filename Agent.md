@@ -1,11 +1,18 @@
 # Code Editing Agent Java
 
 ## Commands
-- **Build**: `./gradlew build` (includes fatJar)
-- **Test**: `./gradlew test`
+- **Build**: `./gradlew build` (includes fatJar creation)
+- **Test**: `./run_tests.sh` (runs tests with formatted output)
 - **Single test**: `./gradlew test --tests "ClassName"`
-- **Run**: `./gradlew run`
+- **Run CLI mode**: `./gradlew run` (default)
+- **Run Web mode**: `./gradlew run -Dapp.mode=web`
 - **Clean**: `./gradlew clean`
+
+## Development Server
+- **Start dev server**: `./dev-server.sh start` (web mode with hot reloading)
+- **Stop dev server**: `./dev-server.sh stop`
+- **Check status**: `./dev-server.sh status`
+- **View logs**: `./dev-server.sh logs`
 
 ## Code Style Guidelines
 - **Package**: Use `com.larseckart` root package
@@ -18,4 +25,34 @@
 - **Testing**: Use JUnit 5 (`@Test`, no public methods needed)
 - **Dependencies**: Add to `gradle/libs.versions.toml` first, reference in build.gradle.kts
 - **Main class**: `com.larseckart.App`
-- **Java version**: 21 (configured in toolchain)
+- **Java version**: 24 (configured in toolchain)
+
+## Testing Conventions
+- **Test classes**: End with `Test` suffix (e.g., `ReadFileToolTest`)
+- **Display names**: Use `@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)`
+- **Test methods**: Use snake_case format (e.g., `should_handle_empty_file()`)
+- **Error tests**: Use `should_throw_exception_for_*` pattern
+- **Validation tests**: Use `should_validate_required_parameters()` pattern
+- **Platform-specific**: Use `@DisabledOnOs(OS.WINDOWS)` instead of manual OS detection
+
+## Architecture
+- **Core**: Business logic in `core/` package (services, domain, ports)
+- **Adapters**: I/O implementations in `adapters/` (cli, web)
+- **Tools**: File operations in `core/tools/` (ReadFileTool, EditFileTool, ListFilesTool)
+- **Hexagonal Architecture**: Clear separation between business logic and I/O
+
+## Key Dependencies
+- **Anthropic Java SDK**: `com.anthropic:anthropic-java:2.0.0`
+- **Spring Boot**: `3.5.0` (for web mode)
+- **JUnit 5**: For testing
+- **Jackson**: For JSON handling
+
+## Environment Variables
+- **API Key**: `code_editing_agent_api_key` - Required for Claude API access
+- **App Mode**: `app.mode=web` - Optional, defaults to CLI mode
+
+## Git Commits
+- **Co-author**: Add yourself as co-author to all commits we make using:
+  ```
+  Co-authored-by: Amp <amp@sourcegraph.com>
+  ```
