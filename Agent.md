@@ -11,8 +11,11 @@
 ## Development Server
 - **Start dev server**: `./dev-server.sh start` (web mode with hot reloading)
 - **Stop dev server**: `./dev-server.sh stop`
+- **Restart dev server**: `./dev-server.sh restart` (needed for static file changes)
 - **Check status**: `./dev-server.sh status`
 - **View logs**: `./dev-server.sh logs`
+
+**Note**: Hot reloading works for Java code changes. Static files (HTML, CSS, JS) in `src/main/resources/static/` require being "built" (copied to classpath) to trigger live reload - when running from command line with Gradle, this typically requires a server restart to see changes.
 
 ## Code Style Guidelines
 - **Package**: Use `com.larseckart` root package

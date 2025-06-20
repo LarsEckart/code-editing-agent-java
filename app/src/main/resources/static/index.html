@@ -31,15 +31,25 @@
             margin-bottom: 15px;
             padding: 10px;
             border-radius: 5px;
+            display: block;
+            clear: both;
         }
         .user-message {
             background-color: #007bff;
             color: white;
-            text-align: right;
+            max-width: 70%;
+            float: right;
+            margin-left: auto;
+            margin-right: 0;
+            word-wrap: break-word;
         }
         .claude-message {
             background-color: #28a745;
             color: white;
+            max-width: 70%;
+            float: left;
+            margin-right: auto;
+            margin-left: 0;
         }
         .input-container {
             display: flex;
@@ -134,7 +144,6 @@
         });
 
         messageInput.focus();
-        addMessage('Chat with Claude (web interface)', false);
     </script>
 </body>
 </html>

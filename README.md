@@ -8,11 +8,11 @@ This application demonstrates clean architecture principles and provides both CL
 ### Project Statistics
 
 - **Total Commits**: 55
-- **AI-Assisted Commits**: 35 (63.64%)
-- **Total Lines Added**: 7240
-- **AI-Assisted Lines Added**: 5549 (76.64%)
-- **Total Lines Changed**: 10785
-- **AI-Assisted Lines Changed**: 8338 (77.31%)
+- **AI-Assisted Commits**: 36 (65.45%)
+- **Total Lines Added**: 7258
+- **AI-Assisted Lines Added**: 5588 (76.99%)
+- **Total Lines Changed**: 10821
+- **AI-Assisted Lines Changed**: 8418 (77.79%)
 
 ### Breakdown by AI Assistant
 
@@ -21,21 +21,21 @@ This application demonstrates clean architecture principles and provides both CL
 - **Commits**: 30 (54.55%)
 - **Lines Added**: 4941
 - **Lines Deleted**: 2307
-- **Lines Changed**: 7248 (67.20%)
+- **Lines Changed**: 7248 (66.98%)
 
 #### Amp
 
 - **Commits**: 4 (7.27%)
 - **Lines Added**: 576
 - **Lines Deleted**: 449
-- **Lines Changed**: 1025 (9.50%)
+- **Lines Changed**: 1025 (9.47%)
 
 #### GitHub Copilot
 
-- **Commits**: 1 (1.82%)
-- **Lines Added**: 32
-- **Lines Deleted**: 33
-- **Lines Changed**: 65 (0.60%)
+- **Commits**: 2 (3.64%)
+- **Lines Added**: 71
+- **Lines Deleted**: 74
+- **Lines Changed**: 145 (1.34%)
 
 
 *Statistics are automatically updated on each commit.*
@@ -99,11 +99,7 @@ To automatically update AI contribution statistics in the README:
 ./gradlew run -Dapp.mode=web
 ```
 
-Then open http://localhost:8080 in your browser.
-
-> **Note**: The web UI implementation is currently incomplete. 
-> While the Spring Boot dependencies and REST controller are in place, there are no Thymeleaf templates or proper web interface beyond a basic HTML file. 
-> The full web functionality was previously built and then reverted. The web mode architecture is kept as an exercise for AI-assisted development and future implementation.
+Then open http://localhost:8080 in your browser to access the chat interface.
 
 ## Development
 
@@ -159,7 +155,7 @@ This application follows hexagonal architecture principles:
 ### Adapters
 
 - **CLI Adapters**: Console-based I/O using Scanner and System.out
-- **Web Adapters**: Spring Boot REST API
+- **Web Adapters**: Spring Boot REST API with HTML chat interface
 
 ### Built-in Tools
 
@@ -215,7 +211,7 @@ Claude: [Reads and displays file contents]
 ### Web Mode
 1. Start: `./gradlew run -Dapp.mode=web`
 2. Open: http://localhost:8080
-3. Chat through the web interface (currently incomplete - see note above)
+3. Chat through the web interface
 
 ## Dependencies
 

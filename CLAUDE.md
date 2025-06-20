@@ -36,9 +36,11 @@ For development with hot reloading, use the provided development script:
 
 The development server includes:
 - **Automatic restart** when Java classes change
-- **Live reload** for static resources and templates
+- **Live reload** for static resources and templates (after build)
 - **Development configuration** with disabled caching
 - **Background process management** with PID tracking
+
+**Note**: Hot reloading works for Java code changes. Static files (HTML, CSS, JS) in `src/main/resources/static/` require being "built" (copied to classpath) to trigger live reload - when running from command line with Gradle, this typically requires a server restart to see changes.
 
 ## Architecture Overview
 
