@@ -14,6 +14,8 @@ import com.larseckart.core.tools.ReadFileTool;
 public class CliApplication {
 
   public static void main(String[] args) {
+    System.setProperty("app.mode", "cli");
+
     InputPort inputPort = new ConsoleInputAdapter();
     OutputPort outputPort = new ConsoleOutputAdapter();
 

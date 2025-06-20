@@ -1,19 +1,37 @@
 # Code Editing Agent Java
 
 ## Commands
+
+### CLI Mode
+- **Start CLI**: `./cli-app.sh` (builds and runs interactively)
+- **View CLI logs**: `tail -f logs/application-cli.log`
+
+### Web Mode
+- **Start dev server**: `./dev-server.sh start` (with hot reloading)
+- **Stop dev server**: `./dev-server.sh stop`
+- **View web logs**: `./dev-server.sh logs`
+
+### Build & Test
 - **Build**: `./gradlew build` (includes fatJar creation)
 - **Test**: `./run_tests.sh` (runs tests with formatted output)
 - **Single test**: `./gradlew test --tests "ClassName"`
-- **Run CLI mode**: `./gradlew run` (default)
-- **Run Web mode**: `./gradlew run -Dapp.mode=web`
 - **Clean**: `./gradlew clean`
 
+## Logging
+
+- **CLI logs**: `logs/application-cli.log` (separate file for CLI mode)
+- **Web logs**: `logs/application-web.log` (separate file for web mode)
+- **Log rotation**: Daily rotation with 30-day retention and 100MB size cap
+- **Clean startup**: No verbose Logback configuration messages in CLI mode
+
 ## Development Server
-- **Start dev server**: `./dev-server.sh start` (web mode with hot reloading)
-- **Stop dev server**: `./dev-server.sh stop`
-- **Restart dev server**: `./dev-server.sh restart` (needed for static file changes)
-- **Check status**: `./dev-server.sh status`
-- **View logs**: `./dev-server.sh logs`
+
+For web development with hot reloading:
+- **Start**: `./dev-server.sh start` (web mode with hot reloading)
+- **Stop**: `./dev-server.sh stop`
+- **Restart**: `./dev-server.sh restart` (needed for static file changes)
+- **Status**: `./dev-server.sh status`
+- **Logs**: `./dev-server.sh logs`
 
 **Note**: Hot reloading works for Java code changes. Static files (HTML, CSS, JS) in `src/main/resources/static/` require being "built" (copied to classpath) to trigger live reload - when running from command line with Gradle, this typically requires a server restart to see changes.
 

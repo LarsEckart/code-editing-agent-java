@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration debug="false">
   
-  <!-- Define log file location -->
-  <property name="LOG_FILE" value="${LOG_FILE:-logs/application.log}"/>
+  <!-- Disable status messages -->
+  <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+  
+  <!-- Define log file location based on application mode -->
+  <property name="APP_MODE" value="${app.mode:-cli}"/>
+  <property name="LOG_FILE" value="logs/application-${APP_MODE}.log"/>
   <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
   
   <!-- Console appender for CLI mode -->
@@ -12,10 +16,17 @@
     </encoder>
   </appender>
   
-  <!-- Simple file appender that overwrites on each session -->
-  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+  <!-- Rolling file appender to preserve log history -->
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${LOG_FILE}</file>
-    <append>false</append>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>logs/application-${APP_MODE}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <maxHistory>30</maxHistory>
+      <totalSizeCap>100MB</totalSizeCap>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>10MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
     <encoder>
       <pattern>${LOG_PATTERN}</pattern>
     </encoder>

@@ -4,7 +4,7 @@
 # Usage: ./dev-server.sh [start|stop|restart|status]
 
 PID_FILE=".dev-server.pid"
-LOG_FILE="dev-server.log"
+LOG_FILE="logs/application-web.log"
 
 start_server() {
   if [ -f "$PID_FILE" ]; then

@@ -17,28 +17,51 @@ This is a multi-module Gradle project with Kotlin DSL:
 
 ## Build Commands
 
+### CLI Mode
+- **Start CLI**: `./cli-app.sh` (builds and runs interactively)
+- **View CLI logs**: `tail -f logs/application-cli.log`
+
+### Web Mode  
+- **Start dev server**: `./dev-server.sh start` (with hot reloading)
+- **Stop dev server**: `./dev-server.sh stop`
+- **View web logs**: `./dev-server.sh logs`
+
+### Build & Test
 - **Build**: `./gradlew build` (includes fatJar creation)
 - **Test**: `./run_tests.sh` (runs tests with formatted output)
 - **Single test**: `./gradlew test --tests "ClassName"`
-- **Run CLI mode**: `./gradlew run` (default)
-- **Run Web mode**: `./gradlew run -Dapp.mode=web`
 - **Clean**: `./gradlew clean`
+
+## Logging Configuration
+
+### Separate Log Files
+- **CLI Mode**: `logs/application-cli.log`
+- **Web Mode**: `logs/application-web.log`
+- **Log Rotation**: Daily rotation with 30-day retention and 100MB total size cap
+- **Clean Output**: Logback status messages suppressed in CLI mode for clean user experience
+
+### Configuration Details
+- **Logback config**: `app/src/main/resources/logback.xml`
+- **Mode detection**: Uses `app.mode` system property (set automatically by application entry points)
+- **Pattern**: `%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n`
+- **Log levels**: INFO for application, DEBUG for ConversationService, WARN for Spring/external libs
 
 ## Development Server
 
-For development with hot reloading, use the provided development script:
+For web development with hot reloading:
 
-- **Start dev server**: `./dev-server.sh start` (starts web mode with hot reloading)
-- **Stop dev server**: `./dev-server.sh stop`
-- **Restart dev server**: `./dev-server.sh restart`
-- **Check status**: `./dev-server.sh status`
-- **View logs**: `./dev-server.sh logs`
+- **Start**: `./dev-server.sh start` (starts web mode with hot reloading)
+- **Stop**: `./dev-server.sh stop`
+- **Restart**: `./dev-server.sh restart`
+- **Status**: `./dev-server.sh status`
+- **Logs**: `./dev-server.sh logs`
 
 The development server includes:
 - **Automatic restart** when Java classes change
 - **Live reload** for static resources and templates (after build)
 - **Development configuration** with disabled caching
 - **Background process management** with PID tracking
+- **Logs to**: `logs/application-web.log`
 
 **Note**: Hot reloading works for Java code changes. Static files (HTML, CSS, JS) in `src/main/resources/static/` require being "built" (copied to classpath) to trigger live reload - when running from command line with Gradle, this typically requires a server restart to see changes.
 
@@ -68,15 +91,17 @@ The application supports two modes:
 ### Key Dependencies
 
 - **Anthropic Java SDK**: `com.anthropic:anthropic-java:2.0.0`
-- **Spring Boot**: `3.4.6` (for web mode)
-- **Java 21**: Required runtime version
+- **Spring Boot**: `3.5.0` (for web mode)
+- **Java 24**: Required runtime version
 - **JUnit 5**: For testing
 
 ### Configuration
 
-- Set `ANTHROPIC_API_KEY` environment variable for API access
+- Set `code_editing_agent_api_key` environment variable for API access
 - Main class: `com.larseckart.App`
-- Uses Claude 3.5 Haiku model by default (configurable in `Client.java:66`)
+- Uses Claude 3.5 Haiku model by default (configurable in `ConversationService.java`)
+- **CLI Mode**: Set by `CliApplication.main()` with `System.setProperty("app.mode", "cli")`
+- **Web Mode**: Set by `WebApplication.main()` with `System.setProperty("app.mode", "web")`
 
 ### Code Style
 

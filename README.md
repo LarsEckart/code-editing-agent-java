@@ -7,35 +7,35 @@ This application demonstrates clean architecture principles and provides both CL
 
 ### Project Statistics
 
-- **Total Commits**: 55
-- **AI-Assisted Commits**: 36 (65.45%)
-- **Total Lines Added**: 7258
-- **AI-Assisted Lines Added**: 5588 (76.99%)
-- **Total Lines Changed**: 10821
-- **AI-Assisted Lines Changed**: 8418 (77.79%)
+- **Total Commits**: 56
+- **AI-Assisted Commits**: 37 (66.07%)
+- **Total Lines Added**: 7290
+- **AI-Assisted Lines Added**: 5620 (77.09%)
+- **Total Lines Changed**: 10876
+- **AI-Assisted Lines Changed**: 8473 (77.91%)
 
 ### Breakdown by AI Assistant
 
 #### Claude Code
 
-- **Commits**: 30 (54.55%)
+- **Commits**: 30 (53.57%)
 - **Lines Added**: 4941
 - **Lines Deleted**: 2307
-- **Lines Changed**: 7248 (66.98%)
+- **Lines Changed**: 7248 (66.64%)
 
 #### Amp
 
-- **Commits**: 4 (7.27%)
-- **Lines Added**: 576
-- **Lines Deleted**: 449
-- **Lines Changed**: 1025 (9.47%)
+- **Commits**: 5 (8.93%)
+- **Lines Added**: 608
+- **Lines Deleted**: 472
+- **Lines Changed**: 1080 (9.93%)
 
 #### GitHub Copilot
 
-- **Commits**: 2 (3.64%)
+- **Commits**: 2 (3.57%)
 - **Lines Added**: 71
 - **Lines Deleted**: 74
-- **Lines Changed**: 145 (1.34%)
+- **Lines Changed**: 145 (1.33%)
 
 
 *Statistics are automatically updated on each commit.*
@@ -43,9 +43,11 @@ This application demonstrates clean architecture principles and provides both CL
 ## Features
 
 - **Dual Interface Support**: Run as a command-line application or web server
-- **File Operations**: Built-in tools for reading, editing, and listing files
+- **File Operations**: Built-in tools for reading, editing, and listing files (CLI mode only)
 - **Clean Architecture**: Hexagonal architecture with clear separation of concerns
 - **Hot Reloading**: Development server with automatic restart and live reload
+- **Separate Logging**: Mode-specific log files (CLI: `logs/application-cli.log`, Web: `logs/application-web.log`)
+- **Simple Launchers**: Clean scripts for both CLI (`./cli-app.sh`) and web (`./dev-server.sh`) modes
 - **Comprehensive Testing**: Full test suite with JUnit 5
 
 ## Prerequisites
@@ -91,12 +93,12 @@ To automatically update AI contribution statistics in the README:
 
 #### CLI Mode (Default)
 ```bash
-./gradlew run
+./cli-app.sh
 ```
 
 #### Web Mode
 ```bash
-./gradlew run -Dapp.mode=web
+./dev-server.sh start
 ```
 
 Then open http://localhost:8080 in your browser to access the chat interface.
@@ -136,6 +138,16 @@ For active development with hot reloading:
 
 ### Project Commands
 
+#### CLI Mode
+- **Start CLI**: `./cli-app.sh` (builds and runs interactively)
+- **View CLI logs**: `tail -f logs/application-cli.log`
+
+#### Web Mode
+- **Start dev server**: `./dev-server.sh start` (with hot reloading)
+- **Stop dev server**: `./dev-server.sh stop`
+- **View web logs**: `./dev-server.sh logs`
+
+#### Build & Test
 - **Build**: `./gradlew build` (includes fatJar creation)
 - **Test**: `./run_tests.sh` (runs tests with formatted output)
 - **Clean**: `./gradlew clean`
@@ -200,16 +212,19 @@ app/src/main/java/com/larseckart/
 
 ### CLI Mode
 ```bash
-$ ./gradlew run
-> Hello! How can I help you today?
-User: Can you read the contents of my config file?
-Claude: I can help you read a file. What's the path to your config file?
-User: ./app.properties
-Claude: [Reads and displays file contents]
+$ ./cli-app.sh
+Building application...
+Starting CLI application...
+
+Chat with a LLM (use 'ctrl-c' to quit or press Enter on empty line)
+You: Can you read the contents of my config file?
+LarsGPT: I can help you read a file. What's the path to your config file?
+You: ./app.properties
+LarsGPT: [Reads and displays file contents]
 ```
 
 ### Web Mode
-1. Start: `./gradlew run -Dapp.mode=web`
+1. Start: `./dev-server.sh start`
 2. Open: http://localhost:8080
 3. Chat through the web interface
 

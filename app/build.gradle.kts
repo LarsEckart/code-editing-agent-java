@@ -37,6 +37,7 @@ application {
 
 tasks.named<JavaExec>("run") {
     systemProperties = System.getProperties().toMap() as Map<String, Any>
+    standardInput = System.`in`
 }
 
 // Set the Main-Class attribute in the jar manifest
