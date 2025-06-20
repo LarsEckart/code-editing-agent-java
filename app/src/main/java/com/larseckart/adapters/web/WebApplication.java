@@ -29,16 +29,7 @@ public class WebApplication {
   }
 
   @Bean
-  public ToolRegistry toolRegistry() {
-    ToolRegistry registry = new ToolRegistry();
-    registry.registerTool(new ReadFileTool());
-    registry.registerTool(new ListFilesTool());
-    registry.registerTool(new EditFileTool());
-    return registry;
-  }
-
-  @Bean
-  public ConversationService conversationService(ConversationContext context, ApiKey apiKey, ToolRegistry toolRegistry) {
-    return new ConversationService(context, apiKey, toolRegistry);
+  public ConversationService conversationService(ConversationContext context, ApiKey apiKey) {
+    return new ConversationService(context, apiKey);
   }
 }
