@@ -70,18 +70,24 @@ class ConversationContextTest {
     context.addUserMessage(userMessage);
 
     List<ChatMessage> history = context.getHistory();
-    
-    assertThatThrownBy(() -> {
-      history.add(ChatMessage.assistant("Should not be able to add"));
-    }).isInstanceOf(UnsupportedOperationException.class);
-    
-    assertThatThrownBy(() -> {
-      history.remove(0);
-    }).isInstanceOf(UnsupportedOperationException.class);
-    
-    assertThatThrownBy(() -> {
-      history.clear();
-    }).isInstanceOf(UnsupportedOperationException.class);
+
+    assertThatThrownBy(
+            () -> {
+              history.add(ChatMessage.assistant("Should not be able to add"));
+            })
+        .isInstanceOf(UnsupportedOperationException.class);
+
+    assertThatThrownBy(
+            () -> {
+              history.remove(0);
+            })
+        .isInstanceOf(UnsupportedOperationException.class);
+
+    assertThatThrownBy(
+            () -> {
+              history.clear();
+            })
+        .isInstanceOf(UnsupportedOperationException.class);
   }
 
   @Test
@@ -125,9 +131,7 @@ class ConversationContextTest {
     context.addUserMessage(ChatMessage.user("Thank you!"));
 
     String result = context.toString();
-    String expected = "User: What is 2+2?\n" +
-                      "Assistant: 2+2 equals 4\n" +
-                      "User: Thank you!\n";
+    String expected = "User: What is 2+2?\n" + "Assistant: 2+2 equals 4\n" + "User: Thank you!\n";
 
     assertThat(result).isEqualTo(expected);
   }
@@ -139,9 +143,7 @@ class ConversationContextTest {
     context.addUserMessage(ChatMessage.user(""));
 
     String result = context.toString();
-    String expected = "User: \n" +
-                      "Assistant: Non-empty response\n" +
-                      "User: \n";
+    String expected = "User: \n" + "Assistant: Non-empty response\n" + "User: \n";
 
     assertThat(result).isEqualTo(expected);
   }
@@ -152,8 +154,8 @@ class ConversationContextTest {
     context.addAssistantMessage(ChatMessage.assistant("Message with\ttabs and \"quotes\""));
 
     String result = context.toString();
-    String expected = "User: Message with\nnewlines\n" +
-                      "Assistant: Message with\ttabs and \"quotes\"\n";
+    String expected =
+        "User: Message with\nnewlines\n" + "Assistant: Message with\ttabs and \"quotes\"\n";
 
     assertThat(result).isEqualTo(expected);
   }

@@ -35,65 +35,67 @@ public class ConversationService {
     this.toolRegistry = null;
     this.objectMapper = new ObjectMapper();
 
-    this.client = AnthropicOkHttpClient.builder()
-        .apiKey(apiKey.getValue())
-        .build();
+    this.client = AnthropicOkHttpClient.builder().apiKey(apiKey.getValue()).build();
     log.debug("ConversationService initialized successfully");
   }
 
-  public ConversationService(ConversationContext context, ApiKey apiKey,
-      ToolRegistry toolRegistry) {
+  public ConversationService(
+      ConversationContext context, ApiKey apiKey, ToolRegistry toolRegistry) {
     int toolCount = toolRegistry != null ? toolRegistry.getAllTools().size() : 0;
     log.info("Initializing ConversationService with {} tools", toolCount);
     this.context = context;
     this.toolRegistry = toolRegistry;
     this.objectMapper = new ObjectMapper();
 
-    this.client = AnthropicOkHttpClient.builder()
-        .apiKey(apiKey.getValue())
-        .build();
+    this.client = AnthropicOkHttpClient.builder().apiKey(apiKey.getValue()).build();
     log.debug("ConversationService with tools initialized successfully");
   }
 
   public String sendMessage(String userInput) {
-    log.info("Processing user message: {}",
+    log.info(
+        "Processing user message: {}",
         userInput.length() > 100 ? userInput.substring(0, 100) + "..." : userInput);
     context.addUserMessage(ChatMessage.user(userInput));
 
     try {
-      var paramsBuilder = MessageCreateParams.builder()
-          .model(Model.CLAUDE_3_5_HAIKU_LATEST)
-          .maxTokens(4 * 1024L)
-          // goals, constraints, and how to act
-          .system(
-              "You're from Germany, even when you reply in English, let some German words slip in. You're a huge fan of Estonia, mention or make references to Estonia whenever you can.");
+      var paramsBuilder =
+          MessageCreateParams.builder()
+              .model(Model.CLAUDE_3_5_HAIKU_LATEST)
+              .maxTokens(4 * 1024L)
+              // goals, constraints, and how to act
+              .system(
+                  "You're from Germany, even when you reply in English, let some German words slip in. You're a huge fan of Estonia, mention or make references to Estonia whenever you can.");
 
       // Add tool definitions if available
       if (toolRegistry != null) {
-        List<Map<String, Object>> toolDefinitions = toolRegistry.convertToClaudeFunctionDefinitions();
+        List<Map<String, Object>> toolDefinitions =
+            toolRegistry.convertToClaudeFunctionDefinitions();
         if (!toolDefinitions.isEmpty()) {
-          List<ToolUnion> tools = toolDefinitions.stream()
-              .map(toolDef -> {
-                String name = (String) toolDef.get("name");
-                String description = (String) toolDef.get("description");
-                Map<String, Object> inputSchema = (Map<String, Object>) toolDef.get("input_schema");
+          List<ToolUnion> tools =
+              toolDefinitions.stream()
+                  .map(
+                      toolDef -> {
+                        String name = (String) toolDef.get("name");
+                        String description = (String) toolDef.get("description");
+                        Map<String, Object> inputSchema =
+                            (Map<String, Object>) toolDef.get("input_schema");
 
-                Map<String, Object> properties = (Map<String, Object>) inputSchema.get(
-                    "properties");
-                JsonValue propertiesJson = JsonValue.from(properties);
-                Tool.InputSchema schema = Tool.InputSchema.builder()
-                    .properties(propertiesJson)
-                    .build();
+                        Map<String, Object> properties =
+                            (Map<String, Object>) inputSchema.get("properties");
+                        JsonValue propertiesJson = JsonValue.from(properties);
+                        Tool.InputSchema schema =
+                            Tool.InputSchema.builder().properties(propertiesJson).build();
 
-                Tool tool = Tool.builder()
-                    .name(name)
-                    .description(description)
-                    .inputSchema(schema)
-                    .build();
+                        Tool tool =
+                            Tool.builder()
+                                .name(name)
+                                .description(description)
+                                .inputSchema(schema)
+                                .build();
 
-                return ToolUnion.ofTool(tool);
-              })
-              .toList();
+                        return ToolUnion.ofTool(tool);
+                      })
+                  .toList();
           paramsBuilder.tools(tools);
         }
       }
@@ -102,13 +104,12 @@ public class ConversationService {
         switch (message.role()) {
           case USER -> paramsBuilder.addUserMessage(message.content());
           case ASSISTANT -> paramsBuilder.addAssistantMessage(message.content());
-          default -> {
-          }
+          default -> {}
         }
       }
 
-      log.debug("Sending request to Claude API with {} history messages",
-          context.getHistory().size());
+      log.debug(
+          "Sending request to Claude API with {} history messages", context.getHistory().size());
       var response = client.messages().create(paramsBuilder.build());
       log.debug("Received response from Claude API, checking for tool use");
 
@@ -127,8 +128,7 @@ public class ConversationService {
   }
 
   private boolean hasToolUse(com.anthropic.models.messages.Message response) {
-    return response.content().stream()
-        .anyMatch(block -> block.toolUse().isPresent());
+    return response.content().stream().anyMatch(block -> block.toolUse().isPresent());
   }
 
   private String handleToolUse(com.anthropic.models.messages.Message response) {
@@ -147,18 +147,20 @@ public class ConversationService {
           var toolUse = block.toolUse().get();
           String toolName = toolUse.name();
           JsonValue inputValue = toolUse._input();
-          JsonNode parameters = inputValue.accept(new JsonValue.Visitor<JsonNode>() {
-            @Override
-            public JsonNode visitObject(Map<String, ? extends JsonValue> value) {
-              return objectMapper.valueToTree(value);
-            }
+          JsonNode parameters =
+              inputValue.accept(
+                  new JsonValue.Visitor<JsonNode>() {
+                    @Override
+                    public JsonNode visitObject(Map<String, ? extends JsonValue> value) {
+                      return objectMapper.valueToTree(value);
+                    }
 
-            @Override
-            public JsonNode visitDefault() {
-              // Return empty object node for non-object values
-              return objectMapper.createObjectNode();
-            }
-          });
+                    @Override
+                    public JsonNode visitDefault() {
+                      // Return empty object node for non-object values
+                      return objectMapper.createObjectNode();
+                    }
+                  });
 
           // Execute the tool
           log.info("Executing tool: {}", toolName);
@@ -184,43 +186,47 @@ public class ConversationService {
   }
 
   private String sendToolResultsToClaudeAndGetFinalResponse(
-      com.anthropic.models.messages.Message toolUseResponse,
-      String toolResults) {
+      com.anthropic.models.messages.Message toolUseResponse, String toolResults) {
 
     try {
       // Create a new message with tool results
-      var paramsBuilder = MessageCreateParams.builder()
-          .model(Model.CLAUDE_3_5_HAIKU_LATEST)
-          .maxTokens(1024L)
-          .system(
-              "You're from Germany, even when you reply in English, let some German words slip in. You're a huge fan of Estonia, mention or make references to Estonia whenever you can.");
+      var paramsBuilder =
+          MessageCreateParams.builder()
+              .model(Model.CLAUDE_3_5_HAIKU_LATEST)
+              .maxTokens(1024L)
+              .system(
+                  "You're from Germany, even when you reply in English, let some German words slip in. You're a huge fan of Estonia, mention or make references to Estonia whenever you can.");
 
       // Add tool definitions if available
       if (toolRegistry != null) {
-        List<Map<String, Object>> toolDefinitions = toolRegistry.convertToClaudeFunctionDefinitions();
+        List<Map<String, Object>> toolDefinitions =
+            toolRegistry.convertToClaudeFunctionDefinitions();
         if (!toolDefinitions.isEmpty()) {
-          List<ToolUnion> tools = toolDefinitions.stream()
-              .map(toolDef -> {
-                String name = (String) toolDef.get("name");
-                String description = (String) toolDef.get("description");
-                Map<String, Object> inputSchema = (Map<String, Object>) toolDef.get("input_schema");
+          List<ToolUnion> tools =
+              toolDefinitions.stream()
+                  .map(
+                      toolDef -> {
+                        String name = (String) toolDef.get("name");
+                        String description = (String) toolDef.get("description");
+                        Map<String, Object> inputSchema =
+                            (Map<String, Object>) toolDef.get("input_schema");
 
-                Map<String, Object> properties = (Map<String, Object>) inputSchema.get(
-                    "properties");
-                JsonValue propertiesJson = JsonValue.from(properties);
-                Tool.InputSchema schema = Tool.InputSchema.builder()
-                    .properties(propertiesJson)
-                    .build();
+                        Map<String, Object> properties =
+                            (Map<String, Object>) inputSchema.get("properties");
+                        JsonValue propertiesJson = JsonValue.from(properties);
+                        Tool.InputSchema schema =
+                            Tool.InputSchema.builder().properties(propertiesJson).build();
 
-                Tool tool = Tool.builder()
-                    .name(name)
-                    .description(description)
-                    .inputSchema(schema)
-                    .build();
+                        Tool tool =
+                            Tool.builder()
+                                .name(name)
+                                .description(description)
+                                .inputSchema(schema)
+                                .build();
 
-                return ToolUnion.ofTool(tool);
-              })
-              .collect(Collectors.toList());
+                        return ToolUnion.ofTool(tool);
+                      })
+                  .collect(Collectors.toList());
           paramsBuilder.tools(tools);
         }
       }
@@ -230,8 +236,7 @@ public class ConversationService {
         switch (message.role()) {
           case USER -> paramsBuilder.addUserMessage(message.content());
           case ASSISTANT -> paramsBuilder.addAssistantMessage(message.content());
-          default -> {
-          }
+          default -> {}
         }
       }
 

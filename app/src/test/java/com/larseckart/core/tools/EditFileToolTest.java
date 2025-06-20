@@ -1,19 +1,18 @@
 package com.larseckart.core.tools;
 
+import static org.assertj.core.api.Assertions.*;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class EditFileToolTest {
@@ -21,8 +20,7 @@ class EditFileToolTest {
   private EditFileTool editFileTool;
   private ObjectMapper objectMapper;
 
-  @TempDir
-  Path tempDir;
+  @TempDir Path tempDir;
 
   @BeforeEach
   void setUp() {
@@ -59,11 +57,12 @@ class EditFileToolTest {
     Files.write(testFile, originalContent.getBytes());
 
     // Create parameters
-    JsonNode params = objectMapper.valueToTree(Map.of(
-        "path", testFile.toString(),
-        "search_text", "Hello",
-        "replace_text", "Hi"
-    ));
+    JsonNode params =
+        objectMapper.valueToTree(
+            Map.of(
+                "path", testFile.toString(),
+                "search_text", "Hello",
+                "replace_text", "Hi"));
 
     // Execute replacement
     String result = editFileTool.execute(params);
@@ -88,11 +87,12 @@ class EditFileToolTest {
     String content = "cat dog cat bird cat mouse";
     Files.write(testFile, content.getBytes());
 
-    JsonNode params = objectMapper.valueToTree(Map.of(
-        "path", testFile.toString(),
-        "search_text", "cat",
-        "replace_text", "elephant"
-    ));
+    JsonNode params =
+        objectMapper.valueToTree(
+            Map.of(
+                "path", testFile.toString(),
+                "search_text", "cat",
+                "replace_text", "elephant"));
 
     String result = editFileTool.execute(params);
 
@@ -106,11 +106,12 @@ class EditFileToolTest {
     Path testFile = tempDir.resolve("notfound.txt");
     Files.write(testFile, "This is some content".getBytes());
 
-    JsonNode params = objectMapper.valueToTree(Map.of(
-        "path", testFile.toString(),
-        "search_text", "nonexistent",
-        "replace_text", "replacement"
-    ));
+    JsonNode params =
+        objectMapper.valueToTree(
+            Map.of(
+                "path", testFile.toString(),
+                "search_text", "nonexistent",
+                "replace_text", "replacement"));
 
     String result = editFileTool.execute(params);
 
@@ -120,11 +121,12 @@ class EditFileToolTest {
 
   @Test
   void should_fail_when_file_does_not_exist() {
-    JsonNode params = objectMapper.valueToTree(Map.of(
-        "path", "/nonexistent/file.txt",
-        "search_text", "test",
-        "replace_text", "replacement"
-    ));
+    JsonNode params =
+        objectMapper.valueToTree(
+            Map.of(
+                "path", "/nonexistent/file.txt",
+                "search_text", "test",
+                "replace_text", "replacement"));
 
     String result = editFileTool.execute(params);
 
@@ -134,28 +136,31 @@ class EditFileToolTest {
   @Test
   void should_validate_required_parameters() {
     // Missing path parameter
-    JsonNode paramsNoPat = objectMapper.valueToTree(Map.of(
-        "search_text", "test",
-        "replace_text", "replacement"
-    ));
+    JsonNode paramsNoPat =
+        objectMapper.valueToTree(
+            Map.of(
+                "search_text", "test",
+                "replace_text", "replacement"));
 
     String result = editFileTool.execute(paramsNoPat);
     assertThat(result.contains("path") && result.contains("required")).isTrue();
 
     // Missing search_text parameter
-    JsonNode paramsNoSearch = objectMapper.valueToTree(Map.of(
-        "path", "/some/path",
-        "replace_text", "replacement"
-    ));
+    JsonNode paramsNoSearch =
+        objectMapper.valueToTree(
+            Map.of(
+                "path", "/some/path",
+                "replace_text", "replacement"));
 
     result = editFileTool.execute(paramsNoSearch);
     assertThat(result.contains("search_text") && result.contains("required")).isTrue();
 
     // Missing replace_text parameter
-    JsonNode paramsNoReplace = objectMapper.valueToTree(Map.of(
-        "path", "/some/path",
-        "search_text", "test"
-    ));
+    JsonNode paramsNoReplace =
+        objectMapper.valueToTree(
+            Map.of(
+                "path", "/some/path",
+                "search_text", "test"));
 
     result = editFileTool.execute(paramsNoReplace);
     assertThat(result.contains("replace_text") && result.contains("required")).isTrue();
@@ -166,11 +171,12 @@ class EditFileToolTest {
     Path testFile = tempDir.resolve("empty.txt");
     Files.write(testFile, new byte[0]);
 
-    JsonNode params = objectMapper.valueToTree(Map.of(
-        "path", testFile.toString(),
-        "search_text", "anything",
-        "replace_text", "replacement"
-    ));
+    JsonNode params =
+        objectMapper.valueToTree(
+            Map.of(
+                "path", testFile.toString(),
+                "search_text", "anything",
+                "replace_text", "replacement"));
 
     String result = editFileTool.execute(params);
 
@@ -183,11 +189,12 @@ class EditFileToolTest {
     String content = "Special chars: $100 & more!";
     Files.write(testFile, content.getBytes());
 
-    JsonNode params = objectMapper.valueToTree(Map.of(
-        "path", testFile.toString(),
-        "search_text", "$100",
-        "replace_text", "€200"
-    ));
+    JsonNode params =
+        objectMapper.valueToTree(
+            Map.of(
+                "path", testFile.toString(),
+                "search_text", "$100",
+                "replace_text", "€200"));
 
     String result = editFileTool.execute(params);
 
@@ -198,11 +205,12 @@ class EditFileToolTest {
 
   @Test
   void should_prevent_directory_traversal_attacks() {
-    JsonNode params = objectMapper.valueToTree(Map.of(
-        "path", "../../../etc/passwd",
-        "search_text", "root",
-        "replace_text", "hacker"
-    ));
+    JsonNode params =
+        objectMapper.valueToTree(
+            Map.of(
+                "path", "../../../etc/passwd",
+                "search_text", "root",
+                "replace_text", "hacker"));
 
     String result = editFileTool.execute(params);
 
@@ -222,11 +230,12 @@ class EditFileToolTest {
       String relativePath = "relative.txt";
       System.setProperty("user.dir", tempDir.toString());
 
-      JsonNode params = objectMapper.valueToTree(Map.of(
-          "path", relativePath,
-          "search_text", "Test",
-          "replace_text", "Updated"
-      ));
+      JsonNode params =
+          objectMapper.valueToTree(
+              Map.of(
+                  "path", relativePath,
+                  "search_text", "Test",
+                  "replace_text", "Updated"));
 
       String result = editFileTool.execute(params);
 
@@ -242,11 +251,12 @@ class EditFileToolTest {
     Path testFile = tempDir.resolve("backup-test.java");
     Files.write(testFile, "public class Test {}".getBytes());
 
-    JsonNode params = objectMapper.valueToTree(Map.of(
-        "path", testFile.toString(),
-        "search_text", "Test",
-        "replace_text", "Example"
-    ));
+    JsonNode params =
+        objectMapper.valueToTree(
+            Map.of(
+                "path", testFile.toString(),
+                "search_text", "Test",
+                "replace_text", "Example"));
 
     editFileTool.execute(params);
 
@@ -261,11 +271,12 @@ class EditFileToolTest {
     String content = "Line 1\nLine 2 with text\nLine 3\nAnother line with text";
     Files.write(testFile, content.getBytes());
 
-    JsonNode params = objectMapper.valueToTree(Map.of(
-        "path", testFile.toString(),
-        "search_text", "with text",
-        "replace_text", "modified"
-    ));
+    JsonNode params =
+        objectMapper.valueToTree(
+            Map.of(
+                "path", testFile.toString(),
+                "search_text", "with text",
+                "replace_text", "modified"));
 
     String result = editFileTool.execute(params);
 

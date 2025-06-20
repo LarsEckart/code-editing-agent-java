@@ -1,15 +1,14 @@
 package com.larseckart.adapters.cli;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ConsoleOutputAdapterTest {
@@ -41,8 +40,7 @@ class ConsoleOutputAdapterTest {
   void prompt_for_user_input_should_print_prompt_with_blue_color() {
     adapter.promptForUserInput();
 
-    assertThat(outputStream.toString())
-        .isEqualTo("\u001b[94mYou\u001b[0m: ");
+    assertThat(outputStream.toString()).isEqualTo("\u001b[94mYou\u001b[0m: ");
   }
 
   @Test
@@ -62,5 +60,4 @@ class ConsoleOutputAdapterTest {
     assertThat(outputStream.toString())
         .isEqualTo("\u001b[95mLarsGPT\u001b[0m: \u001b[92m\u001b[0m\n");
   }
-
 }

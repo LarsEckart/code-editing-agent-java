@@ -15,5 +15,4 @@ public class ConsoleInputAdapter implements InputPort {
   public String readLine() {
     return scanner.nextLine();
   }
-
 }

@@ -13,7 +13,7 @@ public class ApiKey {
     if (value == null || value.isEmpty()) {
       throw new IllegalArgumentException(
           "API key cannot be null or empty. Check environment variable: "
-          + environmentVariableName);
+              + environmentVariableName);
     }
     return new ApiKey(value);
   }

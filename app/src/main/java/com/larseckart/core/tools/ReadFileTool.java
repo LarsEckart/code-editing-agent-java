@@ -4,10 +4,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larseckart.core.domain.Tool;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -15,9 +13,8 @@ import java.nio.file.Paths;
 import org.slf4j.Logger;
 
 /**
- * A tool that reads file contents from the filesystem.
- * Supports both absolute and relative paths, various encodings, and includes
- * proper error handling and file size limits.
+ * A tool that reads file contents from the filesystem. Supports both absolute and relative paths,
+ * various encodings, and includes proper error handling and file size limits.
  */
 public class ReadFileTool implements Tool {
 
@@ -33,8 +30,8 @@ public class ReadFileTool implements Tool {
 
   @Override
   public String getDescription() {
-    return "Reads file contents from the filesystem. Supports both absolute and relative paths, " +
-           "various text encodings, and includes proper error handling for common filesystem issues.";
+    return "Reads file contents from the filesystem. Supports both absolute and relative paths, "
+        + "various text encodings, and includes proper error handling for common filesystem issues.";
   }
 
   @Override
@@ -67,19 +64,22 @@ public class ReadFileTool implements Tool {
 
     try {
       validate(parameters);
-      
+
       String pathStr = parameters.get("path").asText();
-      String encoding = parameters.has("encoding") ? 
-        parameters.get("encoding").asText() : DEFAULT_ENCODING;
+      String encoding =
+          parameters.has("encoding") ? parameters.get("encoding").asText() : DEFAULT_ENCODING;
 
       Path path = resolveFilePath(pathStr);
-      
+
       // Check file size before reading
       if (Files.exists(path)) {
         long fileSize = Files.size(path);
         if (fileSize > MAX_FILE_SIZE) {
-          return "Error: File is too large (" + fileSize + " bytes). Maximum supported file size is " + 
-                 MAX_FILE_SIZE + " bytes.";
+          return "Error: File is too large ("
+              + fileSize
+              + " bytes). Maximum supported file size is "
+              + MAX_FILE_SIZE
+              + " bytes.";
         }
       }
 
@@ -138,15 +138,15 @@ public class ReadFileTool implements Tool {
   }
 
   /**
-   * Resolves the file path, handling both absolute and relative paths.
-   * Relative paths are resolved against the current working directory.
+   * Resolves the file path, handling both absolute and relative paths. Relative paths are resolved
+   * against the current working directory.
    *
    * @param pathStr the path string to resolve
    * @return the resolved Path
    */
   private Path resolveFilePath(String pathStr) {
     Path path = Paths.get(pathStr);
-    
+
     if (path.isAbsolute()) {
       return path;
     } else {

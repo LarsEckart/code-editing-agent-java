@@ -9,7 +9,8 @@ public class ChatService {
   private final OutputPort outputPort;
   private final ConversationService conversationService;
 
-  public ChatService(InputPort inputPort, OutputPort outputPort, ConversationService conversationService) {
+  public ChatService(
+      InputPort inputPort, OutputPort outputPort, ConversationService conversationService) {
     this.inputPort = inputPort;
     this.outputPort = outputPort;
     this.conversationService = conversationService;

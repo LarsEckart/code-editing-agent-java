@@ -1,6 +1,7 @@
 plugins {
     id("org.springframework.boot") version "3.5.0"
     id("io.spring.dependency-management") version "1.1.7"
+    id("com.diffplug.spotless") version "6.25.0"
     application
 }
 
@@ -67,4 +68,10 @@ tasks.register<Jar>("fatJar") {
 
 tasks.named("build") {
     dependsOn("fatJar")
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+    }
 }

@@ -20,8 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ConversationServiceToolsTest {
 
-  @Mock
-  private ToolRegistry mockToolRegistry;
+  @Mock private ToolRegistry mockToolRegistry;
 
   private ConversationContext context;
   private ApiKey apiKey;
@@ -44,14 +43,15 @@ class ConversationServiceToolsTest {
     boolean hasToolRegistryConstructor = false;
     for (Constructor<?> constructor : constructors) {
       Class<?>[] paramTypes = constructor.getParameterTypes();
-      if (paramTypes.length == 3 &&
-          paramTypes[2].equals(ToolRegistry.class)) {
+      if (paramTypes.length == 3 && paramTypes[2].equals(ToolRegistry.class)) {
         hasToolRegistryConstructor = true;
         break;
       }
     }
 
-    assertThat(hasToolRegistryConstructor).as("Constructor with ToolRegistry should exist").isTrue();
+    assertThat(hasToolRegistryConstructor)
+        .as("Constructor with ToolRegistry should exist")
+        .isTrue();
   }
 
   @Test
@@ -63,8 +63,10 @@ class ConversationServiceToolsTest {
     assertThat(sendMessageMethod).isNotNull();
 
     // Check if there's a method to handle tool use
-    Method handleToolUseMethod = service.getClass().getDeclaredMethod("handleToolUse",
-        com.anthropic.models.messages.Message.class);
+    Method handleToolUseMethod =
+        service
+            .getClass()
+            .getDeclaredMethod("handleToolUse", com.anthropic.models.messages.Message.class);
     assertThat(handleToolUseMethod).isNotNull();
     assertThat(handleToolUseMethod.getName()).isEqualTo("handleToolUse");
   }
@@ -87,8 +89,10 @@ class ConversationServiceToolsTest {
     assertThat(service).isNotNull();
 
     // Check if hasToolUse method exists
-    Method hasToolUseMethod = service.getClass().getDeclaredMethod("hasToolUse",
-        com.anthropic.models.messages.Message.class);
+    Method hasToolUseMethod =
+        service
+            .getClass()
+            .getDeclaredMethod("hasToolUse", com.anthropic.models.messages.Message.class);
     assertThat(hasToolUseMethod).isNotNull();
     assertThat(hasToolUseMethod.getName()).isEqualTo("hasToolUse");
   }
@@ -124,21 +128,24 @@ class ConversationServiceToolsTest {
 
     for (Constructor<?> constructor : constructors) {
       Class<?>[] paramTypes = constructor.getParameterTypes();
-      if (paramTypes.length == 2 &&
-          paramTypes[0].equals(ConversationContext.class) &&
-          paramTypes[1].equals(ApiKey.class)) {
+      if (paramTypes.length == 2
+          && paramTypes[0].equals(ConversationContext.class)
+          && paramTypes[1].equals(ApiKey.class)) {
         hasOriginalConstructor = true;
-      } else if (paramTypes.length == 3 &&
-                 paramTypes[0].equals(ConversationContext.class) &&
-                 paramTypes[1].equals(ApiKey.class) &&
-                 paramTypes[2].equals(ToolRegistry.class)) {
+      } else if (paramTypes.length == 3
+          && paramTypes[0].equals(ConversationContext.class)
+          && paramTypes[1].equals(ApiKey.class)
+          && paramTypes[2].equals(ToolRegistry.class)) {
         hasToolRegistryConstructor = true;
       }
     }
 
     assertThat(hasOriginalConstructor)
-        .as("Original constructor should exist for backward compatibility").isTrue();
-    assertThat(hasToolRegistryConstructor).as("Constructor with ToolRegistry should exist").isTrue();
+        .as("Original constructor should exist for backward compatibility")
+        .isTrue();
+    assertThat(hasToolRegistryConstructor)
+        .as("Constructor with ToolRegistry should exist")
+        .isTrue();
   }
 
   @Test
@@ -146,17 +153,25 @@ class ConversationServiceToolsTest {
     ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
 
     // Check if tool handling methods exist
-    Method hasToolUseMethod = service.getClass().getDeclaredMethod("hasToolUse",
-        com.anthropic.models.messages.Message.class);
+    Method hasToolUseMethod =
+        service
+            .getClass()
+            .getDeclaredMethod("hasToolUse", com.anthropic.models.messages.Message.class);
     assertThat(hasToolUseMethod).isNotNull();
 
-    Method handleToolUseMethod = service.getClass().getDeclaredMethod("handleToolUse",
-        com.anthropic.models.messages.Message.class);
+    Method handleToolUseMethod =
+        service
+            .getClass()
+            .getDeclaredMethod("handleToolUse", com.anthropic.models.messages.Message.class);
     assertThat(handleToolUseMethod).isNotNull();
 
-    Method sendToolResultsMethod = service.getClass()
-        .getDeclaredMethod("sendToolResultsToClaudeAndGetFinalResponse",
-            com.anthropic.models.messages.Message.class, String.class);
+    Method sendToolResultsMethod =
+        service
+            .getClass()
+            .getDeclaredMethod(
+                "sendToolResultsToClaudeAndGetFinalResponse",
+                com.anthropic.models.messages.Message.class,
+                String.class);
     assertThat(sendToolResultsMethod).isNotNull();
   }
 

@@ -25,11 +25,12 @@ public class ConversationContext implements Serializable {
     StringBuilder builder = new StringBuilder();
     for (ChatMessage message : history) {
       String roleName = message.role().name().toLowerCase();
-      builder.append(roleName.substring(0, 1).toUpperCase())
-             .append(roleName.substring(1))
-             .append(": ")
-             .append(message.content())
-             .append("\n");
+      builder
+          .append(roleName.substring(0, 1).toUpperCase())
+          .append(roleName.substring(1))
+          .append(": ")
+          .append(message.content())
+          .append("\n");
     }
     return builder.toString();
   }

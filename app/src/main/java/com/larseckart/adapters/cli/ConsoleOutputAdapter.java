@@ -19,5 +19,4 @@ public class ConsoleOutputAdapter implements OutputPort {
     System.out.print("\u001b[95mLarsGPT\u001b[0m: ");
     System.out.println("\u001b[92m" + response + "\u001b[0m");
   }
-
 }

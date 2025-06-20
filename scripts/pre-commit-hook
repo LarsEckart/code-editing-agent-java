@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-# Pre-commit hook to update README with AI contribution statistics
+# Pre-commit hook to run formatter and update README with AI contribution statistics
 
 set -e
+
+echo "Running Java formatter..."
+./gradlew spotlessApply
 
 echo "Running AI contribution analysis..."
 

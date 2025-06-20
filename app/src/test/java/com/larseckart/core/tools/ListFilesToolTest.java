@@ -1,7 +1,15 @@
 package com.larseckart.core.tools;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -10,23 +18,13 @@ import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.PosixFilePermissions;
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ListFilesToolTest {
 
   private ListFilesTool tool;
   private ObjectMapper objectMapper;
 
-  @TempDir
-  Path tempDir;
+  @TempDir Path tempDir;
 
   @BeforeEach
   void setUp() {
@@ -186,7 +184,8 @@ class ListFilesToolTest {
     String result = tool.execute(params);
 
     assertThat(result).contains("Error");
-    assertThat(result).containsAnyOf("Permission denied", "Access denied", restrictedDir.toString());
+    assertThat(result)
+        .containsAnyOf("Permission denied", "Access denied", restrictedDir.toString());
   }
 
   @Test
@@ -202,7 +201,7 @@ class ListFilesToolTest {
     String[] lines = result.split("\n");
     assertThat(lines[0]).matches("Directory: .*");
     assertThat(lines[1]).isEmpty();
-    
+
     for (int i = 2; i < lines.length; i++) {
       if (!lines[i].isEmpty()) {
         assertThat(lines[i]).matches(".*\\[(file|directory)\\].*");

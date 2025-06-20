@@ -4,7 +4,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larseckart.core.domain.Tool;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,11 +51,11 @@ public class ListFilesTool implements Tool {
     if (parameters == null) {
       throw new IllegalArgumentException("Parameters cannot be null");
     }
-    
+
     if (parameters.has("path") && !parameters.get("path").isTextual()) {
       throw new IllegalArgumentException("Parameter 'path' must be a string");
     }
-    
+
     if (parameters.has("show_hidden") && !parameters.get("show_hidden").isBoolean()) {
       throw new IllegalArgumentException("Parameter 'show_hidden' must be a boolean");
     }
@@ -67,10 +66,11 @@ public class ListFilesTool implements Tool {
     log.info("Executing ListFilesTool with parameters: {}", parameters);
     try {
       String pathStr = parameters.has("path") ? parameters.get("path").asText() : ".";
-      boolean showHidden = parameters.has("show_hidden") && parameters.get("show_hidden").asBoolean();
+      boolean showHidden =
+          parameters.has("show_hidden") && parameters.get("show_hidden").asBoolean();
 
       Path path = Paths.get(pathStr).normalize();
-      
+
       if (!Files.exists(path)) {
         return "Error: Directory not found: " + path;
       }
@@ -83,10 +83,11 @@ public class ListFilesTool implements Tool {
       result.append("Directory: ").append(path.toAbsolutePath()).append("\n\n");
 
       try (Stream<Path> files = Files.list(path)) {
-        var fileList = files
-            .filter(p -> showHidden || !p.getFileName().toString().startsWith("."))
-            .sorted(Comparator.comparing(p -> p.getFileName().toString().toLowerCase()))
-            .collect(Collectors.toList());
+        var fileList =
+            files
+                .filter(p -> showHidden || !p.getFileName().toString().startsWith("."))
+                .sorted(Comparator.comparing(p -> p.getFileName().toString().toLowerCase()))
+                .collect(Collectors.toList());
 
         if (fileList.isEmpty()) {
           result.append("(empty)");
@@ -94,9 +95,9 @@ public class ListFilesTool implements Tool {
           for (Path file : fileList) {
             String fileName = file.getFileName().toString();
             String type = Files.isDirectory(file) ? "[directory]" : "[file]";
-            
+
             result.append(fileName).append(" ").append(type);
-            
+
             if (Files.isRegularFile(file)) {
               try {
                 long size = Files.size(file);
@@ -105,7 +106,7 @@ public class ListFilesTool implements Tool {
                 // Can't read size, skip it
               }
             }
-            
+
             result.append("\n");
           }
         }

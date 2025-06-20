@@ -3,19 +3,18 @@ package com.larseckart.core.tools;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larseckart.core.domain.Tool;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * EditFileTool performs simple text replacement operations on files.
- * It creates a backup of the original file before making any changes
- * and validates that the search text exists before replacement.
+ * EditFileTool performs simple text replacement operations on files. It creates a backup of the
+ * original file before making any changes and validates that the search text exists before
+ * replacement.
  */
 public class EditFileTool implements Tool {
 
@@ -60,15 +59,15 @@ public class EditFileTool implements Tool {
     if (parameters == null) {
       throw new IllegalArgumentException("Parameters cannot be null");
     }
-    
+
     if (!parameters.has("path") || parameters.get("path").asText().trim().isEmpty()) {
       throw new IllegalArgumentException("'path' parameter is required and cannot be empty");
     }
-    
+
     if (!parameters.has("search_text") || parameters.get("search_text").asText().trim().isEmpty()) {
       throw new IllegalArgumentException("'search_text' parameter is required and cannot be empty");
     }
-    
+
     if (!parameters.has("replace_text")) {
       throw new IllegalArgumentException("'replace_text' parameter is required");
     }
@@ -77,7 +76,7 @@ public class EditFileTool implements Tool {
   @Override
   public String execute(JsonNode parameters) {
     logger.info("Executing edit_file tool with parameters: {}", parameters);
-    
+
     try {
       // Validate required parameters
       if (!parameters.has("path")) {
@@ -95,7 +94,10 @@ public class EditFileTool implements Tool {
       String replaceText = parameters.get("replace_text").asText();
 
       // Validate path for security (prevent directory traversal)
-      if (pathStr.contains("..") || pathStr.startsWith("/etc/") || pathStr.startsWith("/usr/") || pathStr.startsWith("/bin/")) {
+      if (pathStr.contains("..")
+          || pathStr.startsWith("/etc/")
+          || pathStr.startsWith("/usr/")
+          || pathStr.startsWith("/bin/")) {
         logger.warn("Potentially unsafe path attempted: {}", pathStr);
         return "Error: Path not allowed for security reasons";
       }
@@ -158,13 +160,15 @@ public class EditFileTool implements Tool {
       // Write updated content back to file
       try {
         Files.writeString(filePath, newContent);
-        logger.info("Successfully edited file: {} ({} occurrences replaced)", filePath, occurrences);
+        logger.info(
+            "Successfully edited file: {} ({} occurrences replaced)", filePath, occurrences);
       } catch (IOException e) {
         logger.error("Failed to write updated content to file: {}", filePath, e);
         return "Error: Failed to write to file: " + e.getMessage();
       }
 
-      return String.format("File edited successfully! Replaced %d occurrences of '%s' with '%s' in %s. Backup created at %s.backup",
+      return String.format(
+          "File edited successfully! Replaced %d occurrences of '%s' with '%s' in %s. Backup created at %s.backup",
           occurrences, searchText, replaceText, pathStr, pathStr);
 
     } catch (Exception e) {
