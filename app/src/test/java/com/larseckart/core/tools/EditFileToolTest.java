@@ -3,6 +3,8 @@ package com.larseckart.core.tools;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -13,6 +15,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class EditFileToolTest {
 
   private EditFileTool editFileTool;
@@ -28,19 +31,19 @@ class EditFileToolTest {
   }
 
   @Test
-  void shouldHaveCorrectName() {
+  void should_have_correct_name() {
     assertEquals("edit_file", editFileTool.getName());
   }
 
   @Test
-  void shouldHaveDescriptiveDescription() {
+  void should_have_descriptive_description() {
     String description = editFileTool.getDescription();
     assertTrue(description.contains("text replacement"));
     assertTrue(description.contains("file"));
   }
 
   @Test
-  void shouldHaveCorrectParameterSchema() {
+  void should_have_correct_parameter_schema() {
     String schema = editFileTool.getParameterSchema();
     assertNotNull(schema);
     assertTrue(schema.contains("path"));
@@ -49,7 +52,7 @@ class EditFileToolTest {
   }
 
   @Test
-  void shouldSuccessfullyReplaceTextInFile() throws IOException {
+  void should_successfully_replace_text_in_file() throws IOException {
     // Create test file
     Path testFile = tempDir.resolve("test.txt");
     String originalContent = "Hello World!\nThis is a test file.\nHello again!";
@@ -80,7 +83,7 @@ class EditFileToolTest {
   }
 
   @Test
-  void shouldReplaceAllOccurrencesOfSearchText() throws IOException {
+  void should_replace_all_occurrences_of_search_text() throws IOException {
     Path testFile = tempDir.resolve("multiple.txt");
     String content = "cat dog cat bird cat mouse";
     Files.write(testFile, content.getBytes());
@@ -99,7 +102,7 @@ class EditFileToolTest {
   }
 
   @Test
-  void shouldFailWhenSearchTextNotFound() throws IOException {
+  void should_fail_when_search_text_not_found() throws IOException {
     Path testFile = tempDir.resolve("notfound.txt");
     Files.write(testFile, "This is some content".getBytes());
 
@@ -116,7 +119,7 @@ class EditFileToolTest {
   }
 
   @Test
-  void shouldFailWhenFileDoesNotExist() {
+  void should_fail_when_file_does_not_exist() {
     JsonNode params = objectMapper.valueToTree(Map.of(
         "path", "/nonexistent/file.txt",
         "search_text", "test",
@@ -129,7 +132,7 @@ class EditFileToolTest {
   }
 
   @Test
-  void shouldValidateRequiredParameters() {
+  void should_validate_required_parameters() {
     // Missing path parameter
     JsonNode paramsNoPat = objectMapper.valueToTree(Map.of(
         "search_text", "test",
@@ -159,7 +162,7 @@ class EditFileToolTest {
   }
 
   @Test
-  void shouldHandleEmptyFile() throws IOException {
+  void should_handle_empty_file() throws IOException {
     Path testFile = tempDir.resolve("empty.txt");
     Files.write(testFile, new byte[0]);
 
@@ -175,7 +178,7 @@ class EditFileToolTest {
   }
 
   @Test
-  void shouldHandleSpecialCharacters() throws IOException {
+  void should_handle_special_characters() throws IOException {
     Path testFile = tempDir.resolve("special.txt");
     String content = "Special chars: $100 & more!";
     Files.write(testFile, content.getBytes());
@@ -194,7 +197,7 @@ class EditFileToolTest {
   }
 
   @Test
-  void shouldPreventDirectoryTraversalAttacks() {
+  void should_prevent_directory_traversal_attacks() {
     JsonNode params = objectMapper.valueToTree(Map.of(
         "path", "../../../etc/passwd",
         "search_text", "root",
@@ -207,7 +210,7 @@ class EditFileToolTest {
   }
 
   @Test
-  void shouldHandleRelativePaths() throws IOException {
+  void should_handle_relative_paths() throws IOException {
     // Create test file in temp directory
     Path testFile = tempDir.resolve("relative.txt");
     Files.write(testFile, "Test content".getBytes());
@@ -228,7 +231,7 @@ class EditFileToolTest {
   }
 
   @Test
-  void shouldCreateBackupWithCorrectExtension() throws IOException {
+  void should_create_backup_with_correct_extension() throws IOException {
     Path testFile = tempDir.resolve("backup-test.java");
     Files.write(testFile, "public class Test {}".getBytes());
 
@@ -246,7 +249,7 @@ class EditFileToolTest {
   }
 
   @Test
-  void shouldHandleMultilineText() throws IOException {
+  void should_handle_multiline_text() throws IOException {
     Path testFile = tempDir.resolve("multiline.txt");
     String content = "Line 1\nLine 2 with text\nLine 3\nAnother line with text";
     Files.write(testFile, content.getBytes());

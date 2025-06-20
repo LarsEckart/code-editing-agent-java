@@ -3,8 +3,11 @@ package com.larseckart.core.tools;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Files;
@@ -16,6 +19,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ListFilesToolTest {
 
   private ListFilesTool tool;
@@ -31,21 +35,18 @@ class ListFilesToolTest {
   }
 
   @Test
-  @DisplayName("should have correct name")
-  void shouldHaveCorrectName() {
+  void should_have_correct_name() {
     assertThat(tool.getName()).isEqualTo("list_files");
   }
 
   @Test
-  @DisplayName("should have informative description")
-  void shouldHaveInformativeDescription() {
+  void should_have_informative_description() {
     assertThat(tool.getDescription().toLowerCase()).contains("list");
     assertThat(tool.getDescription()).contains("directory");
   }
 
   @Test
-  @DisplayName("should have proper parameter schema")
-  void shouldHaveProperParameterSchema() {
+  void should_have_proper_parameter_schema() {
     String schema = tool.getParameterSchema();
     assertThat(schema).contains("\"type\": \"object\"");
     assertThat(schema).contains("\"path\"");
@@ -53,8 +54,7 @@ class ListFilesToolTest {
   }
 
   @Test
-  @DisplayName("should list files in directory")
-  void shouldListFilesInDirectory() throws Exception {
+  void should_list_files_in_directory() throws Exception {
     // Create test files
     Files.createFile(tempDir.resolve("file1.txt"));
     Files.createFile(tempDir.resolve("file2.java"));
@@ -73,8 +73,7 @@ class ListFilesToolTest {
   }
 
   @Test
-  @DisplayName("should list files with sizes")
-  void shouldListFilesWithSizes() throws Exception {
+  void should_list_files_with_sizes() throws Exception {
     Path file = tempDir.resolve("test.txt");
     Files.writeString(file, "Hello World");
 
@@ -88,8 +87,7 @@ class ListFilesToolTest {
   }
 
   @Test
-  @DisplayName("should sort files alphabetically")
-  void shouldSortFilesAlphabetically() throws Exception {
+  void should_sort_files_alphabetically() throws Exception {
     Files.createFile(tempDir.resolve("zebra.txt"));
     Files.createFile(tempDir.resolve("apple.txt"));
     Files.createFile(tempDir.resolve("banana.txt"));
@@ -108,8 +106,7 @@ class ListFilesToolTest {
   }
 
   @Test
-  @DisplayName("should hide hidden files by default")
-  void shouldHideHiddenFilesByDefault() throws Exception {
+  void should_hide_hidden_files_by_default() throws Exception {
     Files.createFile(tempDir.resolve(".hidden"));
     Files.createFile(tempDir.resolve("visible.txt"));
 
@@ -123,8 +120,7 @@ class ListFilesToolTest {
   }
 
   @Test
-  @DisplayName("should show hidden files when requested")
-  void shouldShowHiddenFilesWhenRequested() throws Exception {
+  void should_show_hidden_files_when_requested() throws Exception {
     Files.createFile(tempDir.resolve(".hidden"));
     Files.createFile(tempDir.resolve("visible.txt"));
 
@@ -139,8 +135,7 @@ class ListFilesToolTest {
   }
 
   @Test
-  @DisplayName("should use current directory when path not provided")
-  void shouldUseCurrentDirectoryWhenPathNotProvided() throws Exception {
+  void should_use_current_directory_when_path_not_provided() throws Exception {
     ObjectNode params = objectMapper.createObjectNode();
 
     String result = tool.execute(params);
@@ -150,8 +145,7 @@ class ListFilesToolTest {
   }
 
   @Test
-  @DisplayName("should handle relative paths")
-  void shouldHandleRelativePaths() throws Exception {
+  void should_handle_relative_paths() throws Exception {
     Path subdir = tempDir.resolve("subdir");
     Files.createDirectory(subdir);
     Files.createFile(subdir.resolve("file.txt"));
@@ -168,8 +162,7 @@ class ListFilesToolTest {
   }
 
   @Test
-  @DisplayName("should return error for non-existent directory")
-  void shouldReturnErrorForNonExistentDirectory() throws Exception {
+  void should_return_error_for_non_existent_directory() throws Exception {
     ObjectNode params = objectMapper.createObjectNode();
     params.put("path", "/path/that/does/not/exist");
 
@@ -180,12 +173,8 @@ class ListFilesToolTest {
   }
 
   @Test
-  @DisplayName("should handle permission denied gracefully")
-  void shouldHandlePermissionDeniedGracefully() throws Exception {
-    // Skip this test on Windows
-    if (System.getProperty("os.name").toLowerCase().contains("win")) {
-      return;
-    }
+  @DisabledOnOs(OS.WINDOWS)
+  void should_handle_permission_denied_gracefully() throws Exception {
 
     Path restrictedDir = tempDir.resolve("restricted");
     Set<PosixFilePermission> noPermissions = PosixFilePermissions.fromString("---------");
@@ -201,8 +190,7 @@ class ListFilesToolTest {
   }
 
   @Test
-  @DisplayName("should format output consistently")
-  void shouldFormatOutputConsistently() throws Exception {
+  void should_format_output_consistently() throws Exception {
     Files.createFile(tempDir.resolve("test.txt"));
     Files.createDirectory(tempDir.resolve("folder"));
 
@@ -223,8 +211,7 @@ class ListFilesToolTest {
   }
 
   @Test
-  @DisplayName("should handle empty directories")
-  void shouldHandleEmptyDirectories() throws Exception {
+  void should_handle_empty_directories() throws Exception {
     Path emptyDir = tempDir.resolve("empty");
     Files.createDirectory(emptyDir);
 
@@ -238,12 +225,8 @@ class ListFilesToolTest {
   }
 
   @Test
-  @DisplayName("should handle files with no read permissions")
-  void shouldHandleFilesWithNoReadPermissions() throws Exception {
-    // Skip this test on Windows
-    if (System.getProperty("os.name").toLowerCase().contains("win")) {
-      return;
-    }
+  @DisabledOnOs(OS.WINDOWS)
+  void should_handle_files_with_no_read_permissions() throws Exception {
 
     Path file = tempDir.resolve("no-read.txt");
     Files.createFile(file);

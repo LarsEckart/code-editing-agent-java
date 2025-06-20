@@ -3,10 +3,13 @@ package com.larseckart.core.domain;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ToolTest {
 
   private ObjectMapper objectMapper;
@@ -19,21 +22,21 @@ class ToolTest {
   }
 
   @Test
-  void shouldHaveGetNameMethod() {
+  void should_have_get_name_method() {
     String name = mockTool.getName();
     assertNotNull(name);
     assertFalse(name.trim().isEmpty());
   }
 
   @Test
-  void shouldHaveGetDescriptionMethod() {
+  void should_have_get_description_method() {
     String description = mockTool.getDescription();
     assertNotNull(description);
     assertFalse(description.trim().isEmpty());
   }
 
   @Test
-  void shouldHaveGetParameterSchemaMethod() {
+  void should_have_get_parameter_schema_method() {
     String schema = mockTool.getParameterSchema();
     assertNotNull(schema);
     assertFalse(schema.trim().isEmpty());
@@ -42,44 +45,44 @@ class ToolTest {
   }
 
   @Test
-  void shouldHaveExecuteMethod() throws Exception {
+  void should_have_execute_method() throws Exception {
     JsonNode parameters = objectMapper.createObjectNode();
     String result = mockTool.execute(parameters);
     assertNotNull(result);
   }
 
   @Test
-  void shouldHandleNullParametersInExecute() {
+  void should_handle_null_parameters_in_execute() {
     assertThrows(IllegalArgumentException.class, () -> mockTool.execute(null));
   }
 
   @Test
-  void shouldHaveValidateMethod() throws Exception {
+  void should_have_validate_method() throws Exception {
     JsonNode validParameters = objectMapper.createObjectNode();
     assertDoesNotThrow(() -> mockTool.validate(validParameters));
   }
 
   @Test
-  void shouldThrowOnInvalidParametersInValidate() {
+  void should_throw_on_invalid_parameters_in_validate() {
     assertThrows(IllegalArgumentException.class, () -> mockTool.validate(null));
   }
 
   @Test
-  void shouldReturnConsistentName() {
+  void should_return_consistent_name() {
     String name1 = mockTool.getName();
     String name2 = mockTool.getName();
     assertEquals(name1, name2);
   }
 
   @Test
-  void shouldReturnConsistentDescription() {
+  void should_return_consistent_description() {
     String desc1 = mockTool.getDescription();
     String desc2 = mockTool.getDescription();
     assertEquals(desc1, desc2);
   }
 
   @Test
-  void shouldReturnConsistentParameterSchema() {
+  void should_return_consistent_parameter_schema() {
     String schema1 = mockTool.getParameterSchema();
     String schema2 = mockTool.getParameterSchema();
     assertEquals(schema1, schema2);

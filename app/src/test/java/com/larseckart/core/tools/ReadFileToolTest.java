@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.Assumptions;
@@ -17,6 +19,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ReadFileToolTest {
 
   private ReadFileTool readFileTool;
@@ -32,12 +35,12 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldHaveCorrectName() {
+  void should_have_correct_name() {
     assertEquals("read_file", readFileTool.getName());
   }
 
   @Test
-  void shouldHaveCorrectDescription() {
+  void should_have_correct_description() {
     String description = readFileTool.getDescription();
     assertNotNull(description);
     assertTrue(description.toLowerCase().contains("read"));
@@ -46,7 +49,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldHaveValidParameterSchema() throws Exception {
+  void should_have_valid_parameter_schema() throws Exception {
     String schema = readFileTool.getParameterSchema();
     assertNotNull(schema);
     assertFalse(schema.trim().isEmpty());
@@ -71,7 +74,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldReadFileWithAbsolutePath() throws Exception {
+  void should_read_file_with_absolute_path() throws Exception {
     // Create test file
     Path testFile = tempDir.resolve("test.txt");
     String content = "Hello, World!";
@@ -85,7 +88,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldReadFileWithRelativePath() throws Exception {
+  void should_read_file_with_relative_path() throws Exception {
     // Create test file in current working directory
     Path currentDir = Path.of(System.getProperty("user.dir"));
     Path testFile = currentDir.resolve("test-relative.txt");
@@ -106,7 +109,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldReadFileWithDifferentEncodings() throws Exception {
+  void should_read_file_with_different_encodings() throws Exception {
     Path testFile = tempDir.resolve("encoded.txt");
     String content = "Café naïve résumé";
     Files.write(testFile, content.getBytes(StandardCharsets.UTF_8));
@@ -120,7 +123,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldUseDefaultEncodingWhenNotSpecified() throws Exception {
+  void should_use_default_encoding_when_not_specified() throws Exception {
     Path testFile = tempDir.resolve("default-encoding.txt");
     String content = "Default encoding test";
     Files.write(testFile, content.getBytes(StandardCharsets.UTF_8));
@@ -133,7 +136,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldThrowExceptionForNonExistentFile() {
+  void should_throw_exception_for_non_existent_file() {
     ObjectNode params = objectMapper.createObjectNode();
     params.put("path", "/non/existent/file.txt");
     
@@ -143,7 +146,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldHandlePermissionDenied() throws Exception {
+  void should_handle_permission_denied() throws Exception {
     // This test might not work on all systems, so we'll make it conditional
     Path testFile = tempDir.resolve("no-permission.txt");
     Files.write(testFile, "secret content".getBytes(StandardCharsets.UTF_8));
@@ -168,7 +171,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldEnforceFileSizeLimit() throws Exception {
+  void should_enforce_file_size_limit() throws Exception {
     Path testFile = tempDir.resolve("large.txt");
     StringBuilder largeContent = new StringBuilder();
     
@@ -187,7 +190,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldHandleEmptyFile() throws Exception {
+  void should_handle_empty_file() throws Exception {
     Path testFile = tempDir.resolve("empty.txt");
     Files.createFile(testFile);
     
@@ -199,7 +202,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldValidateRequiredParameters() {
+  void should_validate_required_parameters() {
     ObjectNode params = objectMapper.createObjectNode();
     // Missing required "path" parameter
     
@@ -207,13 +210,13 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldValidateNullParameters() {
+  void should_validate_null_parameters() {
     assertThrows(IllegalArgumentException.class, () -> readFileTool.validate(null));
     assertThrows(IllegalArgumentException.class, () -> readFileTool.execute(null));
   }
 
   @Test
-  void shouldValidateEmptyPath() {
+  void should_validate_empty_path() {
     ObjectNode params = objectMapper.createObjectNode();
     params.put("path", "");
     
@@ -221,7 +224,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldValidateNullPath() {
+  void should_validate_null_path() {
     ObjectNode params = objectMapper.createObjectNode();
     params.putNull("path");
     
@@ -229,7 +232,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldAcceptValidParameters() {
+  void should_accept_valid_parameters() {
     ObjectNode params = objectMapper.createObjectNode();
     params.put("path", "/some/valid/path.txt");
     
@@ -237,7 +240,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldAcceptValidParametersWithEncoding() {
+  void should_accept_valid_parameters_with_encoding() {
     ObjectNode params = objectMapper.createObjectNode();
     params.put("path", "/some/valid/path.txt");
     params.put("encoding", "UTF-8");
@@ -246,7 +249,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldReadFileWithMultipleLines() throws Exception {
+  void should_read_file_with_multiple_lines() throws Exception {
     Path testFile = tempDir.resolve("multiline.txt");
     String content = "Line 1\nLine 2\nLine 3\n";
     Files.write(testFile, content.getBytes(StandardCharsets.UTF_8));
@@ -259,7 +262,7 @@ class ReadFileToolTest {
   }
 
   @Test
-  void shouldReadFileWithSpecialCharacters() throws Exception {
+  void should_read_file_with_special_characters() throws Exception {
     Path testFile = tempDir.resolve("special.txt");
     String content = "Special chars: !@#$%^&*()_+-={}[]|\\:;\"'<>?,./";
     Files.write(testFile, content.getBytes(StandardCharsets.UTF_8));

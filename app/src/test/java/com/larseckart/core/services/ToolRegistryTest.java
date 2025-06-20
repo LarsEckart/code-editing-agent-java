@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.larseckart.core.domain.Tool;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -13,6 +15,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ToolRegistryTest {
   
   private ToolRegistry toolRegistry;
@@ -25,7 +28,7 @@ class ToolRegistryTest {
   }
   
   @Test
-  void shouldRegisterAndRetrieveTool() {
+  void should_register_and_retrieve_tool() {
     Tool mockTool = new Tool() {
       @Override
       public String getName() {
@@ -62,13 +65,13 @@ class ToolRegistryTest {
   }
   
   @Test
-  void shouldReturnNullForUnknownTool() {
+  void should_return_null_for_unknown_tool() {
     Tool retrieved = toolRegistry.getTool("unknownTool");
     assertNull(retrieved);
   }
   
   @Test
-  void shouldGetAllRegisteredTools() {
+  void should_get_all_registered_tools() {
     Tool tool1 = createMockTool("tool1", "First tool");
     Tool tool2 = createMockTool("tool2", "Second tool");
     
@@ -82,7 +85,7 @@ class ToolRegistryTest {
   }
   
   @Test
-  void shouldConvertToClaudeFunctionDefinitions() {
+  void should_convert_to_claude_function_definitions() {
     Tool mockTool = new Tool() {
       @Override
       public String getName() {
@@ -132,7 +135,7 @@ class ToolRegistryTest {
   }
   
   @Test
-  void shouldRouteFunctionCallToCorrectTool() {
+  void should_route_function_call_to_correct_tool() {
     Tool mockTool = new Tool() {
       @Override
       public String getName() {
@@ -170,7 +173,7 @@ class ToolRegistryTest {
   }
   
   @Test
-  void shouldThrowExceptionWhenRoutingToUnknownTool() {
+  void should_throw_exception_when_routing_to_unknown_tool() {
     ObjectNode params = mapper.createObjectNode();
     
     assertThrows(IllegalArgumentException.class, () -> {
@@ -179,7 +182,7 @@ class ToolRegistryTest {
   }
   
   @Test
-  void shouldOverwriteToolWithSameName() {
+  void should_overwrite_tool_with_same_name() {
     Tool tool1 = createMockTool("sameName", "First version");
     Tool tool2 = createMockTool("sameName", "Second version");
     

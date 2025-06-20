@@ -12,12 +12,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ConversationServiceToolsTest {
 
   @Mock
@@ -33,7 +36,7 @@ class ConversationServiceToolsTest {
   }
 
   @Test
-  void shouldAcceptToolRegistryInConstructor() {
+  void should_accept_tool_registry_in_constructor() {
     // Test that ConversationService now accepts ToolRegistry
     ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
     assertNotNull(service);
@@ -55,7 +58,7 @@ class ConversationServiceToolsTest {
   }
 
   @Test
-  void shouldHaveMethodToHandleToolUse() throws Exception {
+  void should_have_method_to_handle_tool_use() throws Exception {
     ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
 
     // Check if sendMessage method exists (it should)
@@ -70,7 +73,7 @@ class ConversationServiceToolsTest {
   }
 
   @Test
-  void shouldHaveToolRegistryField() throws Exception {
+  void should_have_tool_registry_field() throws Exception {
     ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
 
     // Check if toolRegistry field exists
@@ -80,7 +83,7 @@ class ConversationServiceToolsTest {
   }
 
   @Test
-  void shouldSupportToolDefinitionsInApiCall() throws Exception {
+  void should_support_tool_definitions_in_api_call() throws Exception {
     ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
 
     // Verify service exists and has tool support methods
@@ -94,7 +97,7 @@ class ConversationServiceToolsTest {
   }
 
   @Test
-  void shouldMaintainBackwardCompatibility() {
+  void should_maintain_backward_compatibility() {
     // Test that existing functionality structure is maintained
     ConversationService service = new ConversationService(context, apiKey);
 
@@ -114,7 +117,7 @@ class ConversationServiceToolsTest {
   }
 
   @Test
-  void constructorReflectionTest() {
+  void constructor_reflection_test() {
     // Test that both constructors exist
     Constructor<?>[] constructors = ConversationService.class.getConstructors();
     assertEquals(2, constructors.length, "Should have two constructors");
@@ -142,7 +145,7 @@ class ConversationServiceToolsTest {
   }
 
   @Test
-  void shouldHaveToolHandlingMethods() throws Exception {
+  void should_have_tool_handling_methods() throws Exception {
     ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
 
     // Check if tool handling methods exist
@@ -161,7 +164,7 @@ class ConversationServiceToolsTest {
   }
 
   @Test
-  void shouldHaveObjectMapperField() throws Exception {
+  void should_have_object_mapper_field() throws Exception {
     ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
 
     // Check if objectMapper field exists

@@ -6,8 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ConversationContextTest {
 
   private ConversationContext context;
@@ -18,13 +21,13 @@ class ConversationContextTest {
   }
 
   @Test
-  void testEmptyContext() {
+  void test_empty_context() {
     List<ChatMessage> history = context.getHistory();
     assertTrue(history.isEmpty());
   }
 
   @Test
-  void testAddUserMessage() {
+  void test_add_user_message() {
     ChatMessage userMessage = ChatMessage.user("Hello");
     context.addUserMessage(userMessage);
 
@@ -34,7 +37,7 @@ class ConversationContextTest {
   }
 
   @Test
-  void testAddAssistantMessage() {
+  void test_add_assistant_message() {
     ChatMessage assistantMessage = ChatMessage.assistant("Hi there!");
     context.addAssistantMessage(assistantMessage);
 
@@ -44,7 +47,7 @@ class ConversationContextTest {
   }
 
   @Test
-  void testAddMultipleMessages() {
+  void test_add_multiple_messages() {
     ChatMessage userMessage1 = ChatMessage.user("Hello");
     ChatMessage assistantMessage1 = ChatMessage.assistant("Hi there!");
     ChatMessage userMessage2 = ChatMessage.user("How are you?");
@@ -64,7 +67,7 @@ class ConversationContextTest {
   }
 
   @Test
-  void testGetHistoryReturnsImmutableList() {
+  void test_get_history_returns_immutable_list() {
     ChatMessage userMessage = ChatMessage.user("Hello");
     context.addUserMessage(userMessage);
 
@@ -84,7 +87,7 @@ class ConversationContextTest {
   }
 
   @Test
-  void testGetHistoryIndependentCopies() {
+  void test_get_history_independent_copies() {
     ChatMessage userMessage = ChatMessage.user("Hello");
     context.addUserMessage(userMessage);
 
@@ -96,13 +99,13 @@ class ConversationContextTest {
   }
 
   @Test
-  void testToString_emptyContext() {
+  void test_to_string_empty_context() {
     String result = context.toString();
     assertEquals("", result);
   }
 
   @Test
-  void testToString_singleUserMessage() {
+  void test_to_string_single_user_message() {
     context.addUserMessage(ChatMessage.user("Hello"));
 
     String result = context.toString();
@@ -110,7 +113,7 @@ class ConversationContextTest {
   }
 
   @Test
-  void testToString_singleAssistantMessage() {
+  void test_to_string_single_assistant_message() {
     context.addAssistantMessage(ChatMessage.assistant("Hi there!"));
 
     String result = context.toString();
@@ -118,7 +121,7 @@ class ConversationContextTest {
   }
 
   @Test
-  void testToString_multipleMessages() {
+  void test_to_string_multiple_messages() {
     context.addUserMessage(ChatMessage.user("What is 2+2?"));
     context.addAssistantMessage(ChatMessage.assistant("2+2 equals 4"));
     context.addUserMessage(ChatMessage.user("Thank you!"));
@@ -132,7 +135,7 @@ class ConversationContextTest {
   }
 
   @Test
-  void testToString_withEmptyMessages() {
+  void test_to_string_with_empty_messages() {
     context.addUserMessage(ChatMessage.user(""));
     context.addAssistantMessage(ChatMessage.assistant("Non-empty response"));
     context.addUserMessage(ChatMessage.user(""));
@@ -146,7 +149,7 @@ class ConversationContextTest {
   }
 
   @Test
-  void testToString_withSpecialCharacters() {
+  void test_to_string_with_special_characters() {
     context.addUserMessage(ChatMessage.user("Message with\nnewlines"));
     context.addAssistantMessage(ChatMessage.assistant("Message with\ttabs and \"quotes\""));
 

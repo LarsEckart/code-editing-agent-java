@@ -75,3 +75,11 @@ The application supports two modes:
 - 2-space indentation
 - PascalCase for classes, camelCase for methods/variables
 - Dependencies managed via `gradle/libs.versions.toml`
+
+### Test Conventions
+
+- All test classes use `@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)`
+- Test method names use snake_case format (e.g., `should_handle_empty_file()`)
+- Display names are automatically generated from method names ("should handle empty file")
+- Use `@DisabledOnOs(OS.WINDOWS)` instead of manual OS detection for platform-specific tests
+- Avoid manual `@DisplayName` annotations
