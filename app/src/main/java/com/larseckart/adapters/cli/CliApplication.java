@@ -1,6 +1,7 @@
 package com.larseckart.adapters.cli;
 
 import com.larseckart.ApiKey;
+import com.larseckart.adapters.ai.AnthropicProvider;
 import com.larseckart.core.domain.ConversationContext;
 import com.larseckart.core.ports.input.InputPort;
 import com.larseckart.core.ports.output.OutputPort;
@@ -28,7 +29,7 @@ public class CliApplication {
     toolRegistry.registerTool(new EditFileTool());
 
     ConversationService conversationService =
-        new ConversationService(context, apiKey, toolRegistry);
+        new ConversationService(context, new AnthropicProvider(apiKey), toolRegistry);
 
     ChatService chatService = new ChatService(inputPort, outputPort, conversationService);
     chatService.startChat();

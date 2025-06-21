@@ -1,6 +1,7 @@
 package com.larseckart.adapters.web;
 
 import com.larseckart.ApiKey;
+import com.larseckart.adapters.ai.AnthropicProvider;
 import com.larseckart.core.domain.ConversationContext;
 import com.larseckart.core.services.ConversationService;
 import org.springframework.boot.SpringApplication;
@@ -27,6 +28,6 @@ public class WebApplication {
 
   @Bean
   public ConversationService conversationService(ConversationContext context, ApiKey apiKey) {
-    return new ConversationService(context, apiKey);
+    return new ConversationService(context, new AnthropicProvider(apiKey));
   }
 }

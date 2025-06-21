@@ -7,35 +7,35 @@ This application demonstrates clean architecture principles and provides both CL
 
 ### Project Statistics
 
-- **Total Commits**: 56
-- **AI-Assisted Commits**: 37 (66.07%)
-- **Total Lines Added**: 7290
-- **AI-Assisted Lines Added**: 5620 (77.09%)
-- **Total Lines Changed**: 10876
-- **AI-Assisted Lines Changed**: 8473 (77.91%)
+- **Total Commits**: 57
+- **AI-Assisted Commits**: 38 (66.67%)
+- **Total Lines Added**: 7430
+- **AI-Assisted Lines Added**: 5760 (77.52%)
+- **Total Lines Changed**: 11066
+- **AI-Assisted Lines Changed**: 8663 (78.28%)
 
 ### Breakdown by AI Assistant
 
 #### Claude Code
 
-- **Commits**: 30 (53.57%)
-- **Lines Added**: 4941
-- **Lines Deleted**: 2307
-- **Lines Changed**: 7248 (66.64%)
+- **Commits**: 31 (54.39%)
+- **Lines Added**: 5081
+- **Lines Deleted**: 2357
+- **Lines Changed**: 7438 (67.21%)
 
 #### Amp
 
-- **Commits**: 5 (8.93%)
+- **Commits**: 5 (8.77%)
 - **Lines Added**: 608
 - **Lines Deleted**: 472
-- **Lines Changed**: 1080 (9.93%)
+- **Lines Changed**: 1080 (9.76%)
 
 #### GitHub Copilot
 
-- **Commits**: 2 (3.57%)
+- **Commits**: 2 (3.51%)
 - **Lines Added**: 71
 - **Lines Deleted**: 74
-- **Lines Changed**: 145 (1.33%)
+- **Lines Changed**: 145 (1.31%)
 
 
 *Statistics are automatically updated on each commit.*

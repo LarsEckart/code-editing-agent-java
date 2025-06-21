@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larseckart.ApiKey;
+import com.larseckart.adapters.ai.AnthropicProvider;
 import com.larseckart.core.domain.ConversationContext;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -34,7 +35,7 @@ class ConversationServiceToolsTest {
   @Test
   void should_accept_tool_registry_in_constructor() {
     // Test that ConversationService now accepts ToolRegistry
-    ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
+    ConversationService service = new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
     assertThat(service).isNotNull();
 
     // Check that constructor with ToolRegistry parameter exists
@@ -56,24 +57,24 @@ class ConversationServiceToolsTest {
 
   @Test
   void should_have_method_to_handle_tool_use() throws Exception {
-    ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
+    ConversationService service = new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
 
     // Check if sendMessage method exists (it should)
     Method sendMessageMethod = service.getClass().getMethod("sendMessage", String.class);
     assertThat(sendMessageMethod).isNotNull();
 
-    // Check if there's a method to handle tool use
+    // Check if there's a method to handle tool use (with updated signature)
     Method handleToolUseMethod =
         service
             .getClass()
-            .getDeclaredMethod("handleToolUse", com.anthropic.models.messages.Message.class);
+            .getDeclaredMethod("handleToolUse", com.larseckart.core.domain.ai.AIResponse.class);
     assertThat(handleToolUseMethod).isNotNull();
     assertThat(handleToolUseMethod.getName()).isEqualTo("handleToolUse");
   }
 
   @Test
   void should_have_tool_registry_field() throws Exception {
-    ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
+    ConversationService service = new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
 
     // Check if toolRegistry field exists
     Field toolRegistryField = service.getClass().getDeclaredField("toolRegistry");
@@ -83,24 +84,21 @@ class ConversationServiceToolsTest {
 
   @Test
   void should_support_tool_definitions_in_api_call() throws Exception {
-    ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
+    ConversationService service = new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
 
     // Verify service exists and has tool support methods
     assertThat(service).isNotNull();
 
-    // Check if hasToolUse method exists
-    Method hasToolUseMethod =
-        service
-            .getClass()
-            .getDeclaredMethod("hasToolUse", com.anthropic.models.messages.Message.class);
-    assertThat(hasToolUseMethod).isNotNull();
-    assertThat(hasToolUseMethod.getName()).isEqualTo("hasToolUse");
+    // Check if sendMessage method exists (which handles tool use logic internally)
+    Method sendMessageMethod = service.getClass().getMethod("sendMessage", String.class);
+    assertThat(sendMessageMethod).isNotNull();
+    assertThat(sendMessageMethod.getName()).isEqualTo("sendMessage");
   }
 
   @Test
   void should_maintain_backward_compatibility() {
     // Test that existing functionality structure is maintained
-    ConversationService service = new ConversationService(context, apiKey);
+    ConversationService service = new ConversationService(context, new AnthropicProvider(apiKey));
 
     // Should be able to create service without ToolRegistry
     assertThat(service).isNotNull();
@@ -130,18 +128,18 @@ class ConversationServiceToolsTest {
       Class<?>[] paramTypes = constructor.getParameterTypes();
       if (paramTypes.length == 2
           && paramTypes[0].equals(ConversationContext.class)
-          && paramTypes[1].equals(ApiKey.class)) {
+          && paramTypes[1].getName().equals("com.larseckart.core.ports.AIProvider")) {
         hasOriginalConstructor = true;
       } else if (paramTypes.length == 3
           && paramTypes[0].equals(ConversationContext.class)
-          && paramTypes[1].equals(ApiKey.class)
+          && paramTypes[1].getName().equals("com.larseckart.core.ports.AIProvider")
           && paramTypes[2].equals(ToolRegistry.class)) {
         hasToolRegistryConstructor = true;
       }
     }
 
     assertThat(hasOriginalConstructor)
-        .as("Original constructor should exist for backward compatibility")
+        .as("Constructor with AIProvider should exist")
         .isTrue();
     assertThat(hasToolRegistryConstructor)
         .as("Constructor with ToolRegistry should exist")
@@ -150,38 +148,30 @@ class ConversationServiceToolsTest {
 
   @Test
   void should_have_tool_handling_methods() throws Exception {
-    ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
+    ConversationService service = new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
 
     // Check if tool handling methods exist
-    Method hasToolUseMethod =
-        service
-            .getClass()
-            .getDeclaredMethod("hasToolUse", com.anthropic.models.messages.Message.class);
-    assertThat(hasToolUseMethod).isNotNull();
-
     Method handleToolUseMethod =
         service
             .getClass()
-            .getDeclaredMethod("handleToolUse", com.anthropic.models.messages.Message.class);
+            .getDeclaredMethod("handleToolUse", com.larseckart.core.domain.ai.AIResponse.class);
     assertThat(handleToolUseMethod).isNotNull();
 
     Method sendToolResultsMethod =
         service
             .getClass()
             .getDeclaredMethod(
-                "sendToolResultsToClaudeAndGetFinalResponse",
-                com.anthropic.models.messages.Message.class,
+                "sendToolResultsToAIAndGetFinalResponse",
                 String.class);
     assertThat(sendToolResultsMethod).isNotNull();
   }
 
   @Test
-  void should_have_object_mapper_field() throws Exception {
-    ConversationService service = new ConversationService(context, apiKey, mockToolRegistry);
+  void should_have_ai_provider_field() throws Exception {
+    ConversationService service = new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
 
-    // Check if objectMapper field exists
-    Field objectMapperField = service.getClass().getDeclaredField("objectMapper");
-    assertThat(objectMapperField).isNotNull();
-    assertThat(objectMapperField.getType()).isEqualTo(ObjectMapper.class);
+    // Check if aiProvider field exists
+    Field aiProviderField = service.getClass().getDeclaredField("aiProvider");
+    assertThat(aiProviderField).isNotNull();
   }
 }
