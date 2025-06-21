@@ -1,5 +1,9 @@
 # Code Editing Agent Java
 
+## AI Provider Support
+- **Anthropic Claude**: Full support including tool calling (file operations)
+- **Google Gemini**: Basic chat support only (tool calling not yet implemented)
+
 ## Commands
 
 ### CLI Mode
@@ -70,6 +74,8 @@ For web development with hot reloading:
 
 ## Environment Variables
 - **API Key**: `code_editing_agent_api_key` - Required for Claude API access
+- **Gemini API Key**: `GOOGLE_API_KEY` - Required for Gemini API access
+- **AI Provider**: `AI_PROVIDER=gemini` - Optional, defaults to Anthropic Claude
 - **App Mode**: `app.mode=web` - Optional, defaults to CLI mode
 
 ## Git Commits

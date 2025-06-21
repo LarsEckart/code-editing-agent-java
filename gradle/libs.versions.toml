@@ -6,9 +6,11 @@ guava = "33.4.8-jre"
 junit-jupiter = "5.11.3"
 jackson = "2.18.3"
 assertj = "3.26.3"
+google-genai = "1.5.0"
 
 [libraries]
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+google-genai = { module = "com.google.genai:google-genai", version.ref = "google-genai" }

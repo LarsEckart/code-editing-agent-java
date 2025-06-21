@@ -7,6 +7,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a very simple AI agent, following this tutorial: https://ampcode.com/how-to-build-an-agent
 It's implemented in java though.
 
+## AI Provider Support
+- **Anthropic Claude**: Full support including tool calling (file operations)
+- **Google Gemini**: Basic chat support only (tool calling not yet implemented)
+
 
 ## Project Structure
 
@@ -91,15 +95,18 @@ The application supports two modes:
 ### Key Dependencies
 
 - **Anthropic Java SDK**: `com.anthropic:anthropic-java:2.0.0`
+- **Google Gen AI Java SDK**: `com.google.genai:google-genai:1.5.0`
 - **Spring Boot**: `3.5.0` (for web mode)
 - **Java 24**: Required runtime version
 - **JUnit 5**: For testing
 
 ### Configuration
 
-- Set `code_editing_agent_api_key` environment variable for API access
+- Set `code_editing_agent_api_key` environment variable for Claude API access
+- Set `GOOGLE_API_KEY` environment variable for Gemini API access
+- Set `AI_PROVIDER=gemini` to use Gemini (defaults to Claude)
 - Main class: `com.larseckart.App`
-- Uses Claude 3.5 Haiku model by default (configurable in `ConversationService.java`)
+- Uses Claude 3.5 Haiku or Gemini 2.0 Flash model by default
 - **CLI Mode**: Set by `CliApplication.main()` with `System.setProperty("app.mode", "cli")`
 - **Web Mode**: Set by `WebApplication.main()` with `System.setProperty("app.mode", "web")`
 

@@ -1,49 +1,50 @@
-# Java AI Agent with Claude Integration
+# Java AI Agent with Multi-Provider Support
 
-A Java-based conversational AI agent that communicates with Anthropic's Claude API, following Thorsten Ball's tutorial at [How to Build an Agent](https://ampcode.com/how-to-build-an-agent). 
-This application demonstrates clean architecture principles and provides both CLI and web interfaces for interacting with Claude.
+A Java-based conversational AI agent that supports multiple AI providers (Anthropic Claude and Google Gemini), following Thorsten Ball's tutorial at [How to Build an Agent](https://ampcode.com/how-to-build-an-agent). 
+This application demonstrates clean architecture principles and provides both CLI and web interfaces for interacting with AI models.
 
 ## AI Contributions
 
 ### Project Statistics
 
-- **Total Commits**: 57
-- **AI-Assisted Commits**: 38 (66.67%)
-- **Total Lines Added**: 7430
-- **AI-Assisted Lines Added**: 5760 (77.52%)
-- **Total Lines Changed**: 11066
-- **AI-Assisted Lines Changed**: 8663 (78.28%)
+- **Total Commits**: 58
+- **AI-Assisted Commits**: 39 (67.24%)
+- **Total Lines Added**: 7723
+- **AI-Assisted Lines Added**: 6053 (78.38%)
+- **Total Lines Changed**: 11583
+- **AI-Assisted Lines Changed**: 9180 (79.25%)
 
 ### Breakdown by AI Assistant
 
 #### Claude Code
 
-- **Commits**: 31 (54.39%)
+- **Commits**: 31 (53.45%)
 - **Lines Added**: 5081
 - **Lines Deleted**: 2357
-- **Lines Changed**: 7438 (67.21%)
+- **Lines Changed**: 7438 (64.21%)
 
 #### Amp
 
-- **Commits**: 5 (8.77%)
-- **Lines Added**: 608
-- **Lines Deleted**: 472
-- **Lines Changed**: 1080 (9.76%)
+- **Commits**: 6 (10.34%)
+- **Lines Added**: 901
+- **Lines Deleted**: 696
+- **Lines Changed**: 1597 (13.79%)
 
 #### GitHub Copilot
 
-- **Commits**: 2 (3.51%)
+- **Commits**: 2 (3.45%)
 - **Lines Added**: 71
 - **Lines Deleted**: 74
-- **Lines Changed**: 145 (1.31%)
+- **Lines Changed**: 145 (1.25%)
 
 
 *Statistics are automatically updated on each commit.*
 
 ## Features
 
+- **Multi-Provider Support**: Choose between Anthropic Claude and Google Gemini
 - **Dual Interface Support**: Run as a command-line application or web server
-- **File Operations**: Built-in tools for reading, editing, and listing files (CLI mode only)
+- **File Operations**: Built-in tools for reading, editing, and listing files (CLI mode only, Anthropic Claude only)
 - **Clean Architecture**: Hexagonal architecture with clear separation of concerns
 - **Hot Reloading**: Development server with automatic restart and live reload
 - **Separate Logging**: Mode-specific log files (CLI: `logs/application-cli.log`, Web: `logs/application-web.log`)
@@ -54,24 +55,28 @@ This application demonstrates clean architecture principles and provides both CL
 
 - **Java 24** or higher
 - **Gradle** (wrapper included)
-- **Anthropic API Key** (required for Claude integration)
+- **API Key**: Either Anthropic API Key (for Claude) or Google API Key (for Gemini)
 
 ## Getting Started
 
 ### 1. Set Up API Key
 
-You need an Anthropic API key to use this application. Get one from [Anthropic's Console](https://console.anthropic.com/).
-
-Set the environment variable:
+#### For Anthropic Claude (default)
+Get an API key from [Anthropic's Console](https://console.anthropic.com/).
 
 ```bash
 export code_editing_agent_api_key="your-api-key-here"
 ```
 
-Or on Windows:
-```cmd
-set code_editing_agent_api_key=your-api-key-here
+#### For Google Gemini
+Get an API key from [Google AI Studio](https://aistudio.google.com/).
+
+```bash
+export GOOGLE_API_KEY="your-api-key-here"
+export AI_PROVIDER=gemini
 ```
+
+> **Note**: Tool support (file operations) is currently only available with Anthropic Claude. Gemini provider supports basic chat functionality only.
 
 ### 2. Clone and Build
 
@@ -171,11 +176,13 @@ This application follows hexagonal architecture principles:
 
 ### Built-in Tools
 
-The agent comes with file operation tools (CLI mode only):
+The agent comes with file operation tools (CLI mode only, Anthropic Claude only):
 
 - **ReadFileTool**: Read file contents
 - **EditFileTool**: Modify existing files
 - **ListFilesTool**: Browse directory contents
+
+> **Note**: Tool support is currently only available when using Anthropic Claude as the AI provider. Google Gemini provider does not yet support function calling/tools.
 
 > **Security Note**: These file tools are designed exclusively for CLI mode where they operate on the user's local file system. In web mode, these tools would pose serious security risks by allowing web users to access the server's file system. A proper web implementation would require either disabling file tools entirely or implementing sandboxed alternatives.
 
@@ -183,7 +190,9 @@ The agent comes with file operation tools (CLI mode only):
 
 ### Environment Variables
 
-- `code_editing_agent_api_key`: Required - Your Anthropic API key
+- `code_editing_agent_api_key`: Required for Claude - Your Anthropic API key
+- `GOOGLE_API_KEY`: Required for Gemini - Your Google API key
+- `AI_PROVIDER`: Optional - Set to "gemini" to use Gemini (default: Claude)
 - `app.mode`: Optional - Set to "web" for web mode (default: CLI)
 
 ### Model Configuration
@@ -231,6 +240,7 @@ LarsGPT: [Reads and displays file contents]
 ## Dependencies
 
 - **Anthropic Java SDK** 2.0.0 - Claude API integration
+- **Google Gen AI Java SDK** 1.5.0 - Gemini API integration
 - **Spring Boot** 3.5.0 - Web framework
 - **JUnit 5** - Testing framework
 - **Java 24** - Runtime platform

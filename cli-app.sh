@@ -3,7 +3,7 @@
 # CLI application launcher
 # Usage: ./cli-app.sh
 
-./gradlew build -q > /dev/null 2>&1
+./gradlew assemble -q > /dev/null 2>&1
 
 if [ $? -ne 0 ]; then
   echo "Build failed. Running build with output to show errors:"

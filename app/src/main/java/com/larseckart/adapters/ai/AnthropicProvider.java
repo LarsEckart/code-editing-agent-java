@@ -63,7 +63,7 @@ public class AnthropicProvider implements AIProvider {
 
       log.debug("Sending request to Anthropic API");
       var response = client.messages().create(paramsBuilder.build());
-      
+
       return convertToAIResponse(response);
 
     } catch (Exception e) {
@@ -78,9 +78,7 @@ public class AnthropicProvider implements AIProvider {
   }
 
   private List<ToolUnion> convertToAnthropicTools(List<AITool> aiTools) {
-    return aiTools.stream()
-        .map(this::convertToAnthropicTool)
-        .toList();
+    return aiTools.stream().map(this::convertToAnthropicTool).toList();
   }
 
   private ToolUnion convertToAnthropicTool(AITool aiTool) {
@@ -88,11 +86,12 @@ public class AnthropicProvider implements AIProvider {
     JsonValue propertiesJson = JsonValue.from(properties);
     Tool.InputSchema schema = Tool.InputSchema.builder().properties(propertiesJson).build();
 
-    Tool tool = Tool.builder()
-        .name(aiTool.name())
-        .description(aiTool.description())
-        .inputSchema(schema)
-        .build();
+    Tool tool =
+        Tool.builder()
+            .name(aiTool.name())
+            .description(aiTool.description())
+            .inputSchema(schema)
+            .build();
 
     return ToolUnion.ofTool(tool);
   }
@@ -112,19 +111,20 @@ public class AnthropicProvider implements AIProvider {
         var toolUse = block.toolUse().get();
         String toolName = toolUse.name();
         JsonValue inputValue = toolUse._input();
-        
-        JsonNode parameters = inputValue.accept(
-            new JsonValue.Visitor<>() {
-              @Override
-              public JsonNode visitObject(Map<String, ? extends JsonValue> value) {
-                return objectMapper.valueToTree(value);
-              }
 
-              @Override
-              public JsonNode visitDefault() {
-                return objectMapper.createObjectNode();
-              }
-            });
+        JsonNode parameters =
+            inputValue.accept(
+                new JsonValue.Visitor<>() {
+                  @Override
+                  public JsonNode visitObject(Map<String, ? extends JsonValue> value) {
+                    return objectMapper.valueToTree(value);
+                  }
+
+                  @Override
+                  public JsonNode visitDefault() {
+                    return objectMapper.createObjectNode();
+                  }
+                });
 
         toolUses.add(new AIToolUse(toolName, parameters));
       }

@@ -2,7 +2,6 @@ package com.larseckart.core.services;
 
 import static org.assertj.core.api.Assertions.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larseckart.ApiKey;
 import com.larseckart.adapters.ai.AnthropicProvider;
 import com.larseckart.core.domain.ConversationContext;
@@ -35,7 +34,8 @@ class ConversationServiceToolsTest {
   @Test
   void should_accept_tool_registry_in_constructor() {
     // Test that ConversationService now accepts ToolRegistry
-    ConversationService service = new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
+    ConversationService service =
+        new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
     assertThat(service).isNotNull();
 
     // Check that constructor with ToolRegistry parameter exists
@@ -57,7 +57,8 @@ class ConversationServiceToolsTest {
 
   @Test
   void should_have_method_to_handle_tool_use() throws Exception {
-    ConversationService service = new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
+    ConversationService service =
+        new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
 
     // Check if sendMessage method exists (it should)
     Method sendMessageMethod = service.getClass().getMethod("sendMessage", String.class);
@@ -74,7 +75,8 @@ class ConversationServiceToolsTest {
 
   @Test
   void should_have_tool_registry_field() throws Exception {
-    ConversationService service = new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
+    ConversationService service =
+        new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
 
     // Check if toolRegistry field exists
     Field toolRegistryField = service.getClass().getDeclaredField("toolRegistry");
@@ -84,7 +86,8 @@ class ConversationServiceToolsTest {
 
   @Test
   void should_support_tool_definitions_in_api_call() throws Exception {
-    ConversationService service = new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
+    ConversationService service =
+        new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
 
     // Verify service exists and has tool support methods
     assertThat(service).isNotNull();
@@ -138,9 +141,7 @@ class ConversationServiceToolsTest {
       }
     }
 
-    assertThat(hasOriginalConstructor)
-        .as("Constructor with AIProvider should exist")
-        .isTrue();
+    assertThat(hasOriginalConstructor).as("Constructor with AIProvider should exist").isTrue();
     assertThat(hasToolRegistryConstructor)
         .as("Constructor with ToolRegistry should exist")
         .isTrue();
@@ -148,7 +149,8 @@ class ConversationServiceToolsTest {
 
   @Test
   void should_have_tool_handling_methods() throws Exception {
-    ConversationService service = new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
+    ConversationService service =
+        new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
 
     // Check if tool handling methods exist
     Method handleToolUseMethod =
@@ -160,15 +162,14 @@ class ConversationServiceToolsTest {
     Method sendToolResultsMethod =
         service
             .getClass()
-            .getDeclaredMethod(
-                "sendToolResultsToAIAndGetFinalResponse",
-                String.class);
+            .getDeclaredMethod("sendToolResultsToAIAndGetFinalResponse", String.class);
     assertThat(sendToolResultsMethod).isNotNull();
   }
 
   @Test
   void should_have_ai_provider_field() throws Exception {
-    ConversationService service = new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
+    ConversationService service =
+        new ConversationService(context, new AnthropicProvider(apiKey), mockToolRegistry);
 
     // Check if aiProvider field exists
     Field aiProviderField = service.getClass().getDeclaredField("aiProvider");

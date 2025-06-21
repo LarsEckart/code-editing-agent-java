@@ -1,8 +1,8 @@
 package com.larseckart.adapters.cli;
 
-import com.larseckart.ApiKey;
-import com.larseckart.adapters.ai.AnthropicProvider;
+import com.larseckart.adapters.ai.AIProviderFactory;
 import com.larseckart.core.domain.ConversationContext;
+import com.larseckart.core.ports.AIProvider;
 import com.larseckart.core.ports.input.InputPort;
 import com.larseckart.core.ports.output.OutputPort;
 import com.larseckart.core.services.ChatService;
@@ -21,7 +21,7 @@ public class CliApplication {
     OutputPort outputPort = new ConsoleOutputAdapter();
 
     ConversationContext context = new ConversationContext();
-    ApiKey apiKey = ApiKey.fromEnvironment("code_editing_agent_api_key");
+    AIProvider aiProvider = AIProviderFactory.createFromEnvironment();
 
     ToolRegistry toolRegistry = new ToolRegistry();
     toolRegistry.registerTool(new ReadFileTool());
@@ -29,7 +29,7 @@ public class CliApplication {
     toolRegistry.registerTool(new EditFileTool());
 
     ConversationService conversationService =
-        new ConversationService(context, new AnthropicProvider(apiKey), toolRegistry);
+        new ConversationService(context, aiProvider, toolRegistry);
 
     ChatService chatService = new ChatService(inputPort, outputPort, conversationService);
     chatService.startChat();

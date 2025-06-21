@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     implementation("com.anthropic:anthropic-java:2.0.0")
+    implementation(libs.google.genai)
     
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")

@@ -52,22 +52,27 @@ public class ConversationService {
         List<Map<String, Object>> toolDefinitions =
             toolRegistry.convertToClaudeFunctionDefinitions();
         if (!toolDefinitions.isEmpty()) {
-          tools = toolDefinitions.stream()
-              .map(toolDef -> new AITool(
-                  (String) toolDef.get("name"),
-                  (String) toolDef.get("description"),
-                  (Map<String, Object>) toolDef.get("input_schema")))
-              .toList();
+          tools =
+              toolDefinitions.stream()
+                  .map(
+                      toolDef ->
+                          new AITool(
+                              (String) toolDef.get("name"),
+                              (String) toolDef.get("description"),
+                              (Map<String, Object>) toolDef.get("input_schema")))
+                  .toList();
         }
       }
 
-      AIRequest request = new AIRequest(
-          context.getHistory(),
-          "You're from Germany, even when you reply in English, let some German words slip in. You're a huge fan of Estonia, mention or make references to Estonia whenever you can.",
-          tools,
-          4 * 1024);
+      AIRequest request =
+          new AIRequest(
+              context.getHistory(),
+              "You're from Germany, even when you reply in English, let some German words slip in. You're a huge fan of Estonia, mention or make references to Estonia whenever you can.",
+              tools,
+              4 * 1024);
 
-      log.debug("Sending request to AI provider with {} history messages", context.getHistory().size());
+      log.debug(
+          "Sending request to AI provider with {} history messages", context.getHistory().size());
       AIResponse response = aiProvider.sendMessage(request);
       log.debug("Received response from AI provider, checking for tool use");
 
@@ -102,7 +107,7 @@ public class ConversationService {
 
       for (AIToolUse toolUse : response.toolUses()) {
         String toolName = toolUse.toolName();
-        
+
         // Execute the tool
         log.info("Executing tool: {}", toolName);
         log.debug("Tool parameters: {}", toolUse.parameters());
@@ -133,31 +138,35 @@ public class ConversationService {
         List<Map<String, Object>> toolDefinitions =
             toolRegistry.convertToClaudeFunctionDefinitions();
         if (!toolDefinitions.isEmpty()) {
-          tools = toolDefinitions.stream()
-              .map(toolDef -> new AITool(
-                  (String) toolDef.get("name"),
-                  (String) toolDef.get("description"),
-                  (Map<String, Object>) toolDef.get("input_schema")))
-              .toList();
+          tools =
+              toolDefinitions.stream()
+                  .map(
+                      toolDef ->
+                          new AITool(
+                              (String) toolDef.get("name"),
+                              (String) toolDef.get("description"),
+                              (Map<String, Object>) toolDef.get("input_schema")))
+                  .toList();
         }
       }
 
       // Add tool results as user message to context
       context.addUserMessage(ChatMessage.user("Tool results: " + toolResults));
 
-      AIRequest request = new AIRequest(
-          context.getHistory(),
-          "You're from Germany, even when you reply in English, let some German words slip in. You're a huge fan of Estonia, mention or make references to Estonia whenever you can.",
-          tools,
-          1024);
+      AIRequest request =
+          new AIRequest(
+              context.getHistory(),
+              "You're from Germany, even when you reply in English, let some German words slip in. You're a huge fan of Estonia, mention or make references to Estonia whenever you can.",
+              tools,
+              1024);
 
       AIResponse finalResponse = aiProvider.sendMessage(request);
       String text = finalResponse.textContent();
-      
+
       if (!text.isEmpty()) {
         context.addAssistantMessage(ChatMessage.assistant(text));
       }
-      
+
       return text;
 
     } catch (Exception e) {
