@@ -1,106 +1,79 @@
-# Gemini List Files Tool Implementation Plan
+# Gemini ReadFile and EditFile Tools Implementation Plan - COMPLETED
 
 ## Overview
-Implement the "list files" tool for Google Gemini using their native function calling mechanism, maintaining feature parity with the existing Anthropic implementation.
+Extended the existing GeminiTools class to include `readFile` and `editFile` methods, following the same patterns as the existing `listFiles` implementation and maintaining feature parity with the Anthropic equivalents.
 
-## Architecture Decision
-- **Approach**: Create a Gemini-specific tool registration mechanism
-- **Execution**: Let Gemini automatically execute functions during conversation
-- **Package Structure**: `com.larseckart.tools.gemini` for Gemini-specific tools
+## Implementation Completed ✅
 
-## Implementation Details
+### 1. ReadFile Method Added to GeminiTools ✅
+- **Method signature**: `public static String readFile(String path, String encoding)`
+- **Features implemented**:
+  - Support for both absolute and relative paths
+  - Optional encoding parameter (defaults to UTF-8)
+  - 1MB file size limit for safety
+  - Comprehensive error handling
+  - Path resolution using helper method `resolveFilePath()`
 
-### 1. Package Structure
-- Create new package: `com.larseckart.tools.gemini`
-- Create class: `GeminiTools` containing static methods for all Gemini tools
+### 2. EditFile Method Added to GeminiTools ✅
+- **Method signature**: `public static String editFile(String path, String searchText, String replaceText)`
+- **Features implemented**:
+  - Simple text replacement functionality
+  - Automatic backup creation (.backup extension)
+  - Validation that search text exists before replacement
+  - Security checks to prevent dangerous path operations
+  - Occurrence counting and reporting
 
-### 2. List Files Method Signature
-```java
-package com.larseckart.tools.gemini;
+### 3. GeminiProvider Registration Updated ✅
+- Extended the tool registration in `GeminiProvider.sendMessage()` to include both new methods
+- Uses reflection to register `readFile` and `editFile` alongside existing `listFiles`
+- Handles registration errors gracefully with proper logging
 
-public class GeminiTools {
-    /**
-     * Lists the contents of a directory, including files and subdirectories
-     * 
-     * @param path The directory path to list. Defaults to current directory if not provided
-     * @param showHidden Whether to show hidden files (files starting with dot). Defaults to false
-     * @return Directory listing or error message
-     */
-    public static String listFiles(String path, Boolean showHidden) {
-        // Implementation details below
-    }
-}
+### 4. Implementation Details
+
+#### ReadFile Method Implementation:
+- Handles null parameters with defaults (path=".", encoding="UTF-8")
+- Resolves relative paths against current working directory
+- Checks file existence, size limits, and permissions
+- Reads file content with specified encoding
+- Returns formatted error messages for all failure cases
+
+#### EditFile Method Implementation:
+- Validates all required parameters are present
+- Applies security restrictions (prevents ../traversal, system paths)
+- Verifies file exists and is regular file
+- Checks search text exists before attempting replacement
+- Creates backup before modification
+- Performs replacement and writes back to file
+- Returns success message with occurrence count
+
+### 5. Error Handling Strategy ✅
+- Returns descriptive error messages as strings (consistent with existing pattern)
+- Uses same error message formats as Anthropic tools for consistency
+- Includes proper logging for debugging
+- Handles all common file system exceptions
+
+### 6. File Structure Changes ✅
+```
+app/src/main/java/com/larseckart/tools/gemini/GeminiTools.java (modified - added readFile and editFile methods)
+app/src/main/java/com/larseckart/adapters/ai/GeminiProvider.java (modified - updated tool registration)
 ```
 
-### 3. Method Implementation Details
-The method will:
-- Accept nullable parameters (path defaults to ".", showHidden defaults to false)
-- Normalize the path using `Paths.get(pathStr).normalize()`
-- Check if path exists and is a directory
-- List files with filtering based on showHidden parameter
-- Format output similar to existing ListFilesTool:
-  - Show absolute path of directory
-  - List each file with [file] or [directory] indicator
-  - Include file sizes for regular files
-  - Sort alphabetically (case-insensitive)
-- Return error messages as strings for consistency
+### 7. Code Changes Summary
+- **GeminiTools.java**: Added imports for `Charset`, `NoSuchFileException`, and `StandardCopyOption`
+- **GeminiTools.java**: Added constants `MAX_FILE_SIZE` and `DEFAULT_ENCODING`
+- **GeminiTools.java**: Added `readFile(String path, String encoding)` method
+- **GeminiTools.java**: Added `editFile(String path, String searchText, String replaceText)` method  
+- **GeminiTools.java**: Added private helper method `resolveFilePath(String pathStr)`
+- **GeminiProvider.java**: Updated tool registration to include readFile and editFile methods
 
-### 4. GeminiProvider Updates
-Update the `GeminiProvider.sendMessage()` method to:
-1. Import the GeminiTools class
-2. Register the listFiles method using reflection:
-   ```java
-   Method listFilesMethod = GeminiTools.class.getDeclaredMethod("listFiles", String.class, Boolean.class);
-   ```
-3. Add the method to the tool configuration:
-   ```java
-   GenerateContentConfig config = GenerateContentConfig.builder()
-       .tools(Tool.builder().functions(listFilesMethod))
-       .build();
-   ```
-4. Update conversation handling to work with function calls
+## Benefits Achieved ✅
+- Maintains consistency with existing Anthropic tool functionality
+- Uses proven patterns from existing GeminiTools implementation
+- Provides full file manipulation capabilities for Gemini users
+- Follows established security and error handling practices
+- Ready for testing and production use
 
-### 5. Error Handling
-- File not found: Return "Error: Directory not found: [path]"
-- Not a directory: Return "Error: Path is not a directory: [path]"
-- Permission denied: Return "Error: Permission denied - [message]"
-- Other IO errors: Return "Error: [message]"
-
-### 6. File Size Formatting
-Use the same formatting as ListFilesTool:
-- < 1KB: "[n] bytes"
-- < 1MB: "[n.n] KB"
-- < 1GB: "[n.n] MB"
-- >= 1GB: "[n.n] GB"
-
-### 7. Testing Strategy
-- Create manual test to verify tool registration
-- Test with various inputs:
-  - Default parameters (null values)
-  - Valid directory paths
-  - Invalid paths
-  - Hidden files toggle
-  - Permission errors
-- Verify output format matches existing tool
-
-## File Structure
-```
-app/src/main/java/com/larseckart/
-├── tools/
-│   └── gemini/
-│       └── GeminiTools.java (new)
-└── adapters/
-    └── ai/
-        └── GeminiProvider.java (modified)
-```
-
-## Implementation Order
-1. Create the `com.larseckart.tools.gemini` package
-2. Implement `GeminiTools.listFiles()` method
-3. Update `GeminiProvider` to register and use the tool
-4. Test the implementation
-
-## Future Considerations
-- This pattern can be extended for other tools (ReadFile, EditFile, etc.)
-- Consider creating a base class or utility methods for common functionality
-- May want to add logging similar to existing tools
+## Next Steps
+- Test the implementation with various file operations
+- Verify tool registration works correctly in GeminiProvider
+- Document usage examples for end users

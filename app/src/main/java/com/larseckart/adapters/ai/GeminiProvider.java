@@ -57,8 +57,14 @@ public class GeminiProvider implements AIProvider {
         log.info("Attempting to register Gemini tools");
         Method listFilesMethod =
             GeminiTools.class.getDeclaredMethod("listFiles", String.class, Boolean.class);
-        configBuilder.tools(Tool.builder().functions(listFilesMethod));
-        log.info("Successfully registered listFiles tool for Gemini");
+        Method readFileMethod =
+            GeminiTools.class.getDeclaredMethod("readFile", String.class, String.class);
+        Method editFileMethod =
+            GeminiTools.class.getDeclaredMethod(
+                "editFile", String.class, String.class, String.class);
+        configBuilder.tools(
+            Tool.builder().functions(listFilesMethod, readFileMethod, editFileMethod));
+        log.info("Successfully registered listFiles, readFile, and editFile tools for Gemini");
       } catch (NoSuchMethodException e) {
         log.error("Failed to register Gemini tools", e);
       }

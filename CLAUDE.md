@@ -9,7 +9,7 @@ It's implemented in java though.
 
 ## AI Provider Support
 - **Anthropic Claude**: Full support including tool calling (file operations)
-- **Google Gemini**: Basic chat support only (tool calling not yet implemented)
+- **Google Gemini**: Full support including tool calling (file operations: list files, read file, edit file)
 
 
 ## Project Structure
@@ -31,7 +31,8 @@ This is a multi-module Gradle project with Kotlin DSL:
 - **View web logs**: `./dev-server.sh logs`
 
 ### Build & Test
-- **Build**: `./gradlew build` (includes fatJar creation)
+- **Build**: `./run_build.sh` (applies formatting and builds - recommended)
+- **Alternative build**: `./gradlew build` (includes fatJar creation)
 - **Test**: `./run_tests.sh` (runs tests with formatted output)
 - **Single test**: `./gradlew test --tests "ClassName"`
 - **Clean**: `./gradlew clean`

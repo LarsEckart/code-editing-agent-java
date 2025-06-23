@@ -7,35 +7,35 @@ This application demonstrates clean architecture principles and provides both CL
 
 ### Project Statistics
 
-- **Total Commits**: 59
-- **AI-Assisted Commits**: 40 (67.80%)
-- **Total Lines Added**: 8080
-- **AI-Assisted Lines Added**: 6410 (79.33%)
-- **Total Lines Changed**: 12053
-- **AI-Assisted Lines Changed**: 9650 (80.06%)
+- **Total Commits**: 60
+- **AI-Assisted Commits**: 41 (68.33%)
+- **Total Lines Added**: 8622
+- **AI-Assisted Lines Added**: 6952 (80.63%)
+- **Total Lines Changed**: 12883
+- **AI-Assisted Lines Changed**: 10480 (81.35%)
 
 ### Breakdown by AI Assistant
 
 #### Claude Code
 
-- **Commits**: 31 (52.54%)
-- **Lines Added**: 5081
-- **Lines Deleted**: 2357
-- **Lines Changed**: 7438 (61.71%)
+- **Commits**: 32 (53.33%)
+- **Lines Added**: 5623
+- **Lines Deleted**: 2645
+- **Lines Changed**: 8268 (64.18%)
 
 #### Amp
 
-- **Commits**: 7 (11.86%)
+- **Commits**: 7 (11.67%)
 - **Lines Added**: 1258
 - **Lines Deleted**: 809
-- **Lines Changed**: 2067 (17.15%)
+- **Lines Changed**: 2067 (16.04%)
 
 #### GitHub Copilot
 
-- **Commits**: 2 (3.39%)
+- **Commits**: 2 (3.33%)
 - **Lines Added**: 71
 - **Lines Deleted**: 74
-- **Lines Changed**: 145 (1.20%)
+- **Lines Changed**: 145 (1.13%)
 
 
 *Statistics are automatically updated on each commit.*
@@ -44,7 +44,7 @@ This application demonstrates clean architecture principles and provides both CL
 
 - **Multi-Provider Support**: Choose between Anthropic Claude and Google Gemini
 - **Dual Interface Support**: Run as a command-line application or web server
-- **File Operations**: Built-in tools for reading, editing, and listing files (CLI mode only, Anthropic Claude only)
+- **File Operations**: Built-in tools for reading, editing, and listing files (supports both Claude and Gemini)
 - **Clean Architecture**: Hexagonal architecture with clear separation of concerns
 - **Hot Reloading**: Development server with automatic restart and live reload
 - **Separate Logging**: Mode-specific log files (CLI: `logs/application-cli.log`, Web: `logs/application-web.log`)
@@ -76,14 +76,12 @@ export GOOGLE_API_KEY="your-api-key-here"
 export AI_PROVIDER=gemini
 ```
 
-> **Note**: Tool support (file operations) is currently only available with Anthropic Claude. Gemini provider supports basic chat functionality only.
-
 ### 2. Clone and Build
 
 ```bash
 git clone <repository-url>
 cd code-editing-agent-java
-./gradlew build
+./run_build.sh
 ```
 
 ### 3. Install Git Hooks (Optional)
@@ -138,7 +136,7 @@ For active development with hot reloading:
 ./gradlew test --tests "ConversationServiceTest"
 
 # Build and run tests
-./gradlew build
+./run_build.sh
 ```
 
 ### Project Commands
@@ -153,7 +151,8 @@ For active development with hot reloading:
 - **View web logs**: `./dev-server.sh logs`
 
 #### Build & Test
-- **Build**: `./gradlew build` (includes fatJar creation)
+- **Build**: `./run_build.sh` (applies formatting and builds - recommended)
+- **Alternative build**: `./gradlew build` (includes fatJar creation)
 - **Test**: `./run_tests.sh` (runs tests with formatted output)
 - **Clean**: `./gradlew clean`
 - **Fat JAR**: Created automatically during build in `app/build/libs/`
@@ -176,13 +175,13 @@ This application follows hexagonal architecture principles:
 
 ### Built-in Tools
 
-The agent comes with file operation tools (CLI mode only, Anthropic Claude only):
+The agent comes with file operation tools:
 
 - **ReadFileTool**: Read file contents
-- **EditFileTool**: Modify existing files
+- **EditFileTool**: Modify existing files  
 - **ListFilesTool**: Browse directory contents
 
-> **Note**: Tool support is currently only available when using Anthropic Claude as the AI provider. Google Gemini provider does not yet support function calling/tools.
+> **Note**: Tool support is available for both Anthropic Claude and Google Gemini providers.
 
 > **Security Note**: These file tools are designed exclusively for CLI mode where they operate on the user's local file system. In web mode, these tools would pose serious security risks by allowing web users to access the server's file system. A proper web implementation would require either disabling file tools entirely or implementing sandboxed alternatives.
 
