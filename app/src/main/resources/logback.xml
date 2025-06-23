@@ -8,14 +8,7 @@
   <property name="APP_MODE" value="${app.mode:-cli}"/>
   <property name="LOG_FILE" value="logs/application-${APP_MODE}.log"/>
   <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
-  
-  <!-- Console appender for CLI mode -->
-  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-    <encoder>
-      <pattern>${LOG_PATTERN}</pattern>
-    </encoder>
-  </appender>
-  
+    
   <!-- Rolling file appender to preserve log history -->
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${LOG_FILE}</file>

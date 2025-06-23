@@ -8,8 +8,8 @@ This is a very simple AI agent, following this tutorial: https://ampcode.com/how
 It's implemented in java though.
 
 ## AI Provider Support
-- **Anthropic Claude**: Full support including tool calling (file operations)
-- **Google Gemini**: Full support including tool calling (file operations: list files, read file, edit file)
+- **Anthropic Claude**: Full support including tool calling (file operations, test execution)
+- **Google Gemini**: Full support including tool calling (file operations, test execution: list files, read file, edit file, run tests)
 
 
 ## Project Structure

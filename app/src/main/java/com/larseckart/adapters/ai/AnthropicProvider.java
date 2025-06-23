@@ -23,6 +23,7 @@ import com.larseckart.core.services.ToolRegistry;
 import com.larseckart.core.tools.EditFileTool;
 import com.larseckart.core.tools.ListFilesTool;
 import com.larseckart.core.tools.ReadFileTool;
+import com.larseckart.core.tools.RunTestsTool;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,7 @@ public class AnthropicProvider implements AIProvider {
     this.toolRegistry.registerTool(new ReadFileTool());
     this.toolRegistry.registerTool(new ListFilesTool());
     this.toolRegistry.registerTool(new EditFileTool());
+    this.toolRegistry.registerTool(new RunTestsTool());
 
     log.debug("AnthropicProvider initialized with {} tools", toolRegistry.getAllTools().size());
   }

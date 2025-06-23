@@ -7,35 +7,35 @@ This application demonstrates clean architecture principles and provides both CL
 
 ### Project Statistics
 
-- **Total Commits**: 60
-- **AI-Assisted Commits**: 41 (68.33%)
-- **Total Lines Added**: 8622
-- **AI-Assisted Lines Added**: 6952 (80.63%)
-- **Total Lines Changed**: 12883
-- **AI-Assisted Lines Changed**: 10480 (81.35%)
+- **Total Commits**: 61
+- **AI-Assisted Commits**: 42 (68.85%)
+- **Total Lines Added**: 8925
+- **AI-Assisted Lines Added**: 7255 (81.29%)
+- **Total Lines Changed**: 13304
+- **AI-Assisted Lines Changed**: 10901 (81.94%)
 
 ### Breakdown by AI Assistant
 
 #### Claude Code
 
-- **Commits**: 32 (53.33%)
-- **Lines Added**: 5623
-- **Lines Deleted**: 2645
-- **Lines Changed**: 8268 (64.18%)
+- **Commits**: 33 (54.10%)
+- **Lines Added**: 5926
+- **Lines Deleted**: 2763
+- **Lines Changed**: 8689 (65.31%)
 
 #### Amp
 
-- **Commits**: 7 (11.67%)
+- **Commits**: 7 (11.48%)
 - **Lines Added**: 1258
 - **Lines Deleted**: 809
-- **Lines Changed**: 2067 (16.04%)
+- **Lines Changed**: 2067 (15.54%)
 
 #### GitHub Copilot
 
-- **Commits**: 2 (3.33%)
+- **Commits**: 2 (3.28%)
 - **Lines Added**: 71
 - **Lines Deleted**: 74
-- **Lines Changed**: 145 (1.13%)
+- **Lines Changed**: 145 (1.09%)
 
 
 *Statistics are automatically updated on each commit.*
@@ -45,6 +45,7 @@ This application demonstrates clean architecture principles and provides both CL
 - **Multi-Provider Support**: Choose between Anthropic Claude and Google Gemini
 - **Dual Interface Support**: Run as a command-line application or web server
 - **File Operations**: Built-in tools for reading, editing, and listing files (supports both Claude and Gemini)
+- **Test Execution**: Run all Gradle tests with detailed output (1-minute timeout)
 - **Clean Architecture**: Hexagonal architecture with clear separation of concerns
 - **Hot Reloading**: Development server with automatic restart and live reload
 - **Separate Logging**: Mode-specific log files (CLI: `logs/application-cli.log`, Web: `logs/application-web.log`)
@@ -175,13 +176,17 @@ This application follows hexagonal architecture principles:
 
 ### Built-in Tools
 
-The agent comes with file operation tools:
+The agent comes with these built-in tools:
 
-- **ReadFileTool**: Read file contents
-- **EditFileTool**: Modify existing files  
-- **ListFilesTool**: Browse directory contents
+#### File Operations
+- **ReadFileTool**: Read file contents with encoding support
+- **EditFileTool**: Modify existing files with automatic backup creation
+- **ListFilesTool**: Browse directory contents with hidden file options
 
-> **Note**: Tool support is available for both Anthropic Claude and Google Gemini providers.
+#### Development Tools  
+- **RunTestsTool**: Execute all Gradle tests (1-minute timeout)
+
+> **Note**: All tools are available for both Anthropic Claude and Google Gemini providers.
 
 > **Security Note**: These file tools are designed exclusively for CLI mode where they operate on the user's local file system. In web mode, these tools would pose serious security risks by allowing web users to access the server's file system. A proper web implementation would require either disabling file tools entirely or implementing sandboxed alternatives.
 
