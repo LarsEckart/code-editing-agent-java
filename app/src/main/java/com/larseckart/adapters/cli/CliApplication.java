@@ -7,10 +7,6 @@ import com.larseckart.core.ports.input.InputPort;
 import com.larseckart.core.ports.output.OutputPort;
 import com.larseckart.core.services.ChatService;
 import com.larseckart.core.services.ConversationService;
-import com.larseckart.core.services.ToolRegistry;
-import com.larseckart.core.tools.EditFileTool;
-import com.larseckart.core.tools.ListFilesTool;
-import com.larseckart.core.tools.ReadFileTool;
 
 public class CliApplication {
 
@@ -23,13 +19,7 @@ public class CliApplication {
     ConversationContext context = new ConversationContext();
     AIProvider aiProvider = AIProviderFactory.createFromEnvironment();
 
-    ToolRegistry toolRegistry = new ToolRegistry();
-    toolRegistry.registerTool(new ReadFileTool());
-    toolRegistry.registerTool(new ListFilesTool());
-    toolRegistry.registerTool(new EditFileTool());
-
-    ConversationService conversationService =
-        new ConversationService(context, aiProvider, toolRegistry);
+    ConversationService conversationService = new ConversationService(context, aiProvider);
 
     ChatService chatService = new ChatService(inputPort, outputPort, conversationService);
     chatService.startChat();

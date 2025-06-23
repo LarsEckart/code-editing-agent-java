@@ -2,18 +2,20 @@ package com.larseckart.adapters.ai;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.genai.Client;
 import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentConfig;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.Part;
+import com.google.genai.types.Tool;
 import com.larseckart.ApiKey;
 import com.larseckart.core.domain.ChatMessage;
 import com.larseckart.core.domain.ai.AIRequest;
 import com.larseckart.core.domain.ai.AIResponse;
 import com.larseckart.core.domain.ai.AIToolUse;
 import com.larseckart.core.ports.AIProvider;
+import com.larseckart.tools.gemini.GeminiTools;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -24,12 +26,11 @@ public class GeminiProvider implements AIProvider {
   private static final String DEFAULT_MODEL = "gemini-2.0-flash-001";
 
   private final Client client;
-  private final ObjectMapper objectMapper;
 
   public GeminiProvider(ApiKey apiKey) {
+    log.info("Initializing GeminiProvider");
     this.client = Client.builder().apiKey(apiKey.getValue()).build();
-    this.objectMapper = new ObjectMapper();
-    log.debug("GeminiProvider initialized");
+    log.info("GeminiProvider initialized successfully");
   }
 
   @Override
@@ -51,8 +52,16 @@ public class GeminiProvider implements AIProvider {
         configBuilder.systemInstruction(systemInstruction);
       }
 
-      // Add tools if present (Gemini tools work differently, skipping for now)
-      // TODO: Implement function calling support
+      // Register Gemini tools
+      try {
+        log.info("Attempting to register Gemini tools");
+        Method listFilesMethod =
+            GeminiTools.class.getDeclaredMethod("listFiles", String.class, Boolean.class);
+        configBuilder.tools(Tool.builder().functions(listFilesMethod));
+        log.info("Successfully registered listFiles tool for Gemini");
+      } catch (NoSuchMethodException e) {
+        log.error("Failed to register Gemini tools", e);
+      }
 
       GenerateContentConfig config = configBuilder.build();
 

@@ -19,6 +19,10 @@ import com.larseckart.core.domain.ai.AIResponse;
 import com.larseckart.core.domain.ai.AITool;
 import com.larseckart.core.domain.ai.AIToolUse;
 import com.larseckart.core.ports.AIProvider;
+import com.larseckart.core.services.ToolRegistry;
+import com.larseckart.core.tools.EditFileTool;
+import com.larseckart.core.tools.ListFilesTool;
+import com.larseckart.core.tools.ReadFileTool;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +34,19 @@ public class AnthropicProvider implements AIProvider {
 
   private final AnthropicClient client;
   private final ObjectMapper objectMapper;
+  private final ToolRegistry toolRegistry;
 
   public AnthropicProvider(ApiKey apiKey) {
     this.client = AnthropicOkHttpClient.builder().apiKey(apiKey.getValue()).build();
     this.objectMapper = new ObjectMapper();
-    log.debug("AnthropicProvider initialized");
+
+    // Initialize tools
+    this.toolRegistry = new ToolRegistry();
+    this.toolRegistry.registerTool(new ReadFileTool());
+    this.toolRegistry.registerTool(new ListFilesTool());
+    this.toolRegistry.registerTool(new EditFileTool());
+
+    log.debug("AnthropicProvider initialized with {} tools", toolRegistry.getAllTools().size());
   }
 
   @Override
@@ -46,9 +58,10 @@ public class AnthropicProvider implements AIProvider {
               .maxTokens((long) request.maxTokens())
               .system(request.systemPrompt());
 
-      // Add tools if present
-      if (request.tools() != null && !request.tools().isEmpty()) {
-        List<ToolUnion> tools = convertToAnthropicTools(request.tools());
+      // Add internal tools
+      List<AITool> aiTools = convertRegistryToAITools();
+      if (!aiTools.isEmpty()) {
+        List<ToolUnion> tools = convertToAnthropicTools(aiTools);
         paramsBuilder.tools(tools);
       }
 
@@ -64,7 +77,14 @@ public class AnthropicProvider implements AIProvider {
       log.debug("Sending request to Anthropic API");
       var response = client.messages().create(paramsBuilder.build());
 
-      return convertToAIResponse(response);
+      AIResponse aiResponse = convertToAIResponse(response);
+
+      // Handle tool execution if needed
+      if (aiResponse.hasToolUse()) {
+        return handleToolExecution(request, aiResponse);
+      }
+
+      return aiResponse;
 
     } catch (Exception e) {
       log.error("Error calling Anthropic API", e);
@@ -131,5 +151,56 @@ public class AnthropicProvider implements AIProvider {
     }
 
     return new AIResponse(textContent.toString(), toolUses, hasToolUse);
+  }
+
+  private List<AITool> convertRegistryToAITools() {
+    List<Map<String, Object>> toolDefinitions = toolRegistry.convertToClaudeFunctionDefinitions();
+    return toolDefinitions.stream()
+        .map(
+            toolDef ->
+                new AITool(
+                    (String) toolDef.get("name"),
+                    (String) toolDef.get("description"),
+                    (Map<String, Object>) toolDef.get("input_schema")))
+        .toList();
+  }
+
+  private AIResponse handleToolExecution(AIRequest originalRequest, AIResponse toolResponse) {
+    try {
+      // Execute all tools in the response
+      StringBuilder allResults = new StringBuilder();
+      log.debug("Starting tool execution for response");
+
+      for (AIToolUse toolUse : toolResponse.toolUses()) {
+        String toolName = toolUse.toolName();
+
+        // Execute the tool
+        log.info("Executing tool: {}", toolName);
+        log.debug("Tool parameters: {}", toolUse.parameters());
+        String result = toolRegistry.routeFunctionCall(toolName, toolUse.parameters());
+        log.debug("Tool {} executed successfully, result length: {}", toolName, result.length());
+        allResults.append(result);
+      }
+
+      // Create a new request with tool results
+      List<ChatMessage> updatedMessages = new ArrayList<>(originalRequest.messages());
+      updatedMessages.add(ChatMessage.assistant(toolResponse.textContent()));
+      updatedMessages.add(ChatMessage.user("Tool results: " + allResults.toString()));
+
+      AIRequest followUpRequest =
+          new AIRequest(
+              updatedMessages,
+              originalRequest.systemPrompt(),
+              null, // Don't pass tools again
+              originalRequest.maxTokens());
+
+      // Get final response from AI
+      log.debug("Sending tool results back to AI for final response");
+      return sendMessage(followUpRequest);
+
+    } catch (Exception e) {
+      log.error("Tool execution failed", e);
+      throw new RuntimeException("Tool execution failed", e);
+    }
   }
 }
