@@ -1,7 +1,7 @@
 # Java AI Agent with Multi-Provider Support
 
 A Java-based conversational AI agent that supports multiple AI providers (Anthropic Claude and Google Gemini), following Thorsten Ball's tutorial at [How to Build an Agent](https://ampcode.com/how-to-build-an-agent). 
-This application demonstrates clean architecture principles and provides both CLI and web interfaces for interacting with AI models.
+This application provides both CLI and web interfaces for interacting with AI models.
 
 ## AI Contributions
 
