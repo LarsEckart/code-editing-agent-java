@@ -7,35 +7,35 @@ This application provides both CLI and web interfaces for interacting with AI mo
 
 ### Project Statistics
 
-- **Total Commits**: 61
-- **AI-Assisted Commits**: 42 (68.85%)
-- **Total Lines Added**: 8925
-- **AI-Assisted Lines Added**: 7255 (81.29%)
-- **Total Lines Changed**: 13304
-- **AI-Assisted Lines Changed**: 10901 (81.94%)
+- **Total Commits**: 62
+- **AI-Assisted Commits**: 43 (69.35%)
+- **Total Lines Added**: 9181
+- **AI-Assisted Lines Added**: 7511 (81.81%)
+- **Total Lines Changed**: 13591
+- **AI-Assisted Lines Changed**: 11188 (82.32%)
 
 ### Breakdown by AI Assistant
 
 #### Claude Code
 
-- **Commits**: 33 (54.10%)
-- **Lines Added**: 5926
-- **Lines Deleted**: 2763
-- **Lines Changed**: 8689 (65.31%)
+- **Commits**: 34 (54.84%)
+- **Lines Added**: 6182
+- **Lines Deleted**: 2794
+- **Lines Changed**: 8976 (66.04%)
 
 #### Amp
 
-- **Commits**: 7 (11.48%)
+- **Commits**: 7 (11.29%)
 - **Lines Added**: 1258
 - **Lines Deleted**: 809
-- **Lines Changed**: 2067 (15.54%)
+- **Lines Changed**: 2067 (15.21%)
 
 #### GitHub Copilot
 
-- **Commits**: 2 (3.28%)
+- **Commits**: 2 (3.23%)
 - **Lines Added**: 71
 - **Lines Deleted**: 74
-- **Lines Changed**: 145 (1.09%)
+- **Lines Changed**: 145 (1.07%)
 
 
 *Statistics are automatically updated on each commit.*
@@ -231,9 +231,9 @@ Starting CLI application...
 
 Chat with a LLM (use 'ctrl-c' to quit or press Enter on empty line)
 You: Can you read the contents of my config file?
-LarsGPT: I can help you read a file. What's the path to your config file?
+TheAgent: I can help you read a file. What's the path to your config file?
 You: ./app.properties
-LarsGPT: [Reads and displays file contents]
+TheAgent: [Reads and displays file contents]
 ```
 
 ### Web Mode

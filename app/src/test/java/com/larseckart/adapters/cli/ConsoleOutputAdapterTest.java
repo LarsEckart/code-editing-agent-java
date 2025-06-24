@@ -33,7 +33,7 @@ class ConsoleOutputAdapterTest {
     adapter.showWelcomeMessage();
 
     assertThat(outputStream.toString())
-        .isEqualTo("Chat with a LLM (use 'ctrl-c' to quit or press Enter on empty line)\n");
+        .isEqualTo("Chat with the Agent (use 'ctrl-c' to quit or press Enter on empty line)\n");
   }
 
   @Test
@@ -50,7 +50,7 @@ class ConsoleOutputAdapterTest {
     adapter.displayAssistantResponse(testResponse);
 
     assertThat(outputStream.toString())
-        .isEqualTo("\u001b[95mLarsGPT\u001b[0m: \u001b[92mHello, how can I help you?\u001b[0m\n");
+        .isEqualTo("\u001b[95mTheAgent\u001b[0m: \u001b[92mHello, how can I help you?\u001b[0m\n");
   }
 
   @Test
@@ -58,6 +58,6 @@ class ConsoleOutputAdapterTest {
     adapter.displayAssistantResponse("");
 
     assertThat(outputStream.toString())
-        .isEqualTo("\u001b[95mLarsGPT\u001b[0m: \u001b[92m\u001b[0m\n");
+        .isEqualTo("\u001b[95mTheAgent\u001b[0m: \u001b[92m\u001b[0m\n");
   }
 }
