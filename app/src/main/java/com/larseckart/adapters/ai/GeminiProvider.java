@@ -78,6 +78,8 @@ public class GeminiProvider implements AIProvider {
 
       // For simplicity, use the last message as the prompt
       // In a full implementation, we'd need to handle conversation history properly
+      // TODO: Implement proper conversation history handling,
+      // https://github.com/googleapis/java-genai/blob/main/examples/src/main/java/com/google/genai/examples/ChatWithHistory.java
       Content prompt =
           messages.isEmpty()
               ? Content.fromParts(Part.fromText("Hello"))
