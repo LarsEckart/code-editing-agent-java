@@ -18,7 +18,7 @@ java {
 }
 
 application {
-    mainClass = "com.larseckart.simple.SimpleApp"
+    mainClass = "com.larseckart.better.BetterApp"
     applicationDefaultJvmArgs = listOf("-Dfile.encoding=UTF-8")
 }
 

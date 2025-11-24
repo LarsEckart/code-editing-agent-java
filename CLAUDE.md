@@ -95,10 +95,10 @@ The application supports two modes:
 
 ### Key Dependencies
 
-- **Anthropic Java SDK**: `com.anthropic:anthropic-java:2.0.0`
+- **Anthropic Java SDK**: `com.anthropic:anthropic-java:2.11.1`
 - **Google Gen AI Java SDK**: `com.google.genai:google-genai:1.5.0`
 - **Spring Boot**: `3.5.0` (for web mode)
-- **Java 24**: Required runtime version
+- **Java 25**: Required runtime version
 - **JUnit 5**: For testing
 
 ### Configuration

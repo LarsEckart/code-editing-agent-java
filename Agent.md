@@ -50,7 +50,7 @@ For web development with hot reloading:
 - **Testing**: Use JUnit 5 (`@Test`, no public methods needed)
 - **Dependencies**: Add to `gradle/libs.versions.toml` first, reference in build.gradle.kts
 - **Main class**: `com.larseckart.App`
-- **Java version**: 24 (configured in toolchain)
+- **Java version**: 25 (configured in toolchain)
 
 ## Testing Conventions
 - **Test classes**: End with `Test` suffix (e.g., `ReadFileToolTest`)
@@ -67,7 +67,7 @@ For web development with hot reloading:
 - **Hexagonal Architecture**: Clear separation between business logic and I/O
 
 ## Key Dependencies
-- **Anthropic Java SDK**: `com.anthropic:anthropic-java:2.0.0`
+- **Anthropic Java SDK**: `com.anthropic:anthropic-java:2.11.1`
 - **Spring Boot**: `3.5.0` (for web mode)
 - **JUnit 5**: For testing
 - **Jackson**: For JSON handling
