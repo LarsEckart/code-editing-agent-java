@@ -7,32 +7,32 @@ This application provides both CLI and web interfaces for interacting with AI mo
 
 ### Project Statistics
 
-- **Total Commits**: 65
-- **AI-Assisted Commits**: 45 (69.23%)
-- **Total Lines Added**: 9245
-- **AI-Assisted Lines Added**: 7574 (81.93%)
-- **Total Lines Changed**: 13719
-- **AI-Assisted Lines Changed**: 11314 (82.47%)
+- **Total Commits**: 67
+- **AI-Assisted Commits**: 45 (67.16%)
+- **Total Lines Added**: 9225
+- **AI-Assisted Lines Added**: 7536 (81.69%)
+- **Total Lines Changed**: 13677
+- **AI-Assisted Lines Changed**: 11238 (82.17%)
 
 ### Breakdown by AI Assistant
 
 #### Claude Code
 
-- **Commits**: 34 (52.31%)
-- **Lines Added**: 6182
-- **Lines Deleted**: 2794
-- **Lines Changed**: 8976 (65.43%)
+- **Commits**: 34 (50.75%)
+- **Lines Added**: 6156
+- **Lines Deleted**: 2768
+- **Lines Changed**: 8924 (65.25%)
 
 #### Amp
 
-- **Commits**: 9 (13.85%)
-- **Lines Added**: 1321
-- **Lines Deleted**: 872
-- **Lines Changed**: 2193 (15.99%)
+- **Commits**: 9 (13.43%)
+- **Lines Added**: 1309
+- **Lines Deleted**: 860
+- **Lines Changed**: 2169 (15.86%)
 
 #### GitHub Copilot
 
-- **Commits**: 2 (3.08%)
+- **Commits**: 2 (2.99%)
 - **Lines Added**: 71
 - **Lines Deleted**: 74
 - **Lines Changed**: 145 (1.06%)

@@ -3,4 +3,4 @@ plugins {
 }
 
 rootProject.name = "code-editing-agent-java"
-include("app")
+include("app", "simple")
