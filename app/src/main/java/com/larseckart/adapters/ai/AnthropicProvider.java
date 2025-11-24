@@ -5,6 +5,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import com.anthropic.client.AnthropicClient;
 import com.anthropic.client.okhttp.AnthropicOkHttpClient;
 import com.anthropic.core.JsonValue;
+import com.anthropic.errors.AnthropicServiceException;
 import com.anthropic.models.messages.ContentBlock;
 import com.anthropic.models.messages.MessageCreateParams;
 import com.anthropic.models.messages.Model;
@@ -56,7 +57,7 @@ public class AnthropicProvider implements AIProvider {
     try {
       var paramsBuilder =
           MessageCreateParams.builder()
-              .model(Model.CLAUDE_3_5_HAIKU_LATEST)
+              .model(Model.CLAUDE_HAIKU_4_5)
               .maxTokens((long) request.maxTokens())
               .system(request.systemPrompt());
 
@@ -89,7 +90,7 @@ public class AnthropicProvider implements AIProvider {
       return aiResponse;
 
     } catch (Exception e) {
-      log.error("Error calling Anthropic API", e);
+      logAnthropicError(e);
       throw new RuntimeException("Anthropic API call failed", e);
     }
   }
@@ -204,5 +205,40 @@ public class AnthropicProvider implements AIProvider {
       log.error("Tool execution failed", e);
       throw new RuntimeException("Tool execution failed", e);
     }
+  }
+
+  private void logAnthropicError(Exception e) {
+    // Surface meaningful server details when available.
+    Throwable cause = e;
+    while (cause != null) {
+      if (cause instanceof AnthropicServiceException serviceEx) {
+        String bodyString = "<unavailable>";
+        try {
+          JsonNode bodyNode = serviceEx.body().convert(JsonNode.class);
+          bodyString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(bodyNode);
+        } catch (Exception conversionError) {
+          bodyString = String.valueOf(serviceEx.body());
+          log.debug("Failed to convert Anthropic error body", conversionError);
+        }
+
+        String requestId =
+            serviceEx.headers().values("request-id").isEmpty()
+                ? "n/a"
+                : serviceEx.headers().values("request-id").getFirst();
+
+        log.error(
+            "Anthropic service error. status={} request-id={} message={} body={}",
+            serviceEx.statusCode(),
+            requestId,
+            serviceEx.getMessage(),
+            bodyString,
+            e);
+        return;
+      }
+      cause = cause.getCause();
+    }
+
+    // Fallback logging when no structured Anthropic details are present.
+    log.error("Error calling Anthropic API", e);
   }
 }

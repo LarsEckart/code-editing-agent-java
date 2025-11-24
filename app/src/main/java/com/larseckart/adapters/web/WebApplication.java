@@ -23,7 +23,7 @@ public class WebApplication {
 
   @Bean
   public ApiKey apiKey() {
-    return ApiKey.fromEnvironment("code_editing_agent_api_key");
+    return ApiKey.fromEnvironment("ANTHROPIC_API_KEY");
   }
 
   @Bean

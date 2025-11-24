@@ -111,7 +111,9 @@ public class ListFilesTool implements Tool {
         }
       }
 
-      return result.toString();
+      String string = result.toString();
+      log.info("Tool Output: " + string);
+      return string;
     } catch (IOException e) {
       if (e.getMessage() != null && e.getMessage().contains("ermission")) {
         return "Error: Permission denied - " + e.getMessage();

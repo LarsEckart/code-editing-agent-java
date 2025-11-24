@@ -37,7 +37,7 @@ public class AIProviderFactory {
 
     ApiKey apiKey =
         switch (type) {
-          case ANTHROPIC -> ApiKey.fromEnvironment("code_editing_agent_api_key");
+          case ANTHROPIC -> ApiKey.fromEnvironment("ANTHROPIC_API_KEY");
           case GEMINI -> ApiKey.fromEnvironment("GOOGLE_API_KEY");
         };
 
